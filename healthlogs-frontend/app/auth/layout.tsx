@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
-import "./globals.css";
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700", "800"],
-  preload: false,
-});
 
 export const metadata: Metadata = {
-  title: "Healthlogs",
+  title: "Healthlogs Auth",
   description: "",
 };
 
@@ -19,7 +12,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={poppins.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
