@@ -37,7 +37,7 @@ app.use("*", (req, res, next) => {
   // err.status = "fail";
   // err.statusCode = 404;
   // next(err);
-  next(new AppError(`Can't find ${req.originalUrl} on the server`, 404));
+  return next(new AppError(`Can't find ${req.originalUrl} on the server`, 404));
 });
 
 app.use(globalErrorHandler);

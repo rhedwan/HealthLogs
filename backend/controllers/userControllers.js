@@ -1,9 +1,15 @@
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
+const AppError = require("../utils/appError");
+
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
 
 exports.createUser = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -11,12 +17,36 @@ exports.createUser = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+  const token = signToken(newUser._id);
   res.status(200).json({
     data: "success",
     token,
     user: newUser,
+  });
+});
+
+exports.login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+  if (!email || !password)
+    return new AppError("Please provide an email and passsword", 400);
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user || !(await user.correctPassword(password, user.password)))
+    return new AppError("Incorrect email and passsword", 400);
+
+  let token = signToken(user._id);
+  res.status(200).json({
+    status: "success",
+    token,
+  });
+});
+
+exports.getAllPatients = catchAsync(async (req, res, next) => {
+  const patients = await User.find();
+  res.status(200).json({
+    status: "success",
+    results: patients.length,
+    patients,
   });
 });
