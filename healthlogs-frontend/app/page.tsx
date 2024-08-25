@@ -11,9 +11,11 @@ export default function Home() {
             HealthLogs
           </Link>
           <nav className="flex justify-between items-center space-x-6">
-            <Button className="bg-[#57BCD6] text-black hover:text-[#57BCD6]">
-              Login
-            </Button>
+            <Link href="/auth/login">
+              <Button className="bg-[#57BCD6] text-black hover:text-[#57BCD6]">
+                Login
+              </Button>
+            </Link>
             <Button className="text-[#57BCD6] bg-transparent ring-1 ring-[#57BCD6]">
               Sign Up
             </Button>
