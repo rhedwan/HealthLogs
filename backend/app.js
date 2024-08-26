@@ -8,6 +8,8 @@ const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
+const xss = require("xss-clean");
+const mongoSanitize = require("express-mongo-sanitize");
 
 const userRouter = require("./routes/userRouter");
 
@@ -32,6 +34,9 @@ const limiter = rateLimit({
 
 app.use("/api", limiter);
 app.use(express.json());
+app.use(mongoSanitize());
+
+app.use(xss());
 app.use(morgan("dev"));
 app.use(cors());
 app.options("*", cors());
