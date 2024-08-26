@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
+const rateLimit = require("express-rate-limit");
 
 const userRouter = require("./routes/userRouter");
 
@@ -20,6 +21,13 @@ mongoose.connect(DATABASE).then((connect) => {
   console.log("Database connection established");
 });
 
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 1000,
+  message: "Too many requests from this IP, please try again in an hour",
+});
+
+app.use("/api", limiter);
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
