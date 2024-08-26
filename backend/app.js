@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
-const rateLimit = require("express-rate-limit");
+// const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -26,13 +26,13 @@ mongoose.connect(DATABASE).then((connect) => {
   console.log("Database connection established");
 });
 
-const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  limit: 1000,
-  message: "Too many requests from this IP, please try again in an hour",
-});
+// const limiter = rateLimit({
+//   windowMs: 60 * 60 * 1000,
+//   limit: 1000,
+//   message: "Too many requests from this IP, please try again in an hour",
+// });
 
-app.use("/api", limiter);
+// app.use("/api", limiter);
 app.use(express.json());
 app.use(mongoSanitize());
 
@@ -43,6 +43,13 @@ app.options("*", cors());
 
 // ROUTES
 app.use("/api/v1/users", userRouter);
+
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    Name: "HealthLogs",
+  });
+});
 
 app.use("*", (req, res, next) => {
   // res.status(404).json({
@@ -57,11 +64,5 @@ app.use("*", (req, res, next) => {
 });
 
 app.use(globalErrorHandler);
-
-app.get("/", (req, res) => {
-  res.status(200).json({
-    Name: "HealthLogs",
-  });
-});
 
 module.exports = app;

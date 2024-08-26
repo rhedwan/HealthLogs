@@ -3,61 +3,106 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please enter your name!"],
-  },
-  email: {
-    type: String,
-    required: [true, "Please provide your email!"],
-    unique: true,
-    lowercase: true,
-    validate: [validator.isEmail, "Please provide a valid email!"],
-  },
-  photo: {
-    type: String,
-  },
-  password: {
-    type: String,
-    required: [true, "Please enter a password"],
-    minlength: 8,
-    select: false,
-  },
-  passwordConfirm: {
-    type: String,
-    required: [true, "Please confirm your password"],
-    validate: {
-      validator: function (passwordConfirm) {
-        return passwordConfirm == this.password;
+const userSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: [true, "Please enter your first name!"],
+    },
+    lastName: {
+      type: String,
+      required: [true, "Please enter your last name!"],
+    },
+    gender: {
+      type: String,
+      default: "Others",
+      enum: ["Male", "Female", "Others"],
+    },
+    occupation: String,
+    religion: {
+      type: String,
+      enum: ["Islam", "Christian", "Traditional beliefs"],
+    },
+    ethnic: {
+      type: String,
+      enum: ["Yoruba", "Igbo", "Hausa"],
+    },
+    maritalStatus: {
+      type: String,
+      enum: ["Married", "Single", "Divorced"],
+    },
+    medicalBackground: {
+      bloodGroup: {
+        type: String,
+        enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+        // required: [true, "You need to provide a blood group"],
       },
-      message: "Passwords are not the same!",
+      genotype: {
+        type: String,
+        enum: ["AA", "AS", "AC", "AD", "AE", "AO", "SS", "SC", "SD"],
+      },
+    },
+    email: {
+      type: String,
+      required: [true, "Please provide your email!"],
+      unique: true,
+      lowercase: true,
+      validate: [validator.isEmail, "Please provide a valid email!"],
+    },
+    photo: {
+      type: String,
+    },
+    fileId: {
+      type: String,
+      unique: true,
+      default: function () {
+        const id = Math.round(Date.now() / 1000);
+        return id;
+      },
+    },
+
+    password: {
+      type: String,
+      required: [true, "Please enter a password"],
+      minlength: 8,
+      select: false,
+    },
+    passwordConfirm: {
+      type: String,
+      required: [true, "Please confirm your password"],
+      validate: {
+        validator: function (passwordConfirm) {
+          return passwordConfirm == this.password;
+        },
+        message: "Passwords are not the same!",
+      },
+    },
+    active: {
+      type: Boolean,
+      default: false,
+      select: false,
+    },
+    dateOfBirth: Date,
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Others"],
+    },
+    passwordChangedAt: Date,
+    role: {
+      type: String,
+      enum: ["patient", "admin", "doctor"],
+      default: "patient",
+    },
+    passwordResetToken: String,
+    passwordExpires: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
     },
   },
-  active: {
-    type: Boolean,
-    default: false,
-    select: false,
-  },
-  dateOfBirth: Date,
-  gender: {
-    type: String,
-    enum: ["Male", "Female", "Others"],
-  },
-  passwordChangedAt: Date,
-  role: {
-    type: String,
-    enum: ["patient", "admin", "doctor"],
-    default: "patient",
-  },
-  passwordResetToken: String,
-  passwordExpires: Date,
-  active: {
-    type: Boolean,
-    default: true,
-    select: false,
-  },
-});
+  { timestamps: true }
+);
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
