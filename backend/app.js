@@ -7,10 +7,13 @@ const cors = require("cors");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
 
 const userRouter = require("./routes/userRouter");
 
 dotenv.config({ path: "./config.env" });
+
+app.use(helmet());
 
 const DATABASE = process.env.DATABASE_URL.replace(
   "<db_password>",
