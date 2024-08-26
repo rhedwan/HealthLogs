@@ -5,12 +5,17 @@ const {
   login,
   getAllPatients,
 } = require("../controllers/userControllers");
-const { protect } = require("../controllers/authContollers");
+const { protect, restrictTo } = require("../controllers/authContollers");
 
 const router = express.Router();
 
 router.post("/create_user", createUser);
 router.post("/login", login);
-router.get("/patients", protect, getAllPatients);
+router.get(
+  "/patients",
+  protect,
+  restrictTo("admin", "patient"),
+  getAllPatients
+);
 
 module.exports = router;
