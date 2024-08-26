@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const medicalRecordSchema = new mongoose.Schema(
   {
+    patient: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      required: [true, "A record must belong to Patient"],
+    },
     vistType: {
       type: String,
       enum: ["Out Patient", "In Patient", "Emergency", "Follow-Up"],
@@ -37,7 +42,7 @@ const medicalRecordSchema = new mongoose.Schema(
     //   },
     // ],
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 const MedicalRecord = mongoose.model("MedicalRecord", medicalRecordSchema);

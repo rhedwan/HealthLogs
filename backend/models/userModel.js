@@ -109,8 +109,24 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+userSchema.virtual("age").get(function () {
+  if (!this.dateOfBirth) return 0;
+
+  const birthdate = this.dateOfBirth;
+  const age = Math.floor(
+    (Date.now() - birthdate.getTime()) / (1000 * 3600 * 24 * 365)
+  );
+  return age;
+});
+
+userSchema.virtual("patientRecord", {
+  ref: "MedicalRecord",
+  foreignField: "patient",
+  localField: "_id",
+});
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
