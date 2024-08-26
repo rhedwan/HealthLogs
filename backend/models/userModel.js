@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
       enum: ["Male", "Female", "Others"],
     },
     occupation: String,
+    homeAddress: String,
     religion: {
       type: String,
       enum: ["Islam", "Christian", "Traditional beliefs"],
@@ -48,6 +49,13 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       validate: [validator.isEmail, "Please provide a valid email!"],
+    },
+    phoneNumber: {
+      type: String,
+      validate: [
+        validator.isMobilePhone,
+        "Please provide a valid phone number!",
+      ],
     },
     photo: {
       type: String,

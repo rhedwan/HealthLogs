@@ -12,6 +12,7 @@ const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
 
 const userRouter = require("./routes/userRouter");
+const medicalRecordRouter = require("./routes/medicalRecordRouter");
 
 dotenv.config({ path: "./config.env" });
 
@@ -43,7 +44,7 @@ app.options("*", cors());
 
 // ROUTES
 app.use("/api/v1/users", userRouter);
-
+app.use("/api/v1/medicalRecord", medicalRecordRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({

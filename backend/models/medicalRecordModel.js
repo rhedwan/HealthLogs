@@ -17,7 +17,25 @@ const medicalRecordSchema = new mongoose.Schema(
         "Radiology",
       ],
     },
-    description: String,
+    description: {
+      type: String,
+      required: [true, "You need to provide a complaints of the patient"],
+    },
+    physicalExamination: {
+      temperature: String,
+      bloodPressure: String,
+      weight: Number,
+    },
+    createdBy: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+    // diagnosticTests: [
+    //   {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: "DiagnosticTest",
+    //   },
+    // ],
   },
   { timestamps: true }
 );
