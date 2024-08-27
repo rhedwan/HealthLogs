@@ -3,12 +3,19 @@ const {
   createMedicalRecord,
   getMedicalRecord,
   getPatientMedicalHistory,
+  updateMedicalRecord,
 } = require("../controllers/medicalRecordController");
 const { protect } = require("../controllers/authContollers");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.post("/create", protect, createMedicalRecord);
-// router.get("/:token", protect, getMedicalRecord);
-router.get("/:id", protect, getPatientMedicalHistory);
+router
+  .route("/")
+  .get(protect, getPatientMedicalHistory)
+  .post(protect, createMedicalRecord);
+
+router
+  .route("/:id")
+  .get(protect, getMedicalRecord)
+  .patch(protect, updateMedicalRecord);
 
 module.exports = router;

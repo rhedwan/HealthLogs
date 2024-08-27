@@ -15,7 +15,11 @@ const {
   updatePassword,
 } = require("../controllers/authContollers");
 
+const medicalRecordRouter = require("../routes/medicalRecordRouter");
+
 const router = express.Router();
+
+router.use("/:patientId/medicalRecords", medicalRecordRouter);
 
 router.post("/create_user", createUser);
 router.post("/login", login);
