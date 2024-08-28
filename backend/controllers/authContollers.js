@@ -5,6 +5,7 @@ const sendMail = require("../utils/email");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const Email = require("../utils/email");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -69,11 +70,12 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   \n If you didn't forget your password, please ignore this email`;
 
   try {
-    await sendMail({
-      email: user.email,
-      subject: "Your password reset token (valid for 10 minutes)",
-      message,
-    });
+    await new Email(user, resetUrl).sendPasswordReset();
+    // await sendMail({
+    //   email: user.email,
+    //   subject: "Your password reset token (valid for 10 minutes)",
+    //   message,
+    // });
     res.status(200).json({
       status: "success",
       message: "Token sent to the email",
@@ -121,8 +123,8 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ _id: req.user._id }).select("+password");
   console.log(req.body.currentPassword, user.password);
 
-    if (!(await user.correctPassword(req.body.currentPassword, user.password)))
-      return next(new AppError("Current Password entered is wrong", 401));
+  if (!(await user.correctPassword(req.body.currentPassword, user.password)))
+    return next(new AppError("Current Password entered is wrong", 401));
 
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;

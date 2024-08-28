@@ -10,6 +10,7 @@ const globalErrorHandler = require("./controllers/errorController");
 const helmet = require("helmet");
 const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
+const path = require("path");
 
 const userRouter = require("./routes/userRouter");
 const medicalRecordRouter = require("./routes/medicalRecordRouter");
@@ -41,6 +42,11 @@ app.use(xss());
 app.use(morgan("dev"));
 app.use(cors());
 app.options("*", cors());
+
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
+app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTES
 app.use("/api/v1/users", userRouter);
