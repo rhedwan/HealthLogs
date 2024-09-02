@@ -45,9 +45,11 @@ export default function HomePage() {
               Contact
             </Link>
           </nav>
-          <Button className="bg-[#7457D3] text-white hover:bg-[#5E45A8]">
-            Sign In
-          </Button>
+          <Link href="/auth/login">
+            <Button className="bg-[#7457D3] text-white hover:bg-[#5E45A8]">
+              Sign In
+            </Button>
+          </Link>
         </div>
       </header>
 
