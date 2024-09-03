@@ -1,7 +1,7 @@
 "use client";
 
+// import { useRouter } from "next/router";
 import { useState } from "react";
-import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,8 +22,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function CreateRecordForm({ patientId }: { patientId: string }) {
+export default function CreateRecordForm() {
 //   const router = useRouter();
+//   const { patientId } = router.query;
+  const patientId  = "routeraahquery";
+
   const [formData, setFormData] = useState({
     vistType: "Out Patient",
     department: "",
