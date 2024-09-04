@@ -16,6 +16,7 @@ dotenv.config({ path: "./config.env" });
 
 const userRouter = require("./routes/userRouter");
 const medicalRecordRouter = require("./routes/medicalRecordRouter");
+const dashboardRouter = require("./routes/dashboardRouter");
 
 app.use(helmet());
 
@@ -51,6 +52,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // ROUTES
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/medicalRecord", medicalRecordRouter);
+app.use("/api/v1/dashboard", dashboardRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({

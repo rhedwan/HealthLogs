@@ -22,7 +22,11 @@ const medicalRecordSchema = new mongoose.Schema(
         "Radiology",
       ],
     },
-    description: {
+    chiefComplaint: {
+      type: String,
+    },
+
+    chiefComplaint: {
       type: String,
       required: [true, "You need to provide a complaints of the patient"],
     },
@@ -30,6 +34,8 @@ const medicalRecordSchema = new mongoose.Schema(
       temperature: String,
       bloodPressure: String,
       weight: Number,
+      height: Number,
+      pulse: Number,
     },
     createdBy: {
       type: mongoose.Schema.ObjectId,

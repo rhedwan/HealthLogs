@@ -170,4 +170,3 @@ exports.deleteUser = catchAsync(async (req, res, user) => {
     status: "success",
   });
 });
-//  pm2 start server.js --name healthlogs --env production --port 4000
