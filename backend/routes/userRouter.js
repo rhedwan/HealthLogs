@@ -6,6 +6,8 @@ const {
   getAllPatients,
   updateUser,
   deleteUser,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } = require("../controllers/userControllers");
 const {
   protect,
@@ -26,7 +28,13 @@ router.post("/login", login);
 router.post("/forgetPassword", forgetPassword);
 router.patch("/resetPassword/:token", resetPassword);
 router.patch("/updatePassword", protect, updatePassword);
-router.patch("/updateUser", protect, updateUser);
+router.patch(
+  "/updateUser",
+  protect,
+  uploadUserPhoto,
+  resizeUserPhoto,
+  updateUser
+);
 router.delete("/deleteUser", protect, deleteUser);
 router.get("/", protect, restrictTo("admin", "patient"), getAllPatients);
 

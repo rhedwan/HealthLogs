@@ -95,6 +95,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["Male", "Female", "Others"],
     },
+    preferredLanguage: String,
     passwordChangedAt: Date,
     role: {
       type: String,

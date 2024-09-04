@@ -12,10 +12,10 @@ const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
 const path = require("path");
 
+dotenv.config({ path: "./config.env" });
+
 const userRouter = require("./routes/userRouter");
 const medicalRecordRouter = require("./routes/medicalRecordRouter");
-
-dotenv.config({ path: "./config.env" });
 
 app.use(helmet());
 
