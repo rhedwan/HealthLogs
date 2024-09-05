@@ -1,13 +1,28 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarDays, FileText, Home, Mail, MessageSquare, Settings, User, Users } from "lucide-react"
-import { Line } from "react-chartjs-2"
+import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  CalendarDays,
+  FileText,
+  Home,
+  Mail,
+  MessageSquare,
+  Settings,
+  User,
+  Users,
+} from "lucide-react";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -17,7 +32,7 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js'
+} from "chart.js";
 
 ChartJS.register(
   CategoryScale,
@@ -27,10 +42,47 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend
-)
+);
 
-export default function EncounterDetailsPage({
-  patient = {
+interface EncounterDetailsPageProps {
+  actualPatient?: {
+    firstName: string;
+    lastName: string;
+    fileId: string;
+    gender: string;
+    role: string;
+    ethnic: string;
+    religion: string;
+    maritalStatus: string;
+    dateOfBirth: string;
+    email: string;
+    occupation: string;
+    age: number;
+    medicalBackground: {
+      bloodGroup: string;
+      genotype: string;
+    };
+  };
+  actualEncounter?: {
+    encounterType: string;
+    noteType: string;
+    date: string;
+    seenBy: string;
+    chiefComplaint: string;
+    height: string;
+    weight: string;
+    bmi: string;
+    bloodPressure: string;
+    temperature: string;
+    pulse: string;
+  };
+}
+// export default function EncounterDetailsPage({
+//   actualPatient,
+//   actualEncounter,
+// }: EncounterDetailsPageProps) {
+export default function EncounterDetailsPage() {
+  const defaultPatient = {
     firstName: "Eric",
     lastName: "DemoGastro",
     fileId: "EG629610",
@@ -47,8 +99,9 @@ export default function EncounterDetailsPage({
       bloodGroup: "A+",
       genotype: "AA",
     },
-  },
-  encounter = {
+  };
+
+  const defaultEncounter = {
     encounterType: "Office Visit",
     noteType: "Progress Note",
     date: "2023-06-15",
@@ -60,50 +113,55 @@ export default function EncounterDetailsPage({
     bloodPressure: "120/80",
     temperature: "98.6",
     pulse: "72",
-  }
-}) {
+  };
+
+  // const patient = actualPatient || defaultPatient;
+  // const encounter = actualEncounter || defaultEncounter;
+  const patient =  defaultPatient;
+  const encounter = defaultEncounter;
+
   const weightData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
-        label: 'Weight (lbs)',
+        label: "Weight (lbs)",
         data: [180, 182, 181, 183, 180, 179],
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
-      }
-    ]
-  }
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
+      },
+    ],
+  };
 
   const bpData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
-        label: 'Systolic',
+        label: "Systolic",
         data: [120, 122, 125, 123, 121, 120],
-        borderColor: 'rgb(255, 99, 132)',
-        tension: 0.1
+        borderColor: "rgb(255, 99, 132)",
+        tension: 0.1,
       },
       {
-        label: 'Diastolic',
+        label: "Diastolic",
         data: [80, 82, 83, 81, 80, 79],
-        borderColor: 'rgb(54, 162, 235)',
-        tension: 0.1
-      }
-    ]
-  }
+        borderColor: "rgb(54, 162, 235)",
+        tension: 0.1,
+      },
+    ],
+  };
 
   const chartOptions = {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top' as const,
+        position: "top" as const,
       },
       title: {
         display: true,
-        text: 'Patient Data Over Time',
+        text: "Patient Data Over Time",
       },
     },
-  }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -148,12 +206,22 @@ export default function EncounterDetailsPage({
             <CardHeader>
               <div className="flex items-center space-x-4">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src="/placeholder.svg?height=80&width=80" alt={`${patient.firstName} ${patient.lastName}`} />
-                  <AvatarFallback>{patient.firstName[0]}{patient.lastName[0]}</AvatarFallback>
+                  <AvatarImage
+                    src="/placeholder.svg?height=80&width=80"
+                    alt={`${patient.firstName} ${patient.lastName}`}
+                  />
+                  <AvatarFallback>
+                    {patient.firstName[0]}
+                    {patient.lastName[0]}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
-                  <CardTitle className="text-2xl">{patient.firstName} {patient.lastName}</CardTitle>
-                  <CardDescription>Patient ID: {patient.fileId}</CardDescription>
+                  <CardTitle className="text-2xl">
+                    {patient.firstName} {patient.lastName}
+                  </CardTitle>
+                  <CardDescription>
+                    Patient ID: {patient.fileId}
+                  </CardDescription>
                   <div className="flex space-x-2 mt-2">
                     <Badge variant="outline">{patient.gender}</Badge>
                     <Badge variant="outline">{patient.role}</Badge>
@@ -183,13 +251,19 @@ export default function EncounterDetailsPage({
                       </div>
                       <div className="flex items-center space-x-2">
                         <User className="h-4 w-4 opacity-70" />
-                        <span className="text-sm font-medium">Marital Status:</span>
+                        <span className="text-sm font-medium">
+                          Marital Status:
+                        </span>
                         <span className="text-sm">{patient.maritalStatus}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <CalendarDays className="h-4 w-4 opacity-70" />
-                        <span className="text-sm font-medium">Date of Birth:</span>
-                        <span className="text-sm">{new Date(patient.dateOfBirth).toLocaleDateString()}</span>
+                        <span className="text-sm font-medium">
+                          Date of Birth:
+                        </span>
+                        <span className="text-sm">
+                          {new Date(patient.dateOfBirth).toLocaleDateString()}
+                        </span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Mail className="h-4 w-4 opacity-70" />
@@ -213,12 +287,18 @@ export default function EncounterDetailsPage({
                   <div className="grid gap-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm font-medium">Blood Group:</span>
-                        <span className="text-sm">{patient.medicalBackground.bloodGroup}</span>
+                        <span className="text-sm font-medium">
+                          Blood Group:
+                        </span>
+                        <span className="text-sm">
+                          {patient.medicalBackground.bloodGroup}
+                        </span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <span className="text-sm font-medium">Genotype:</span>
-                        <span className="text-sm">{patient.medicalBackground.genotype}</span>
+                        <span className="text-sm">
+                          {patient.medicalBackground.genotype}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -242,11 +322,25 @@ export default function EncounterDetailsPage({
                     <CardTitle>Social Profile</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p><strong>Tobacco use:</strong> No tobacco use recorded</p>
-                    <p><strong>Social history:</strong> Never smoker, 1-2 beers per night, no illicits</p>
-                    <p><strong>Gender identity:</strong> No gender identity recorded</p>
-                    <p><strong>Sexual orientation:</strong> No sexual orientation recorded</p>
-                    <p><strong>Nutrition history:</strong> No nutrition history recorded</p>
+                    <p>
+                      <strong>Tobacco use:</strong> No tobacco use recorded
+                    </p>
+                    <p>
+                      <strong>Social history:</strong> Never smoker, 1-2 beers
+                      per night, no illicits
+                    </p>
+                    <p>
+                      <strong>Gender identity:</strong> No gender identity
+                      recorded
+                    </p>
+                    <p>
+                      <strong>Sexual orientation:</strong> No sexual orientation
+                      recorded
+                    </p>
+                    <p>
+                      <strong>Nutrition history:</strong> No nutrition history
+                      recorded
+                    </p>
                   </CardContent>
                 </Card>
 
@@ -267,7 +361,9 @@ export default function EncounterDetailsPage({
                     <CardTitle>Family Health History</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Father (deceased from colon cancer), Mother (hypertension)</p>
+                    <p>
+                      Father (deceased from colon cancer), Mother (hypertension)
+                    </p>
                   </CardContent>
                 </Card>
 
@@ -276,8 +372,14 @@ export default function EncounterDetailsPage({
                     <CardTitle>Past Medical History</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p><strong>Ongoing medical problems:</strong> Hypothyroidism, CAD, Melena, Colonic polyps, Diverticulosis</p>
-                    <p><strong>Preventive care:</strong> Annual flu shot, up to date on DTaP</p>
+                    <p>
+                      <strong>Ongoing medical problems:</strong> Hypothyroidism,
+                      CAD, Melena, Colonic polyps, Diverticulosis
+                    </p>
+                    <p>
+                      <strong>Preventive care:</strong> Annual flu shot, up to
+                      date on DTaP
+                    </p>
                   </CardContent>
                 </Card>
 
@@ -391,12 +493,16 @@ export default function EncounterDetailsPage({
                 <Card>
                   <CardHeader>
                     <CardTitle>AI Diagnostic</CardTitle>
-                    <CardDescription>AI-generated insights based on patient data</CardDescription>
+                    <CardDescription>
+                      AI-generated insights based on patient data
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div>
-                        <h3 className="text-lg font-semibold mb-2">Potential Diagnoses</h3>
+                        <h3 className="text-lg font-semibold mb-2">
+                          Potential Diagnoses
+                        </h3>
                         <ul className="list-disc list-inside">
                           <li>Gastroesophageal reflux disease (GERD)</li>
                           <li>Peptic ulcer disease</li>
@@ -404,7 +510,9 @@ export default function EncounterDetailsPage({
                         </ul>
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold mb-2">Recommended Tests</h3>
+                        <h3 className="text-lg font-semibold mb-2">
+                          Recommended Tests
+                        </h3>
                         <ul className="list-disc list-inside">
                           <li>Upper endoscopy</li>
                           <li>H. pylori test</li>
@@ -412,12 +520,24 @@ export default function EncounterDetailsPage({
                         </ul>
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold mb-2">Treatment Suggestions</h3>
-                        <p>Consider prescribing proton pump inhibitors (PPIs) and lifestyle modifications. Avoid NSAIDs and recommend a bland diet.</p>
+                        <h3 className="text-lg font-semibold mb-2">
+                          Treatment Suggestions
+                        </h3>
+                        <p>
+                          Consider prescribing proton pump inhibitors (PPIs) and
+                          lifestyle modifications. Avoid NSAIDs and recommend a
+                          bland diet.
+                        </p>
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold mb-2">Follow-up Recommendations</h3>
-                        <p>Schedule a follow-up appointment in 2 weeks to assess symptom improvement. If symptoms persist, consider referral to a gastroenterologist.</p>
+                        <h3 className="text-lg font-semibold mb-2">
+                          Follow-up Recommendations
+                        </h3>
+                        <p>
+                          Schedule a follow-up appointment in 2 weeks to assess
+                          symptom improvement. If symptoms persist, consider
+                          referral to a gastroenterologist.
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -428,5 +548,5 @@ export default function EncounterDetailsPage({
         </div>
       </main>
     </div>
-  )
+  );
 }

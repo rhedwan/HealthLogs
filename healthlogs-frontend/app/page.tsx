@@ -120,7 +120,7 @@ function Footer() {
             </ul>
           </nav>
           <div className="text-center lg:text-left">
-            <h3 className="text-xl font-semibold mb-4">Let's chat!</h3>
+            <h3 className="text-xl font-semibold mb-4">Let us chat!</h3>
             <p className="text-base sm:text-lg text-gray-300 mb-4">
               info@healthlogs.com
             </p>
