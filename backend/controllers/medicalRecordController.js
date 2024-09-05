@@ -72,3 +72,5 @@ exports.getPatientMedicalHistory = catchAsync(async (req, res, next) => {
     data: allMedicalRecords,
   });
 });
+
+module.exports.isPatientExisting = isPatientExisting;
