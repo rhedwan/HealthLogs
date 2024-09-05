@@ -22,7 +22,7 @@ export default function SettingsPage() {
       {/* Sidebar */}
       <aside className="w-64 bg-white p-6 shadow-md">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold">the Sprkl</h1>
+          <h1 className="text-2xl font-bold">HealthLogs</h1>
         </div>
         <nav className="space-y-4">
           <Button variant="ghost" className="w-full justify-start">
