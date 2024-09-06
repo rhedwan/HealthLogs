@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import SideBar from "../SideBar";
 
 const appointmentTypes = [
   "Follow-Up Visit",
@@ -80,40 +81,6 @@ export default function AppointmentPage() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white p-6 shadow-md">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-primary">HealthLogs</h1>
-        </div>
-        <nav className="space-y-2">
-          <Button variant="ghost" className="w-full justify-start">
-            <Home className="mr-2 h-4 w-4" />
-            Dashboard
-          </Button>
-          <Button variant="ghost" className="w-full justify-start text-primary">
-            <Calendar className="mr-2 h-4 w-4" />
-            Appointments
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <User className="mr-2 h-4 w-4" />
-            Patients
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <MessageSquare className="mr-2 h-4 w-4" />
-            Messages
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <FileText className="mr-2 h-4 w-4" />
-            Documents
-          </Button>
-        </nav>
-        <div className="mt-auto pt-6">
-          <Button variant="ghost" className="w-full justify-start">
-            <Settings className="mr-2 h-4 w-4" />
-            Settings
-          </Button>
-        </div>
-      </aside>
 
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-auto">

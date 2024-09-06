@@ -15,58 +15,11 @@ import {
   Settings,
   Users,
 } from "lucide-react";
+import SideBar from "../SideBar";
 
 export default function SettingsPage() {
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white p-6 shadow-md">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold">HealthLogs</h1>
-        </div>
-        <nav className="space-y-4">
-          <Button variant="ghost" className="w-full justify-start">
-            <Home className="mr-2 h-4 w-4" />
-            Overview
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <Calendar className="mr-2 h-4 w-4" />
-            Appointments
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <Users className="mr-2 h-4 w-4" />
-            Patients
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <Home className="mr-2 h-4 w-4" />
-            Rooms
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <MessageSquare className="mr-2 h-4 w-4" />
-            Messages
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <FileText className="mr-2 h-4 w-4" />
-            Files
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <Users className="mr-2 h-4 w-4" />
-            Authentications
-          </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <Settings className="mr-2 h-4 w-4" />
-            Utility
-          </Button>
-        </nav>
-        <div className="mt-auto pt-6">
-          <Button variant="ghost" className="w-full justify-start">
-            <Settings className="mr-2 h-4 w-4" />
-            Settings
-          </Button>
-        </div>
-      </aside>
 
-      {/* Main Content */}
       <main className="flex-1 p-8 overflow-auto">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold">Settings</h2>
@@ -192,6 +145,5 @@ export default function SettingsPage() {
           </div>
         </div>
       </main>
-    </div>
   );
 }
