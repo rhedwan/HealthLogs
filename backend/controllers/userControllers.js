@@ -133,7 +133,7 @@ exports.getAllPatients = catchAsync(async (req, res, next) => {
   });
 });
 exports.getPatientById = catchAsync(async (req, res, next) => {
-  const currentPatient = await User.find({ id: req.params.token });
+  const currentPatient = await User.findOne({ id: req.params.id });
   res.status(200).json({
     status: "success",
     currentPatient,
