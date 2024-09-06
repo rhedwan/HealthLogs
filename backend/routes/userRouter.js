@@ -38,6 +38,11 @@ router.patch(
 );
 router.delete("/deleteUser", protect, deleteUser);
 router.get("/", protect, restrictTo("admin", "patient"), getAllPatients);
-router.get("/patient", protect, restrictTo("admin", "patient"), getPatientById);
+router.get(
+  "/patient/:id",
+  protect,
+  restrictTo("admin", "patient"),
+  getPatientById
+);
 
 module.exports = router;
