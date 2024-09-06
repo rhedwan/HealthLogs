@@ -4,6 +4,7 @@ const {
   createUser,
   login,
   getAllPatients,
+  getPatientById,
   updateUser,
   deleteUser,
   uploadUserPhoto,
@@ -37,5 +38,6 @@ router.patch(
 );
 router.delete("/deleteUser", protect, deleteUser);
 router.get("/", protect, restrictTo("admin", "patient"), getAllPatients);
+router.get("/patient", protect, restrictTo("admin", "patient"), getPatientById);
 
 module.exports = router;
