@@ -37,7 +37,24 @@ exports.dashboardOverview = catchAsync(async (req, res, next) => {
     {
       $sort: { count: -1 },
     },
+    {
+      $limit: 4,
+    },
   ]);
+
+  const labels = diagnosisData.map((item) => item._id);
+  const data = diagnosisData.map((item) => item.count);
+  const backgroundColor = ["#8b5cf6", "#10b981", "#3b82f6", "#f59e0b"];
+
+  const pieChartData = {
+    labels,
+    datasets: [
+      {
+        data,
+        backgroundColor,
+      },
+    ],
+  };
 
   const lastSixMonths = new Date();
   lastSixMonths.setMonth(lastSixMonths.getMonth() - 5);
@@ -142,7 +159,7 @@ exports.dashboardOverview = catchAsync(async (req, res, next) => {
     newPatient: past30DaysPatient.length,
     totalPatient: users.length,
     appointmentForToday,
-    diagnosisData,
+    pieChartData,
     chartData,
   });
 });
