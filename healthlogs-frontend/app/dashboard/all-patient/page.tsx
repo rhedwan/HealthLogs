@@ -34,7 +34,7 @@ export type PatientSchema = {
   email: string;
   role: string;
   fileId: string | number;
-  // createdAt: any;
+  createdAt: any;
   updatedAt: string | number | Date;
   age: number;
 };
@@ -113,7 +113,7 @@ export default async function PatientListPage() {
                   <p className="text-sm text-gray-500">{patient.phoneNumber}</p>
                 </TableCell>
                 <TableCell>
-                  {/* {formatDate(patient.createdAt, "DD-MM-YYYY")} */}
+                  {formatDate(patient.createdAt, "DD-MM-YYYY")}
                 </TableCell>
               </TableRow>
             ))}
