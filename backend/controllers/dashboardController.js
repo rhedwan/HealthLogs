@@ -148,7 +148,10 @@ exports.dashboardOverview = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllPatientsAppointment = catchAsync(async (req, res, next) => {
-  const appointments = await Appointment.find();
+  const appointments = await Appointment.find().populate({
+    path: "patient",
+    select: "firstName lastName fileId",
+  });
   res.status(201).json({
     status: "success",
     appointments,
