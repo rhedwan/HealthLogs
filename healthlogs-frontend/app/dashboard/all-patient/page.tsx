@@ -9,17 +9,48 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Calendar,
-  FileText,
-  Home,
-  MessageSquare,
-  Search,
-  Settings,
-  Users,
-} from "lucide-react";
+import Link from "next/link";
+import { formatDate } from "@/lib/utils";
 
-export default function PatientListPage() {
+export type PatientSchema = {
+  id: React.Key | null | undefined;
+  firstName: string;
+  lastName: string;
+  prn: string;
+  dateOfBirth: string;
+  gender: string;
+  homeAddress: string;
+  mobilePhone: number;
+  phoneNumber: number;
+  accessed: string;
+  medicalBackground: {
+    bloodGroup: string;
+    genotype: string;
+  };
+  occupation: string;
+  religion: string;
+  ethnic: string;
+  maritalStatus: string;
+  email: string;
+  role: string;
+  fileId: string | number;
+  createdAt: any;
+  updatedAt: string | number | Date;
+  age: number;
+};
+export default async function PatientListPage() {
+  const url = process.env.API_URL;
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2Q4ZGFhYzZlNmY3NTBkZmUzZGFjOCIsImlhdCI6MTcyNTcwNTQwMSwiZXhwIjoxNzMzNDgxNDAxfQ.5tfOCYMilMh-XNIVtqedHOr-fnEVasEBTvGVjRaj8xs";
+  let data = await fetch(`${url}api/v1/users`, {
+    method: "GET", // You can change this to POST, PUT, etc. depending on your needs
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  let patients_data = await data.json();
+  console.log(patients_data);
   return (
     <main className="flex-1 p-8 overflow-auto">
       <h2 className="text-2xl font-bold mb-6">12 recent patients</h2>
@@ -35,9 +66,11 @@ export default function PatientListPage() {
           </div>
           <div className="flex items-center space-x-2">
             <Input placeholder="Search all patients" className="w-64" />
-            <Button className="bg-orange-500 text-white hover:bg-orange-600">
-              Add patient
-            </Button>
+            <Link href="/dashboard/create/new-patient">
+              <Button className="bg-orange-500 text-white hover:bg-orange-600">
+                Add patient
+              </Button>
+            </Link>
           </div>
         </div>
         <Table>
@@ -52,33 +85,36 @@ export default function PatientListPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {patients.map((patient) => (
+            {patients_data.patients.map((patient: PatientSchema) => (
               <TableRow key={patient.id}>
                 <TableCell>
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-gray-200 rounded-full mr-2"></div>
-                    <p className="font-medium text-blue-600">
+                    <Link
+                      href={`/dashboard/${patient.id}`}
+                      className="font-medium text-blue-600"
+                    >
                       {patient.firstName}
-                    </p>
+                    </Link>
                   </div>
                 </TableCell>
                 <TableCell className="text-blue-600">
                   {patient.lastName}
                 </TableCell>
                 <TableCell className="text-sm text-gray-500">
-                  {patient.prn}
+                  {patient.fileId}
                 </TableCell>
                 <TableCell>
-                  <p>{patient.dob}</p>
+                  <p>{formatDate(patient.dateOfBirth, "DD-MM-YYYY")}</p>
                   <p className="text-sm text-gray-500">{patient.gender}</p>
                 </TableCell>
                 <TableCell>
-                  <p>{patient.address}</p>
-                  <p className="text-sm text-gray-500">
-                    M {patient.mobilePhone} H {patient.homePhone}
-                  </p>
+                  <p>{patient.homeAddress}</p>
+                  <p className="text-sm text-gray-500">{patient.phoneNumber}</p>
                 </TableCell>
-                <TableCell>{patient.accessed}</TableCell>
+                <TableCell>
+                  {formatDate(patient.createdAt, "DD-MM-YYYY")}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -87,30 +123,3 @@ export default function PatientListPage() {
     </main>
   );
 }
-
-const patients = [
-  {
-    id: 1,
-    firstName: "Eric",
-    lastName: "DemoGastro",
-    prn: "PRN EG629610",
-    dob: "May 12, 1951",
-    gender: "Male",
-    address: "3278 Maple St., San Antonio, TX 78023",
-    mobilePhone: "(555) 555-5555",
-    homePhone: "(555) 555-5555",
-    accessed: "10:02 PM, 09/04/24",
-  },
-  {
-    id: 2,
-    firstName: "Michael T",
-    lastName: "DemoPrimaryCare",
-    prn: "PRN MO686770",
-    dob: "Jul 05, 1958",
-    gender: "Male",
-    address: "5432 Rebrow St, Lakeside, NY 27511",
-    mobilePhone: "(555) 555-5555",
-    homePhone: "(555) 555-5555",
-    accessed: "4:16 PM, 09/03/24",
-  },
-];
