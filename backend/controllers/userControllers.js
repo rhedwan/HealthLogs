@@ -142,7 +142,15 @@ exports.getPatientById = catchAsync(async (req, res, next) => {
     .populate({
       path: "patientRecord",
       select: "-__v",
-    });
+    })
+    .populate({
+      path: "patientAppointment",
+      select: "-__v",
+    })
+    .populate({
+      path: "patientAllergy",
+    })
+    .populate("patientFamilyHistory");
   res.status(200).json({
     status: "success",
     currentPatient,

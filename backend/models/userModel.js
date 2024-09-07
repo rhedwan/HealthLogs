@@ -113,8 +113,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-
-
 userSchema.virtual("age").get(function () {
   if (!this.dateOfBirth) return 0;
 
@@ -127,6 +125,24 @@ userSchema.virtual("age").get(function () {
 
 userSchema.virtual("patientRecord", {
   ref: "MedicalRecord",
+  foreignField: "patient",
+  localField: "_id",
+});
+
+userSchema.virtual("patientAppointment", {
+  ref: "Appointment",
+  foreignField: "patient",
+  localField: "_id",
+});
+
+userSchema.virtual("patientAllergy", {
+  ref: "Allergy",
+  foreignField: "patient",
+  localField: "_id",
+});
+
+userSchema.virtual("patientFamilyHistory", {
+  ref: "FamilyHealthHistory",
   foreignField: "patient",
   localField: "_id",
 });

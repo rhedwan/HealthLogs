@@ -75,6 +75,29 @@ const medicalRecordSchema = new mongoose.Schema(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
+const familyHealthSchema = new mongoose.Schema({
+  patient: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    required: [true, "You need to provide the patient"],
+  },
+  description: {
+    type: String,
+    required: [true, "A description is needed"],
+  },
+  relatives: [
+    {
+      type: String,
+      enum: ["Brother", "Father", "Sister", "Mother"],
+    },
+  ],
+});
+
+const FamilyHealthHistory = mongoose.model(
+  "FamilyHealthHistory",
+  familyHealthSchema
+);
+
 const MedicalRecord = mongoose.model("MedicalRecord", medicalRecordSchema);
 
-module.exports = MedicalRecord;
+module.exports = { MedicalRecord, FamilyHealthHistory };

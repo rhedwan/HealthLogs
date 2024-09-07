@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
-const alergyScehema = new mongoose.Schema({
+const allergyScehema = new mongoose.Schema({
+  patient: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    required: [true, "You need to provide the patient data."],
+  },
   allergen: {
     type: String,
     enum: ["Drug", "Food", "Environment"],
@@ -59,4 +64,6 @@ const alergyScehema = new mongoose.Schema({
   },
 });
 
+const Allegy = mongoose.model("Allergy", allergyScehema);
 
+module.exports = Allegy;

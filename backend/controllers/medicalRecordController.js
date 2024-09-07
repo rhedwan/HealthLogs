@@ -1,8 +1,11 @@
-const MedicalRecord = require("../models/medicalRecordModel");
+const {
+  MedicalRecord,
+  FamilyHealthHistory,
+} = require("../models/medicalRecordModel");
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
-
+const { createOne } = require("./handlerFactory");
 const isPatientExisting = async (req, next) => {
   const patient = req.params.patientId;
 
@@ -25,6 +28,8 @@ exports.createMedicalRecord = catchAsync(async (req, res, next) => {
     medicalRecord,
   });
 });
+
+exports.createFamilyHistory = createOne(FamilyHealthHistory);
 
 exports.getMedicalRecord = catchAsync(async (req, res, next) => {
   const medicalRecord = await MedicalRecord.findById(req.params.id)

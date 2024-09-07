@@ -18,6 +18,7 @@ const userRouter = require("./routes/userRouter");
 const medicalRecordRouter = require("./routes/medicalRecordRouter");
 const dashboardRouter = require("./routes/dashboardRouter");
 const appointmentRouter = require("./routes/appointmentRouter");
+const allergyRouter = require("./routes/allergyRouter");
 
 app.use(helmet());
 
@@ -55,6 +56,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/medicalRecord", medicalRecordRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
 app.use("/api/v1/appointment", appointmentRouter);
+app.use("/api/v1/allergy", allergyRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({
