@@ -1,4 +1,5 @@
 import GetPatientById from "@/features/Patient/GetPatientById";
+import { baseUrl } from "@/lib/utils";
 
 export default async function PatientDetailsPage({
   params,
@@ -6,10 +7,10 @@ export default async function PatientDetailsPage({
   params: { patient_id: string };
 }) {
   const { patient_id } = params;
-  const url = process.env.API_URL;
+  const url = baseUrl
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTYzMTk4MCwiZXhwIjoxNzMzNDA3OTgwfQ.GBXSHIjXGl4nNQ5ra7EZPaaju--OAp7FMSlL0XnarFo";
-  let data = await fetch(`${url}api/v1/users/patient/${patient_id}`, {
+  let data = await fetch(`${url}/users/patient/${patient_id}`, {
     method: "GET", // You can change this to POST, PUT, etc. depending on your needs
     headers: {
       Authorization: `Bearer ${token}`,
