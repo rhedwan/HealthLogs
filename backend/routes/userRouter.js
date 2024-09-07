@@ -41,7 +41,7 @@ router.get("/", protect, restrictTo("admin", "patient"), getAllPatients);
 router.get(
   "/patient/:id",
   protect,
-  restrictTo("admin", "patient"),
+  restrictTo("admin", "doctor", "patient"),
   getPatientById
 );
 

@@ -133,9 +133,16 @@ exports.getAllPatients = catchAsync(async (req, res, next) => {
   });
 });
 exports.getPatientById = catchAsync(async (req, res, next) => {
-  const currentPatient = await User.findOne({
-    _id: new ObjectId(req.params.id),
-  });
+  const currentPatient = await User.findById({
+    _id: req.params.id,
+  })
+    .select(
+      "-__v -fileId -passwordChangedAt -passwordExpires -passwordResetToken -email  -updatedAt -age -gender"
+    )
+    .populate({
+      path: "patientRecord",
+      select: "-__v",
+    });
   res.status(200).json({
     status: "success",
     currentPatient,
@@ -157,9 +164,10 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     req.body.photo = req.file.filename;
   }
 
-  const filteredBody = filteredObj(req.body, "name", "email", "photo");
+  // const filteredBody = filteredObj(req.body, "name", "email", "photo");
 
-  const updatedUser = await User.findByIdAndUpdate(req.user._id, filteredBody, {
+  // const updatedUser = await User.findByIdAndUpdate(req.user._id, filteredBody, {
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
     new: true,
     runValidators: true,
   });
