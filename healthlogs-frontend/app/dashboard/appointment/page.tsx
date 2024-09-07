@@ -1,7 +1,7 @@
 
 'use client';
 
-export const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTY2NzM2MCwiZXhwIjoxNzMzNDQzMzYwfQ.LGXZbMDVlDjXB9umbmA9VERNj-x6BJIfbQsa1g5VaRE'
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTY2NzM2MCwiZXhwIjoxNzMzNDQzMzYwfQ.LGXZbMDVlDjXB9umbmA9VERNj-x6BJIfbQsa1g5VaRE'
 
 
 import React, { useEffect, useState } from "react";
@@ -93,7 +93,7 @@ export default function AppointmentPage() {
 
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  });
 
   const handleCreateAppointment = async () => {
     const selectedDate = moment(date, "YYYY-MM-DD"); // Ensure the date is parsed correctly
