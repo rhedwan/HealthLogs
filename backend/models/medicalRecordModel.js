@@ -22,13 +22,16 @@ const medicalRecordSchema = new mongoose.Schema(
         "Radiology",
       ],
     },
-    chiefComplaint: {
-      type: String,
+    diagnosis: {
+      description: { type: String },
+      startDate: { type: Date },
     },
-
     chiefComplaint: {
       type: String,
       required: [true, "You need to provide a complaints of the patient"],
+    },
+    healthConcerns: {
+      type: String,
     },
     physicalExamination: {
       temperature: String,
@@ -37,10 +40,31 @@ const medicalRecordSchema = new mongoose.Schema(
       height: Number,
       pulse: Number,
     },
+    medications: [
+      {
+        name: { type: String },
+        sig: { type: String },
+        startDate: { type: Date },
+        prescriptionDetails: {
+          recorded: Date,
+          prescriber: String,
+          refills: Number,
+          quantity: Number,
+        },
+      },
+    ],
+    subjectiveNote: {
+      type: String,
+    },
+    objectiveNote: {
+      type: String,
+    },
+    assessmentNote: String,
     createdBy: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
     },
+    documents: [{ type: String }],
     // diagnosticTests: [
     //   {
     //     type: mongoose.Schema.ObjectId,
