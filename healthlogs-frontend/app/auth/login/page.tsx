@@ -1,11 +1,56 @@
+'use client'
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { baseUrl } from "@/lib/utils"
 import { FileHeart, Lock, User } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  
+  // Handle login process
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const Url = baseUrl + '/users/login'
+    
+    try {
+      const response = await fetch(Url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      })
+
+      const data = await response.json()
+      
+      if (response.ok) {
+        // Assuming the token or other necessary login details are in the response data
+        console.log("Login successful!", data)
+        // Perform redirect or store login state
+      } else {
+        setError(data.message || 'Login failed. Please try again.')
+      }
+    } catch (error) {
+      setError('An error occurred during login. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -23,15 +68,17 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={handleLogin}>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="accountId">Account ID</Label>
+                  <Label htmlFor="email">Email</Label>
                   <div className="relative">
                     <Input
-                      id="accountId"
-                      placeholder="Enter your account ID"
-                      type="text"
+                      id="email"
+                      placeholder="Enter your email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                     <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -44,27 +91,34 @@ export default function LoginPage() {
                       id="password"
                       placeholder="Enter your password"
                       type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required
                     />
                     <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   </div>
                 </div>
+                {error && <div className="text-red-500 text-sm">{error}</div>}
               </div>
+              <CardFooter className="flex flex-col">
+                <Button 
+                  type="submit" 
+                  className="w-full bg-[#7457D3] hover:bg-[#5E45A8] text-white mt-6"
+                  disabled={loading}
+                >
+                  {loading ? 'Logging in...' : 'Log In'}
+                </Button>
+                <div className="mt-4 text-sm text-center">
+                  <Link
+                    href="/forgot-password"
+                    className="text-[#7457D3] hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              </CardFooter>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col">
-            <Button className="w-full bg-[#7457D3] hover:bg-[#5E45A8] text-white">
-              Log In
-            </Button>
-            <div className="mt-4 text-sm text-center">
-              <Link
-                href="/forgot-password"
-                className="text-[#7457D3] hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-          </CardFooter>
         </Card>
         <div className="mt-8 text-center text-sm text-gray-600">
           {"Don't have an account?"}{" "}

@@ -1,16 +1,17 @@
-import React from "react";
+
+'use client';
+
+export const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTY2NzM2MCwiZXhwIjoxNzMzNDQzMzYwfQ.LGXZbMDVlDjXB9umbmA9VERNj-x6BJIfbQsa1g5VaRE'
+
+
+import React, { useEffect, useState } from "react";
 import {
   Calendar,
   Clock,
-  User,
   FileText,
   CheckCircle,
   XCircle,
-  Home,
-  MessageSquare,
-  Settings,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -21,14 +22,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Select,
+  // Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import SideBar from "../SideBar";
+import { Modal, Button, DatePicker, TimePicker, Select } from "antd";
+import moment from "moment";
+import { baseUrl } from "@/lib/utils";
+
+const { Option } = Select;
 
 const appointmentTypes = [
   "Follow-Up Visit",
@@ -45,94 +50,203 @@ const statusColors = {
   Completed: "bg-blue-500",
 };
 
+export interface Appointment {
+  duration: string;
+  appointmentType: string;
+  startTime: string;
+  endTime: string;
+  date: string;
+  status: string;
+  _id: string;
+  patient: string;
+}
+
 export default function AppointmentPage() {
-  const appointments = [
-    {
-      id: 1,
-      patient: "John Doe",
-      appointmentType: "Follow-Up Visit",
-      duration: 30,
-      date: new Date("2023-06-15"),
-      startTime: new Date("2023-06-15T09:00:00"),
-      endTime: new Date("2023-06-15T09:30:00"),
-      status: "Active",
-    },
-    {
-      id: 2,
-      patient: "Jane Smith",
-      appointmentType: "New Patient Visit",
-      duration: 60,
-      date: new Date("2023-06-15"),
-      startTime: new Date("2023-06-15T10:00:00"),
-      endTime: new Date("2023-06-15T11:00:00"),
-      status: "Completed",
-    },
-    {
-      id: 3,
-      patient: "Bob Johnson",
-      appointmentType: "Urgent Visit",
-      duration: 45,
-      date: new Date("2023-06-15"),
-      startTime: new Date("2023-06-15T11:30:00"),
-      endTime: new Date("2023-06-15T12:15:00"),
-      status: "Active",
-    },
-  ];
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [appointmentType, setAppointmentType] = useState("");
+  const [duration, setDuration] = useState(60); // default to 60 minutes
+  const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [status, setStatus] = useState("Active");
+
+  const apiBaseUrl = baseUrl
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/dashboard/appointments`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        method: "GET",
+      });
+      const data = await response.json();
+      setAppointments(data.appointments);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const handleCreateAppointment = async () => {
+    const selectedDate = moment(date, "YYYY-MM-DD"); // Ensure the date is parsed correctly
+    const startDateTime = selectedDate.clone().set({
+      hour: parseInt(startTime.split(":")[0], 10),
+      minute: parseInt(startTime.split(":")[1], 10),
+    });
+    const endDateTime = selectedDate.clone().set({
+      hour: parseInt(endTime.split(":")[0], 10),
+      minute: parseInt(endTime.split(":")[1], 10),
+    });
+
+    const requestBody = {
+      appointmentType,
+      duration,
+      date: selectedDate.toISOString(),
+      startTime: startDateTime.toISOString(),
+      endTime: endDateTime.toISOString(),
+      status,
+    };
+
+    console.log(requestBody);
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/appointment`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+        method: "POST",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Appointment created successfully:", data);
+        setIsModalVisible(false); // Close modal
+        fetchAppointments(); // Fetch updated appointments
+      } else {
+        console.log("Failed to create appointment");
+      }
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+    }
+  };
+
+
+  // const handleCreateAppointment = async () => {
+  //   const requestBody = {
+  //     appointmentType,
+  //     duration,
+  //     date,
+  //     startTime,
+  //     endTime,
+  //     status,
+  //   };
+
+  //   console.log(requestBody)
+
+  //   try {
+  //     const response = await fetch(`${apiBaseUrl}/appointment`, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify(requestBody),
+  //       method: "POST",
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log("Appointment created successfully:", data);
+  //       setIsModalVisible(false); // Close modal
+  //       fetchAppointments(); // Fetch updated appointments
+  //     } else {
+  //       console.log("Failed to create appointment");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating appointment:", error);
+  //   }
+  // };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  // Filtering logic based on search term and selected type
+  const filteredAppointments = appointments.filter((appointment) => {
+    const matchesType = selectedType
+      ? appointment.appointmentType === selectedType
+      : true;
+    const matchesSearch = searchTerm
+      ? appointment.patient.toLowerCase().includes(searchTerm.toLowerCase())
+      : true;
+    return matchesType && matchesSearch;
+  });
 
   return (
     <div className="flex h-screen bg-gray-100">
-
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-auto">
         <h1 className="text-3xl font-bold mb-6">Appointments</h1>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {/* Total Appointments Card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Appointments
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{appointments.length}</div>
+              <div className="text-2xl font-bold">{filteredAppointments.length}</div>
             </CardContent>
           </Card>
+
+          {/* Active Appointments Card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Active Appointments
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Active Appointments</CardTitle>
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {appointments.filter((a) => a.status === "Active").length}
+                {filteredAppointments.filter((a) => a.status === "Active").length}
               </div>
             </CardContent>
           </Card>
+
+          {/* Completed Appointments Card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Completed Appointments
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Completed Appointments</CardTitle>
               <XCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {appointments.filter((a) => a.status === "Completed").length}
+                {filteredAppointments.filter((a) => a.status === "Completed").length}
               </div>
             </CardContent>
           </Card>
+
+          {/* Next Appointment Card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Next Appointment
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Next Appointment</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {appointments[0].startTime.toLocaleTimeString([], {
+                {new Date(filteredAppointments[0]?.startTime).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
@@ -141,6 +255,7 @@ export default function AppointmentPage() {
           </Card>
         </div>
 
+        {/* Filters Section */}
         <Card className="mt-6">
           <CardHeader>
             <CardTitle>Appointment List</CardTitle>
@@ -148,8 +263,19 @@ export default function AppointmentPage() {
           <CardContent>
             <div className="flex justify-between mb-4">
               <div className="flex space-x-2">
-                <Input placeholder="Search appointments" className="w-64" />
-                <Select>
+                {/* Search Input */}
+                <Input
+                  placeholder="Search appointments"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-64"
+                />
+
+                {/* Select Filter */}
+                <Select
+                  onChange={(value: any) => setSelectedType(value)}
+                  value={selectedType}
+                >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Filter by type" />
                   </SelectTrigger>
@@ -162,48 +288,106 @@ export default function AppointmentPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button>Add Appointment</Button>
+
+              {/* Add Appointment Button */}
+              <Button type="primary" onClick={showModal}>
+                Add Appointment
+              </Button>
+
+              {/* Modal for adding appointment */}
+
+              <Modal
+                title="Add Appointment"
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                onOk={handleCreateAppointment}
+                okText="Create Appointment"
+              >
+                <div className="space-y-4">
+                  {/* Appointment Type */}
+                  <Select
+                    value={appointmentType}
+                    onChange={(value) => setAppointmentType(value)}
+                    placeholder="Select Appointment Type"
+                    className="w-full"
+                  >
+                    {appointmentTypes.map((type) => (
+                      <Option key={type} value={type}>
+                        {type}
+                      </Option>
+                    ))}
+                  </Select>
+
+                  {/* Date */}
+                  <DatePicker
+                    className="w-full"
+                    placeholder="Select Appointment Date"
+                    onChange={(date, dateString) => setDate(dateString.toString())}
+                  />
+
+                  {/* Start Time */}
+                  <TimePicker
+                    className="w-full"
+                    placeholder="Select Start Time"
+                    onChange={(time, timeString) => setStartTime(timeString.toString())}
+                    format="HH:mm"
+                  />
+
+                  {/* End Time */}
+                  <TimePicker
+                    className="w-full"
+                    placeholder="Select End Time"
+                    onChange={(time, timeString) => setEndTime(timeString.toString())}
+                    format="HH:mm"
+                  />
+
+                  {/* Duration */}
+                  <Input
+                    type="number"
+                    value={duration}
+                    onChange={(e) => setDuration(Number(e.target.value))}
+                    placeholder="Duration (minutes)"
+                  />
+                </div>
+              </Modal>
+
             </div>
+
+            {/* Appointment Table */}
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Patient</TableHead>
-                  <TableHead>Type</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Time</TableHead>
                   <TableHead>Duration</TableHead>
+                  <TableHead>Type</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {appointments.map((appointment) => (
-                  <TableRow key={appointment.id}>
-                    <TableCell className="font-medium">
-                      {appointment.patient}
-                    </TableCell>
-                    <TableCell>{appointment.appointmentType}</TableCell>
-                    <TableCell>
-                      {appointment.date.toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      {appointment.startTime.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}{" "}
+                {filteredAppointments.map((appointment) => (
+                  <TableRow key={appointment._id}>
+                    <TableCell>{appointment.patient}</TableCell>
+                    <TableCell>{moment(appointment.date).format("DD MMM YYYY")}</TableCell>
+                    <TableCell>{
+                      new Date(appointment.startTime)
+                        .toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       -
-                      {appointment.endTime.toLocaleTimeString([], {
+                      {new Date(appointment.endTime).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
                     </TableCell>
                     <TableCell>{appointment.duration} min</TableCell>
+                    <TableCell>{appointment.appointmentType}</TableCell>
                     <TableCell>
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${
-                          statusColors[
-                            appointment.status as keyof typeof statusColors
-                          ]
-                        }`}
+                        className={`inline-block rounded-full px-3 py-1 text-white ${statusColors[appointment.status as keyof typeof statusColors] || "bg-gray-500"
+                          }`}
                       >
                         {appointment.status}
                       </span>

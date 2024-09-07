@@ -20,3 +20,7 @@ export function formatDate(dateString: string, format: string): string {
 
   return formattedDate;
 }
+
+
+
+export const baseUrl = 'https://api.healthlogs.online/api/v1'
