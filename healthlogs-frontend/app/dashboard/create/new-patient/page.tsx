@@ -17,7 +17,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { State, createPatient } from "@/actions/createPatient";
 import { useFormState } from "react-dom";
 const CreateNewPatient = () => {
-  const initialState: State = { message: null, errors: {} };
+  const initialState: State = { message: "", errors: {} };
+  // @ts-ignore
   const [state, formAction] = useFormState(createPatient, initialState);
   return (
     <main className="flex-1 p-8 overflow-auto">
