@@ -63,7 +63,8 @@ export type State = {
 
 export async function createPatient(prevState: State, formData: FormData) {
   const url = process.env.API_URL;
-  const token = process.env.API_TOKEN;
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTgyMzM2OCwiZXhwIjoxNzMzNTk5MzY4fQ.Ugv70HsN1bQ7v2Sd83LzPfKp1XV0eQdxPgnh_tFRqng";
   const generatedPass = generateRandomString();
   if (!url || !token) {
     console.error("API_URL or API_TOKEN is not set in environment variables");
