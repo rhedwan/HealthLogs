@@ -2,13 +2,14 @@
 
 import { generateRandomString } from "@/lib/utils";
 import { z } from "zod";
-
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 const FormSchema = z.object({
   firstName: z.string().min(1, { message: "This field is required" }),
   lastName: z.string().min(1, { message: "This field is required" }),
   email: z.string().email({ message: "Invalid email address" }),
   phoneNumber: z.string().min(10, { message: "Invalid phone number" }),
-  gender: z.enum(["Male", "female", "others"], {
+  gender: z.enum(["Male", "Female", "Others"], {
     required_error: "Please select a gender",
   }),
   occupation: z.string().min(1, { message: "This field is required" }),
@@ -64,7 +65,7 @@ export type State = {
 export async function createPatient(prevState: State, formData: FormData) {
   const url = process.env.API_URL;
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTgyMzM2OCwiZXhwIjoxNzMzNTk5MzY4fQ.Ugv70HsN1bQ7v2Sd83LzPfKp1XV0eQdxPgnh_tFRqng";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTgyODg4MSwiZXhwIjoxNzMzNjA0ODgxfQ.5dH3tymXAMrkW7VvuX1ORVK36-02GCCu_FCWCcM0m74";
   const generatedPass = generateRandomString();
   if (!url || !token) {
     console.error("API_URL or API_TOKEN is not set in environment variables");
@@ -127,6 +128,7 @@ export async function createPatient(prevState: State, formData: FormData) {
 
     const data = await response.json();
     console.log("API response:", data);
+    revalidatePath("/dashboard/all-patient"); // Update cached posts
     return {
       message: "Patient data submitted successfully!",
     };
@@ -135,5 +137,7 @@ export async function createPatient(prevState: State, formData: FormData) {
     return {
       message: "An error occurred while submitting user data.",
     };
+  } finally {
+    redirect(`/dashboard/all-patient`); // Navigate to the new post page
   }
 }
