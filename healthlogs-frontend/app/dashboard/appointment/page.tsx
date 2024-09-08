@@ -83,10 +83,15 @@ const AppointmentPage = () => {
   const [patientId, setPatientId] = useState("");
 
   const apiBaseUrl = baseUrl
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
 
   const fetchAppointments = async () => {
     try {
+      let token = null;
+      if (typeof window !== "undefined") {
+        // We are on the client, so localStorage is available
+        token = localStorage.getItem("token");
+      }
       const response = await fetch(`${apiBaseUrl}/dashboard/appointments`, {
         headers: {
           "Content-Type": "application/json",
@@ -129,6 +134,11 @@ const AppointmentPage = () => {
     console.log(requestBody);
 
     try {
+      let token = null;
+      if (typeof window !== "undefined") {
+        // We are on the client, so localStorage is available
+        token = localStorage.getItem("token");
+      }
       const response = await fetch(`${apiBaseUrl}/appointment/${patientId}`, {
         headers: {
           "Content-Type": "application/json",
