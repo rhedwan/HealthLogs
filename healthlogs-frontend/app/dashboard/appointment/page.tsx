@@ -1,9 +1,6 @@
 
 'use client';
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTY2NzM2MCwiZXhwIjoxNzMzNDQzMzYwfQ.LGXZbMDVlDjXB9umbmA9VERNj-x6BJIfbQsa1g5VaRE'
-
-
 import React, { useEffect, useState } from "react";
 import {
   Calendar,
@@ -32,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Modal, Button, DatePicker, TimePicker, Select } from "antd";
 import moment from "moment";
 import { baseUrl } from "@/lib/utils";
+import withAuth from "@/app/protected";
 
 const { Option } = Select;
 
@@ -58,10 +56,20 @@ export interface Appointment {
   date: string;
   status: string;
   _id: string;
-  patient: string;
+  patient: Patient;
 }
 
-export default function AppointmentPage() {
+interface Patient {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  age: number;
+  fileId: string;
+  id: string;
+}
+
+
+const AppointmentPage = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("");
@@ -72,8 +80,10 @@ export default function AppointmentPage() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [status, setStatus] = useState("Active");
+  const [patientId, setPatientId] = useState("");
 
   const apiBaseUrl = baseUrl
+  const token = localStorage.getItem("token");
 
   const fetchAppointments = async () => {
     try {
@@ -84,6 +94,7 @@ export default function AppointmentPage() {
         },
         method: "GET",
       });
+      // console.log(response.json())
       const data = await response.json();
       setAppointments(data.appointments);
     } catch (error) {
@@ -118,7 +129,7 @@ export default function AppointmentPage() {
     console.log(requestBody);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/appointment`, {
+      const response = await fetch(`${apiBaseUrl}/appointment/${patientId}`, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
@@ -129,7 +140,6 @@ export default function AppointmentPage() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Appointment created successfully:", data);
         setIsModalVisible(false); // Close modal
         fetchAppointments(); // Fetch updated appointments
       } else {
@@ -190,7 +200,7 @@ export default function AppointmentPage() {
       ? appointment.appointmentType === selectedType
       : true;
     const matchesSearch = searchTerm
-      ? appointment.patient.toLowerCase().includes(searchTerm.toLowerCase())
+      ? appointment.patient.firstName.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
     return matchesType && matchesSearch;
   });
@@ -304,6 +314,13 @@ export default function AppointmentPage() {
                 okText="Create Appointment"
               >
                 <div className="space-y-4">
+                  {/* Duration */}
+                  <Input
+                    type="text"
+                    value={patientId}
+                    onChange={(e) => setPatientId(e.target.value)}
+                    placeholder="Enter Patient Id"
+                  />
                   {/* Appointment Type */}
                   <Select
                     value={appointmentType}
@@ -358,6 +375,7 @@ export default function AppointmentPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Patient</TableHead>
+                  <TableHead>Patient ID</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Time</TableHead>
                   <TableHead>Duration</TableHead>
@@ -368,7 +386,8 @@ export default function AppointmentPage() {
               <TableBody>
                 {filteredAppointments.map((appointment) => (
                   <TableRow key={appointment._id}>
-                    <TableCell>{appointment.patient}</TableCell>
+                    <TableCell>{appointment.patient.firstName + ' ' + appointment.patient.lastName}</TableCell>
+                    <TableCell>{appointment.patient.fileId}</TableCell>
                     <TableCell>{moment(appointment.date).format("DD MMM YYYY")}</TableCell>
                     <TableCell>{
                       new Date(appointment.startTime)
@@ -402,3 +421,6 @@ export default function AppointmentPage() {
     </div>
   );
 }
+
+
+export default withAuth(AppointmentPage)
