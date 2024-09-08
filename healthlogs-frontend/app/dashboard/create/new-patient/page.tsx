@@ -242,6 +242,7 @@ const CreateNewPatient = () => {
                   <Select name="bloodGroup">
                     <SelectTrigger
                       className={
+                        // @ts-ignore
                         state.errors?.medicalBackground?.bloodGroup
                           ? "border-red-500"
                           : ""
@@ -259,8 +260,10 @@ const CreateNewPatient = () => {
                       )}
                     </SelectContent>
                   </Select>
+                  {/* @ts-ignore */}
                   {state.errors?.medicalBackground?.bloodGroup && (
                     <p className="text-red-500 text-sm">
+                      {/* @ts-ignore */}
                       {state.errors?.medicalBackground?.bloodGroup[0]}
                     </p>
                   )}
@@ -270,6 +273,8 @@ const CreateNewPatient = () => {
                   <Select name="genotype">
                     <SelectTrigger
                       className={
+                        // @ts-ignore
+
                         state.errors?.medicalBackground?.genotype
                           ? "border-red-500"
                           : ""
@@ -295,8 +300,10 @@ const CreateNewPatient = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                  {/* @ts-ignore */}
                   {state.errors?.medicalBackground?.genotype && (
                     <p className="text-red-500 text-sm">
+                      {/* @ts-ignore */}
                       {state.errors?.medicalBackground?.genotype[0]}
                     </p>
                   )}
