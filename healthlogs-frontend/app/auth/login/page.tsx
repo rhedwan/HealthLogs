@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [token, setToken] = useState('')
   
   // Handle login process
   const handleLogin = async (e: React.FormEvent) => {
@@ -40,6 +41,9 @@ export default function LoginPage() {
       if (response.ok) {
         // Assuming the token or other necessary login details are in the response data
         console.log("Login successful!", data)
+        setToken(data.token)
+        localStorage.setItem('token', data.token)
+        window.location.href = '/dashboard'
         // Perform redirect or store login state
       } else {
         setError(data.message || 'Login failed. Please try again.')
