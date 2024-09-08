@@ -20,7 +20,29 @@ export function formatDate(dateString: string, format: string): string {
 
   return formattedDate;
 }
+export function generateRandomString() {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+
+  for (let i = 0; i < 9; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
+  }
+
+  return result;
+}
+
+console.log(generateRandomString());
+
+export const baseUrl = "https://api.healthlogs.online/api/v1";
 
 
+let token = null;
+if (typeof window !== "undefined") {
+  // We are on the client, so localStorage is available
+  token = localStorage.getItem("token");
+}
 
-export const baseUrl = 'https://api.healthlogs.online/api/v1'
+
+// export const token = localStorage.getItem("token");
