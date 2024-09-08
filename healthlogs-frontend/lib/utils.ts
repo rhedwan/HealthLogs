@@ -20,7 +20,19 @@ export function formatDate(dateString: string, format: string): string {
 
   return formattedDate;
 }
+export function generateRandomString() {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
 
+  for (let i = 0; i < 9; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
+  }
 
+  return result;
+}
 
-export const baseUrl = 'https://api.healthlogs.online/api/v1'
+console.log(generateRandomString());
+
+export const baseUrl = "https://api.healthlogs.online/api/v1";
