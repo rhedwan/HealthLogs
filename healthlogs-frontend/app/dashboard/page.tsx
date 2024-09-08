@@ -380,8 +380,6 @@
 
 "use client";
 
-const token = localStorage.getItem("token");
-
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -484,6 +482,11 @@ const DashboardOverview = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        let token = null;
+        if (typeof window !== "undefined") {
+          // We are on the client, so localStorage is available
+          token = localStorage.getItem("token");
+        }
         const response = await fetch(`${baseUrl}/dashboard`, {
           headers: {
             "Content-Type": "application/json",
