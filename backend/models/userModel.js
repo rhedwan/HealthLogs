@@ -64,8 +64,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       unique: true,
       default: function () {
-        const id = Math.round(Date.now() / 1000);
-        return id;
+        const prefix = "PRN";
+        const randomPart = Math.random()
+          .toString(36)
+          .substr(2, 6)
+          .toUpperCase();
+        return `${prefix}${randomPart}`;
       },
     },
 

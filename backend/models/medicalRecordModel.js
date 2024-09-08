@@ -35,7 +35,16 @@ const medicalRecordSchema = new mongoose.Schema(
     },
     physicalExamination: {
       temperature: String,
-      bloodPressure: String,
+      bloodPressure: {
+        systolicPressure: {
+          type: Number,
+          required: [true, "The Systolic pressure is needed"],
+        },
+        diastolicPressure: {
+          type: Number,
+          required: [true, "The Diastolic pressure is needed"],
+        },
+      },
       weight: Number,
       height: Number,
       pulse: Number,
@@ -65,12 +74,6 @@ const medicalRecordSchema = new mongoose.Schema(
       ref: "User",
     },
     documents: [{ type: String }],
-    // diagnosticTests: [
-    //   {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: "DiagnosticTest",
-    //   },
-    // ],
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
