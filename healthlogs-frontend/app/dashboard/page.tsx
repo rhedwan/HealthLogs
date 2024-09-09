@@ -1,5 +1,4 @@
 import GetDashboard from "@/app/dashboard/GetDashboard";
-import { baseUrl } from "@/lib/utils";
 import { cookies } from "next/headers";
 import React from "react";
 
