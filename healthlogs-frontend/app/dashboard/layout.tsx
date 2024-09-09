@@ -1,11 +1,14 @@
 import React from "react";
 import SideBar from "./SideBar";
+import { verifySession } from "@/lib/session";
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const session = await verifySession();
+
   return (
     <html lang="en">
       <body>

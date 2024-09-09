@@ -10,7 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
-import { baseUrl, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
+import { cookies } from "next/headers";
 
 export type PatientSchema = {
   id: React.Key | null | undefined;
@@ -39,10 +40,9 @@ export type PatientSchema = {
   age: number;
 };
 export default async function PatientListPage() {
-  const url = baseUrl
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2Q4ZGFhYzZlNmY3NTBkZmUzZGFjOCIsImlhdCI6MTcyNTcwNTQwMSwiZXhwIjoxNzMzNDgxNDAxfQ.5tfOCYMilMh-XNIVtqedHOr-fnEVasEBTvGVjRaj8xs";
-  let data = await fetch(`${url}/users`, {
+  const url = process.env.API_URL;
+  const token = cookies().get("session")?.value;
+  let data = await fetch(`${url}api/v1/users`, {
     method: "GET", // You can change this to POST, PUT, etc. depending on your needs
     headers: {
       Authorization: `Bearer ${token}`,

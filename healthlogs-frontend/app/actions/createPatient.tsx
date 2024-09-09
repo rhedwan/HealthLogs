@@ -4,6 +4,8 @@ import { generateRandomString } from "@/lib/utils";
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+
 const FormSchema = z.object({
   firstName: z.string().min(1, { message: "This field is required" }),
   lastName: z.string().min(1, { message: "This field is required" }),
@@ -64,8 +66,7 @@ export type State = {
 
 export async function createPatient(prevState: State, formData: FormData) {
   const url = process.env.API_URL;
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTgyODg4MSwiZXhwIjoxNzMzNjA0ODgxfQ.5dH3tymXAMrkW7VvuX1ORVK36-02GCCu_FCWCcM0m74";
+  const token = cookies().get("session")?.value;
   const generatedPass = generateRandomString();
   if (!url || !token) {
     console.error("API_URL or API_TOKEN is not set in environment variables");

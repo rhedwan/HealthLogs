@@ -32,17 +32,3 @@ export function generateRandomString() {
 
   return result;
 }
-
-console.log(generateRandomString());
-
-export const baseUrl = "https://api.healthlogs.online/api/v1";
-
-
-let token = null;
-if (typeof window !== "undefined") {
-  // We are on the client, so localStorage is available
-  token = localStorage.getItem("token");
-}
-
-
-// export const token = localStorage.getItem("token");
