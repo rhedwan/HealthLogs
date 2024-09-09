@@ -20,6 +20,21 @@ export function formatDate(dateString: string, format: string): string {
 
   return formattedDate;
 }
+// Return duration
+export function timeDifference(startTime: any, endTime: any) {
+  // Split the time strings into hours and minutes
+  const [startHours, startMinutes] = startTime.split(":").map(Number);
+  const [endHours, endMinutes] = endTime.split(":").map(Number);
+
+  // Convert the times to minutes
+  const startTotalMinutes = startHours * 60 + startMinutes;
+  const endTotalMinutes = endHours * 60 + endMinutes;
+
+  // Calculate the difference
+  const differenceInMinutes = endTotalMinutes - startTotalMinutes;
+
+  return differenceInMinutes;
+}
 export function generateRandomString() {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -31,4 +46,21 @@ export function generateRandomString() {
   }
 
   return result;
+}
+export function convertToDateTime(
+  timeString: string,
+  dateString: string | null = null
+): Date {
+  // If no dateString is provided, use the current date
+  const date: Date = dateString ? new Date(dateString) : new Date();
+
+  // Split the time string into hours and minutes
+  const [hours, minutes] = timeString.split(":").map(Number);
+
+  // Set the hours, minutes, and seconds on the date object
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  date.setSeconds(0); // Optional, set seconds to 0
+
+  return date;
 }

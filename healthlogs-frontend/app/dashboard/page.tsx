@@ -16,7 +16,7 @@ const page = async () => {
     },
   });
   const data = await response.json();
-  console.log(data);
+  // console.log(data);
   return (
     // <main className="flex-1 p-8 overflow-auto">
     <GetDashboard data={data} />
