@@ -1,14 +1,7 @@
-
-'use client';
+"use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  Calendar,
-  Clock,
-  FileText,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { Calendar, Clock, FileText, CheckCircle, XCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -28,8 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Modal, Button, DatePicker, TimePicker, Select } from "antd";
 import moment from "moment";
-import { baseUrl } from "@/lib/utils";
-import withAuth from "@/app/protected";
+import { cookies } from "next/headers";
 
 const { Option } = Select;
 
@@ -68,7 +60,6 @@ interface Patient {
   id: string;
 }
 
-
 const AppointmentPage = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -82,17 +73,12 @@ const AppointmentPage = () => {
   const [status, setStatus] = useState("Active");
   const [patientId, setPatientId] = useState("");
 
-  const apiBaseUrl = baseUrl
-  // const token = localStorage.getItem("token");
+  const url = process.env.API_URL;
+  const token = cookies().get("session")?.value;
 
   const fetchAppointments = async () => {
     try {
-      let token = null;
-      if (typeof window !== "undefined") {
-        // We are on the client, so localStorage is available
-        token = localStorage.getItem("token");
-      }
-      const response = await fetch(`${apiBaseUrl}/dashboard/appointments`, {
+      const response = await fetch(`${url}api/v1/dashboard/appointments`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -139,10 +125,10 @@ const AppointmentPage = () => {
         // We are on the client, so localStorage is available
         token = localStorage.getItem("token");
       }
-      const response = await fetch(`${apiBaseUrl}/appointment/${patientId}`, {
+      const response = await fetch(`${url}api/v1/appointment/${patientId}`, {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(requestBody),
         method: "POST",
@@ -159,7 +145,6 @@ const AppointmentPage = () => {
       console.error("Error creating appointment:", error);
     }
   };
-
 
   // const handleCreateAppointment = async () => {
   //   const requestBody = {
@@ -210,7 +195,9 @@ const AppointmentPage = () => {
       ? appointment.appointmentType === selectedType
       : true;
     const matchesSearch = searchTerm
-      ? appointment.patient.firstName.toLowerCase().includes(searchTerm.toLowerCase())
+      ? appointment.patient.firstName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
       : true;
     return matchesType && matchesSearch;
   });
@@ -224,23 +211,32 @@ const AppointmentPage = () => {
           {/* Total Appointments Card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Appointments
+              </CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{filteredAppointments.length}</div>
+              <div className="text-2xl font-bold">
+                {filteredAppointments.length}
+              </div>
             </CardContent>
           </Card>
 
           {/* Active Appointments Card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Appointments</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Active Appointments
+              </CardTitle>
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {filteredAppointments.filter((a) => a.status === "Active").length}
+                {
+                  filteredAppointments.filter((a) => a.status === "Active")
+                    .length
+                }
               </div>
             </CardContent>
           </Card>
@@ -248,12 +244,17 @@ const AppointmentPage = () => {
           {/* Completed Appointments Card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completed Appointments</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Completed Appointments
+              </CardTitle>
               <XCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {filteredAppointments.filter((a) => a.status === "Completed").length}
+                {
+                  filteredAppointments.filter((a) => a.status === "Completed")
+                    .length
+                }
               </div>
             </CardContent>
           </Card>
@@ -261,12 +262,16 @@ const AppointmentPage = () => {
           {/* Next Appointment Card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Next Appointment</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Next Appointment
+              </CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {new Date(filteredAppointments[0]?.startTime).toLocaleTimeString([], {
+                {new Date(
+                  filteredAppointments[0]?.startTime
+                ).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
@@ -349,14 +354,18 @@ const AppointmentPage = () => {
                   <DatePicker
                     className="w-full"
                     placeholder="Select Appointment Date"
-                    onChange={(date, dateString) => setDate(dateString.toString())}
+                    onChange={(date, dateString) =>
+                      setDate(dateString.toString())
+                    }
                   />
 
                   {/* Start Time */}
                   <TimePicker
                     className="w-full"
                     placeholder="Select Start Time"
-                    onChange={(time, timeString) => setStartTime(timeString.toString())}
+                    onChange={(time, timeString) =>
+                      setStartTime(timeString.toString())
+                    }
                     format="HH:mm"
                   />
 
@@ -364,7 +373,9 @@ const AppointmentPage = () => {
                   <TimePicker
                     className="w-full"
                     placeholder="Select End Time"
-                    onChange={(time, timeString) => setEndTime(timeString.toString())}
+                    onChange={(time, timeString) =>
+                      setEndTime(timeString.toString())
+                    }
                     format="HH:mm"
                   />
 
@@ -377,7 +388,6 @@ const AppointmentPage = () => {
                   />
                 </div>
               </Modal>
-
             </div>
 
             {/* Appointment Table */}
@@ -396,15 +406,20 @@ const AppointmentPage = () => {
               <TableBody>
                 {filteredAppointments.map((appointment) => (
                   <TableRow key={appointment._id}>
-                    <TableCell>{appointment.patient.firstName + ' ' + appointment.patient.lastName}</TableCell>
+                    <TableCell>
+                      {appointment.patient.firstName +
+                        " " +
+                        appointment.patient.lastName}
+                    </TableCell>
                     <TableCell>{appointment.patient.fileId}</TableCell>
-                    <TableCell>{moment(appointment.date).format("DD MMM YYYY")}</TableCell>
-                    <TableCell>{
-                      new Date(appointment.startTime)
-                        .toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                    <TableCell>
+                      {moment(appointment.date).format("DD MMM YYYY")}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(appointment.startTime).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                       -
                       {new Date(appointment.endTime).toLocaleTimeString([], {
                         hour: "2-digit",
@@ -415,8 +430,11 @@ const AppointmentPage = () => {
                     <TableCell>{appointment.appointmentType}</TableCell>
                     <TableCell>
                       <span
-                        className={`inline-block rounded-full px-3 py-1 text-white ${statusColors[appointment.status as keyof typeof statusColors] || "bg-gray-500"
-                          }`}
+                        className={`inline-block rounded-full px-3 py-1 text-white ${
+                          statusColors[
+                            appointment.status as keyof typeof statusColors
+                          ] || "bg-gray-500"
+                        }`}
                       >
                         {appointment.status}
                       </span>
@@ -430,7 +448,6 @@ const AppointmentPage = () => {
       </main>
     </div>
   );
-}
+};
 
-
-export default withAuth(AppointmentPage)
+export default AppointmentPage;

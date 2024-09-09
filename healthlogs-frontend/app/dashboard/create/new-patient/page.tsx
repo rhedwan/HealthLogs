@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { State, createPatient } from "@/actions/createPatient";
+import { State, createPatient } from "@/app/actions/createPatient";
 import { useFormState } from "react-dom";
 const CreateNewPatient = () => {
   const initialState: State = { message: "", errors: {} };
