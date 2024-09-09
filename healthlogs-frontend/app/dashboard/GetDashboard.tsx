@@ -1,7 +1,5 @@
 // "use client";
 
-// const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2Y2YxNDkzYTc3MGZkZGVkOTE5N2U4YiIsImlhdCI6MTcyNTY2NzM2MCwiZXhwIjoxNzMzNDQzMzYwfQ.LGXZbMDVlDjXB9umbmA9VERNj-x6BJIfbQsa1g5VaRE'
-
 // import React, { useEffect, useState } from "react";
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Input } from "@/components/ui/input";
