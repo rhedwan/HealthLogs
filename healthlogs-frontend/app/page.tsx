@@ -20,6 +20,7 @@ import {
   Menu,
   Phone,
   Twitter,
+  SquarePlus,
   X,
 } from "lucide-react";
 import Image from "next/image";
@@ -46,7 +47,6 @@ function Footer() {
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="text-center lg:text-left">
             <div className="flex items-center justify-center lg:justify-start space-x-2">
-              <FileHeart className="h-8 w-8 sm:h-10 sm:w-10 text-[#7457D3]" />
               <span className="text-2xl sm:text-3xl font-bold">HealthLogs</span>
             </div>
             <p className="mt-4 text-base sm:text-lg text-gray-300">
@@ -160,16 +160,22 @@ export default function HomePage() {
 
   const teamMembers = [
     {
-      name: "John Doe",
-      role: "Chief Medical Officer",
-      bio: "Dr. John Doe is a highly experienced medical professional with a passion for improving patient care.",
-      image: "/placeholder.svg?height=300&width=300",
+      name: "Adeyemo Ridwan",
+      role: "Software Engineer",
+      bio: "I'm interested in building scalable, anti-fragile software systems for problems in my immediate environment.",
+      image: "/ridwan.png",
+      linkedIn: "https://linkedin.com/in/rhedwan",
+      twitter: "https://x.com/_rhedwan",
+      website: "www.rhedwan.com",
     },
     {
       name: "Jane Smith",
       role: "Head of Technology",
       bio: "Jane Smith is a tech-savvy leader with a proven track record of driving innovation in healthcare.",
       image: "/placeholder.svg?height=300&width=300",
+      linkedIn: "https://linkedin.com/in/rhedwan",
+      twitter: "https://x.com/_rhedwan",
+      website: "www.rhedwan.com",
     },
   ];
 
@@ -178,8 +184,8 @@ export default function HomePage() {
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <FileHeart className="h-8 w-8 sm:h-10 sm:w-10 text-[#7457D3]" />
-            <span className="text-2xl sm:text-3xl font-bold text-gray-800">
+            <SquarePlus className="h-8 w-8 sm:h-10 sm:w-10 text-[#7457D3]" />
+            <span className="text-2xl sm:text-3xl font-bold text-[#7457D3]">
               HealthLogs
             </span>
           </Link>
@@ -275,40 +281,47 @@ export default function HomePage() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-gray-900 text-white">
-          <Image
-            src="/placeholder.svg?height=600&width=1600"
-            alt="African healthcare professionals"
-            width={1600}
-            height={600}
-            className="object-cover w-full h-[400px] sm:h-[500px] md:h-[600px]"
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-60" />
-          <div className="container mx-auto px-4 py-12 sm:py-16 md:py-24 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8">
-                Empowering Healthcare in Africa with Smart Records
-              </h1>
-              <p className="text-xl sm:text-2xl md:text-3xl mb-8 sm:mb-12">
-                Streamline patient care, enhance data accuracy, and drive
-                healthcare innovation with HealthLogs.
-              </p>
-              <Button className="bg-[#E91E63] hover:bg-[#C2185B] text-white text-xl sm:text-2xl px-8 sm:px-12 py-4 sm:py-5 rounded-full">
-                Get Started
-              </Button>
-            </div>
-            <div className="flex flex-wrap justify-center mt-16 sm:mt-20 space-y-8 sm:space-y-0 sm:space-x-12">
-              <div className="text-center w-full sm:w-auto">
-                <BarChart3 className="h-16 w-16 sm:h-20 sm:w-20 mx-auto mb-4 sm:mb-6" />
-                <p className="text-xl sm:text-2xl">Patient Analytics</p>
+
+        <section className="bg-gray-900 text-white">
+          <div className="container mx-auto px-4 py-12 sm:py-16 md:py-24">
+            <div className="flex flex-col lg:flex-row items-center">
+              <div className="lg:w-1/2 lg:pr-8 mb-8 lg:mb-0 flex flex-col justify-center items-center lg:items-start">
+                <div className="max-w-2xl text-center lg:text-left">
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+                    Empowering Healthcare in Africa with Smart Records
+                  </h1>
+                  <p className="text-xl sm:text-2xl lg:text-3xl mb-8">
+                    Streamline patient care, enhance data accuracy, and drive
+                    healthcare innovation with HealthLogs.
+                  </p>
+                  <Button className="bg-[#E91E63] hover:bg-[#C2185B] text-white text-xl sm:text-2xl px-8 sm:px-12 py-4 sm:py-5 rounded-full">
+                    Get Started
+                  </Button>
+                  <div className="flex flex-wrap justify-center lg:justify-start mt-12 gap-8 sm:gap-12">
+                    <div className="text-center">
+                      <BarChart3 className="h-16 w-16 sm:h-20 sm:w-20 mx-auto mb-4" />
+                      <p className="text-lg sm:text-xl">Patient Analytics</p>
+                    </div>
+                    <div className="text-center">
+                      <HardDriveDownload className="h-16 w-16 sm:h-20 sm:w-20 mx-auto mb-4" />
+                      <p className="text-lg sm:text-xl">Secure Data Storage</p>
+                    </div>
+                    <div className="text-center">
+                      <Hospital className="h-16 w-16 sm:h-20 sm:w-20 mx-auto mb-4" />
+                      <p className="text-lg sm:text-xl">Hospital Efficiency</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="text-center w-full sm:w-auto">
-                <HardDriveDownload className="h-16 w-16 sm:h-20 sm:w-20 mx-auto mb-4 sm:mb-6" />
-                <p className="text-xl sm:text-2xl">Secure Data Storage</p>
-              </div>
-              <div className="text-center w-full sm:w-auto">
-                <Hospital className="h-16 w-16 sm:h-20 sm:w-20 mx-auto mb-4 sm:mb-6" />
-                <p className="text-xl sm:text-2xl">Hospital Efficiency</p>
+              <div className="lg:w-1/2 relative">
+                <Image
+                  src="/hero.png"
+                  alt="African healthcare professionals"
+                  width={800}
+                  height={600}
+                  className="rounded-lg shadow-2xl"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>
               </div>
             </div>
           </div>
@@ -505,19 +518,22 @@ export default function HomePage() {
                     <p className="text-lg mb-6">{member.bio}</p>
                     <div className="flex justify-center space-x-6">
                       <Link
-                        href="#"
+                        href={member.linkedIn}
+                        target="_blank"
                         className="text-gray-600 hover:text-[#7457D3]"
                       >
                         <Linkedin className="h-6 w-6" />
                       </Link>
                       <Link
-                        href="#"
+                        href={member.twitter}
+                        target="_blank"
                         className="text-gray-600 hover:text-[#7457D3]"
                       >
                         <Twitter className="h-6 w-6" />
                       </Link>
                       <Link
-                        href="#"
+                        href={member.website}
+                        target="_blank"
                         className="text-gray-600 hover:text-[#7457D3]"
                       >
                         <Globe className="h-6 w-6" />
