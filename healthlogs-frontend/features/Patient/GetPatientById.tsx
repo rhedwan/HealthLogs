@@ -187,13 +187,13 @@ const GetPatientById = ({ patient }: any) => {
                 <div className="flex items-center space-x-2">
                   <Phone className="h-4 w-4 opacity-70" />
                   <span className="text-sm font-medium">Phone:</span>
-                  <span className="text-sm">{patient.phone}</span>
+                  <span className="text-sm">{patient.phoneNumber}</span>
                 </div>
                 <div className="col-span-2 flex items-start space-x-2">
                   <Home className="h-4 w-4 opacity-70 mt-1" />
                   <div>
                     <span className="text-sm font-medium">Address:</span>
-                    <p className="text-sm">{patient.address}</p>
+                    <p className="text-sm">{patient.homeAddress}</p>
                   </div>
                 </div>
               </div>
