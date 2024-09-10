@@ -51,7 +51,7 @@ const PatientTable = ({ patients_data }: any) => {
           />
         </div>
         <Link href="/dashboard/create/new-patient">
-          <Button className="bg-orange-500 text-white hover:bg-orange-600">
+          <Button className="bg-[#7457D3] hover:bg-[#5E45A8]">
             Add patient
           </Button>
         </Link>

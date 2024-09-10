@@ -1,5 +1,5 @@
-import GetPatientById from "@/features/Patient/GetPatientById";
 import { cookies } from "next/headers";
+import GetPatientById from "./GetPatientById";
 
 export default async function PatientDetailsPage({
   params,
