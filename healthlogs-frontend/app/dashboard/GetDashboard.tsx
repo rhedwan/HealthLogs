@@ -173,7 +173,7 @@ const GetDashboard = ({ data }: any) => {
               </TableHeader>
               <TableBody>
                 {data.appointmentForToday.map((appointment: any) => (
-                  <TableRow>
+                  <TableRow key={appointment._id}>
                     <TableCell className="font-medium">
                       <div className="flex items-center">
                         <Avatar className="h-8 w-8 mr-2">
