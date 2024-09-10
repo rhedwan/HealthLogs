@@ -74,7 +74,7 @@ const GetDashboard = ({ data }: any) => {
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input className="pl-8" placeholder="Search..." />
           </div>
-          <Popover>
+          {/* <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" className="relative">
                 <Bell />
@@ -107,7 +107,7 @@ const GetDashboard = ({ data }: any) => {
                 </div>
               </div>
             </PopoverContent>
-          </Popover>
+          </Popover> */}
           <Avatar>
             <AvatarImage src="/placeholder.svg" />
             <AvatarFallback>CN</AvatarFallback>

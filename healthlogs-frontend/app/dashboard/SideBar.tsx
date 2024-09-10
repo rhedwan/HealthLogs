@@ -19,7 +19,7 @@ export default function SideBar() {
     { href: "/dashboard", icon: Home, label: "Overview" },
     { href: "/dashboard/appointment", icon: Calendar, label: "Appointments" },
     { href: "/dashboard/all-patient", icon: Users, label: "Patients" },
-    { href: "/dashboard/rooms", icon: Home, label: "Rooms" },
+    // { href: "/dashboard/rooms", icon: Home, label: "Rooms" },
     // { href: "/dashboard/messages", icon: MessageSquare, label: "Messages" },
     // { href: "/dashboard/files", icon: FileText, label: "Files" },
     {
@@ -27,7 +27,7 @@ export default function SideBar() {
       icon: Users,
       label: "Authentications",
     },
-    { href: "/dashboard/utility", icon: Settings, label: "Utility" },
+    // { href: "/dashboard/utility", icon: Settings, label: "Utility" },
   ];
 
   return (
