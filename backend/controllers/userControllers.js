@@ -137,7 +137,7 @@ exports.getPatientById = catchAsync(async (req, res, next) => {
     _id: req.params.id,
   })
     .select(
-      "-__v -fileId -passwordChangedAt -passwordExpires -passwordResetToken -email  -updatedAt -age -gender"
+      "-__v -passwordChangedAt -passwordExpires -passwordResetToken -updatedAt"
     )
     .populate({
       path: "patientRecord",
