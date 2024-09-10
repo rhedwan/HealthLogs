@@ -408,7 +408,7 @@ const GetPatientById = ({ patient }: any) => {
                     createdAt: string;
                     updatedAt: string;
                   }) => (
-                    <TableRow>
+                    <TableRow key={appointment._id}>
                       <TableCell>{appointment.appointmentType}</TableCell>
                       <TableCell className="text-right">
                         {formatDate(appointment.startTime, "MMM DD, YYYY")}
