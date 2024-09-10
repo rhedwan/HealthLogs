@@ -3,8 +3,6 @@ import { cookies } from "next/headers";
 import React from "react";
 
 const page = async () => {
-  // const url =
-  // const token = cookies().get("session")?.value;
   const url = process.env.API_URL;
   const token = cookies().get("session")?.value;
 
@@ -16,7 +14,7 @@ const page = async () => {
     },
   });
   const data = await response.json();
-  // console.log(data);
+  console.log(data);
   return (
     // <main className="flex-1 p-8 overflow-auto">
     <GetDashboard data={data} />

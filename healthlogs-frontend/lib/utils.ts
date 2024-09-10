@@ -47,6 +47,7 @@ export function generateRandomString() {
 
   return result;
 }
+
 export function convertToDateTime(
   timeString: string,
   dateString: string | null = null
@@ -63,4 +64,14 @@ export function convertToDateTime(
   date.setSeconds(0); // Optional, set seconds to 0
 
   return date;
+}
+export function extractTimeFromDate(dateString: string): string {
+  // Create a Date object from the input string
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date string provided");
+  }
+
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
