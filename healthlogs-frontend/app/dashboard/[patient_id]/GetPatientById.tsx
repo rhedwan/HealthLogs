@@ -16,6 +16,14 @@ import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Line } from "react-chartjs-2";
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
@@ -25,6 +33,13 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Calendar,
   CalendarDays,
@@ -43,6 +58,10 @@ import {
 import Link from "next/link";
 import { PatientSchema } from "@/app/dashboard/all-patient/page";
 import { formatDate } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useFormState, useFormStatus } from "react-dom";
+import { State, createAppointment } from "@/app/actions/appointment";
 
 ChartJS.register(
   CategoryScale,
@@ -95,7 +114,18 @@ const GetPatientById = ({ patient }: any) => {
       },
     },
   };
-
+  const appointmentTypes = [
+    "Follow-Up Visit",
+    "New Patient Visit",
+    "Nursing Only",
+    "Urgent Visit",
+    "Video Visit",
+    "Wellness Exam",
+  ];
+  const initialState: State = { message: "", errors: {} };
+  // @ts-ignore
+  const [state, formAction] = useFormState(createAppointment, initialState);
+  const { pending } = useFormStatus();
   return (
     <main className="flex-1 p-8 overflow-auto">
       <Card className="mb-6">
@@ -294,7 +324,54 @@ const GetPatientById = ({ patient }: any) => {
           </CardContent>
         </Card>
       </div>
-
+      <Card className="mb-7">
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-lg font-semibold">
+              Patient Records
+            </CardTitle>
+            <Link href={`/dashboard/create/record/${patient._id}`}>
+              <Button variant="outline">
+                <Plus className="mr-2 h-4 w-4" />
+                Add New Record
+              </Button>
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* <div className="space-y-4">
+            {patient.patientRecord.map((record) => (
+              <Card key={record._id}>
+                <CardHeader>
+                  <CardTitle className="text-lg">
+                    {record.vistType} - {record.department}
+                  </CardTitle>
+                  <CardDescription>
+                    {new Date(record.createdAt).toLocaleString()}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm mb-2">{record.description}</p>
+                  <div className="grid grid-cols-3 gap-2 text-sm">
+                    <div>
+                      <span className="font-medium">Temperature:</span>{" "}
+                      {record.physicalExamination.temperature}
+                    </div>
+                    <div>
+                      <span className="font-medium">Blood Pressure:</span>{" "}
+                      {record.physicalExamination.bloodPressure}
+                    </div>
+                    <div>
+                      <span className="font-medium">Weight:</span>{" "}
+                      {record.physicalExamination.weight} kg
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div> */}
+        </CardContent>
+      </Card>
       <Card className="mb-8">
         <CardHeader>
           <CardTitle className="text-lg font-semibold">
@@ -436,59 +513,128 @@ const GetPatientById = ({ patient }: any) => {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-semibold">
-              Patient Records
-            </CardTitle>
-            <Link href={`/dashboard/create/record/${patient._id}`}>
-              <Button variant="outline">
-                <Plus className="mr-2 h-4 w-4" />
-                Add New Record
-              </Button>
-            </Link>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {/* <div className="space-y-4">
-            {patient.patientRecord.map((record) => (
-              <Card key={record._id}>
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    {record.vistType} - {record.department}
-                  </CardTitle>
-                  <CardDescription>
-                    {new Date(record.createdAt).toLocaleString()}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm mb-2">{record.description}</p>
-                  <div className="grid grid-cols-3 gap-2 text-sm">
-                    <div>
-                      <span className="font-medium">Temperature:</span>{" "}
-                      {record.physicalExamination.temperature}
-                    </div>
-                    <div>
-                      <span className="font-medium">Blood Pressure:</span>{" "}
-                      {record.physicalExamination.bloodPressure}
-                    </div>
-                    <div>
-                      <span className="font-medium">Weight:</span>{" "}
-                      {record.physicalExamination.weight} kg
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div> */}
-        </CardContent>
-      </Card>
-
       <div className="flex justify-end space-x-2 mt-6">
-        <Link href={`/dashboard/create/appointment/${patient._id}`}>
+        {/* <Link href={`/dashboard/create/appointment/${patient._id}`}>
           <Button>Create Appointment</Button>
-        </Link>
+        </Link> */}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Create Appointment</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Create Appointment</DialogTitle>
+            </DialogHeader>
+            <form action={formAction}>
+              <div className="space-y-2 hidden">
+                <Label htmlFor="patientId">Patient ID</Label>
+                <Input
+                  id="patientId"
+                  name="patientId"
+                  value={patient.id}
+                  placeholder="Enter Patient ID"
+                  className={state?.errors?.patientId ? "border-red-500" : ""}
+                />
+                {state?.errors?.patientId && (
+                  <p className="text-red-500 text-sm">
+                    {state.errors.patientId[0]}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="appointmentType">Appointment Type</Label>
+                <Select name="appointmentType">
+                  <SelectTrigger
+                    className={
+                      state?.errors?.appointmentType ? "border-red-500" : ""
+                    }
+                  >
+                    <SelectValue placeholder="Select Appointment Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {appointmentTypes.map((item) => {
+                      return (
+                        <SelectItem key={item} value={item}>
+                          {item}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                {state?.errors?.appointmentType && (
+                  <p className="text-red-500 text-sm">
+                    {state.errors.appointmentType[0]}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="date">Date</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  name="date"
+                  className={state?.errors?.date ? "border-red-500" : ""}
+                />
+                {state?.errors?.date && (
+                  <p className="text-red-500 text-sm">{state.errors.date[0]}</p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="startTime">Start Time</Label>
+                <Select name="startTime">
+                  <SelectTrigger
+                    className={state?.errors?.startTime ? "border-red-500" : ""}
+                  >
+                    <SelectValue placeholder="Select a start time" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                      <SelectItem
+                        key={hour}
+                        value={`${hour.toString().padStart(2, "0")}:00`}
+                      >
+                        {`${hour.toString().padStart(2, "0")}:00`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {state?.errors?.startTime && (
+                  <p className="text-red-500 text-sm">
+                    {state.errors.startTime[0]}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="endTime">End Time</Label>
+                <Select name="endTime">
+                  <SelectTrigger
+                    className={state?.errors?.endTime ? "border-red-500" : ""}
+                  >
+                    <SelectValue placeholder="Select an End time" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                      <SelectItem
+                        key={hour}
+                        value={`${hour.toString().padStart(2, "0")}:00`}
+                      >
+                        {`${hour.toString().padStart(2, "0")}:00`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {state?.errors?.endTime && (
+                  <p className="text-red-500 text-sm">
+                    {state.errors.endTime[0]}
+                  </p>
+                )}
+              </div>
+              <DialogFooter className="mt-5">
+                <Button type="submit">Schedule Appointment</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </main>
   );
