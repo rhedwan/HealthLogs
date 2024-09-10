@@ -7,19 +7,63 @@ export function cn(...inputs: ClassValue[]) {
 export function formatDate(dateString: string, format: string): string {
   const date = new Date(dateString);
 
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date string provided");
+  }
+
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
   const year = date.getFullYear();
 
-  // Replace format tokens with actual date parts
-  const formattedDate = format
+  // Array of month names
+  const monthNamesShort = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const monthNamesLong = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  // Get short and full month names
+  const shortMonthName = monthNamesShort[date.getMonth()];
+  const longMonthName = monthNamesLong[date.getMonth()];
+
+  // Replace format tokens with actual date parts, handling 'MMMM' and 'MMM' first to avoid conflicts
+  let formattedDate = format
     .replace("DD", day)
-    .replace("MM", month)
     .replace("YYYY", String(year))
     .replace("YY", String(year).slice(-2));
 
+  // Replace 'MMMM' before 'MMM' to ensure long month names are handled first
+  formattedDate = formattedDate
+    .replace("MMMM", longMonthName)
+    .replace("MMM", shortMonthName)
+    .replace("MM", month); // 'MM' is handled last to avoid interfering with 'MMM' or 'MMMM'
+
   return formattedDate;
 }
+
 // Return duration
 export function timeDifference(startTime: any, endTime: any) {
   // Split the time strings into hours and minutes
