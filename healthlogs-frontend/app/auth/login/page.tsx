@@ -83,9 +83,9 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   disabled={pending}
-                  className="w-full bg-[#7457D3] hover:bg-[#5E45A8] text-white mt-6"
+                  className="w-full bg-[#7457D3] hover:bg-[#5E45A8] text-white mt-6 disabled:bg-purple-400 disabled:cursor-not-allowed"
                 >
-                  Log In
+                  {pending ? "Logging in" : "Log In"}
                 </Button>
                 <div className="mt-4 text-sm text-center">
                   <Link
