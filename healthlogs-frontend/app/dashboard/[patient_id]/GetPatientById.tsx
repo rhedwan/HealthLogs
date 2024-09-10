@@ -279,7 +279,7 @@ const GetPatientById = ({ patient }: any) => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      {/* <div className="grid grid-cols-3 gap-4 mb-8">
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
@@ -323,7 +323,7 @@ const GetPatientById = ({ patient }: any) => {
             <p className="text-sm text-gray-500 text-center">Normal</p>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
       <Card className="mb-7">
         <CardHeader>
           <div className="flex justify-between items-center">
@@ -333,7 +333,7 @@ const GetPatientById = ({ patient }: any) => {
             <Link href={`/dashboard/create/record/${patient._id}`}>
               <Button variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
-                Add New Record
+                Add New Encounter
               </Button>
             </Link>
           </div>
@@ -370,18 +370,6 @@ const GetPatientById = ({ patient }: any) => {
               </Card>
             ))}
           </div> */}
-        </CardContent>
-      </Card>
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">
-            History for 2023
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64">
-            <Line data={visitHistory} options={chartOptions} />
-          </div>
         </CardContent>
       </Card>
 
@@ -423,7 +411,7 @@ const GetPatientById = ({ patient }: any) => {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
-              Last visits (5)
+              Allegies (5)
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -463,7 +451,7 @@ const GetPatientById = ({ patient }: any) => {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
-              Examinations (9)
+              Family History (9)
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -635,6 +623,20 @@ const GetPatientById = ({ patient }: any) => {
             </form>
           </DialogContent>
         </Dialog>
+      </div>
+      <div>
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              History for 2023
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* <div className="h-64"> */}
+            <Line data={visitHistory} options={chartOptions} />
+            {/* </div> */}
+          </CardContent>
+        </Card>
       </div>
     </main>
   );

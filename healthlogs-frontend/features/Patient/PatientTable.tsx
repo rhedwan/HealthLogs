@@ -11,8 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
-import { formatDate } from "@/lib/utils";
+// import { formatDate } from "@/lib/utils";
 import { PatientSchema } from "@/app/dashboard/all-patient/page";
+import moment from "moment";
+
 const PatientTable = ({ patients_data }: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortColumn, setSortColumn] = useState("fileId");
@@ -88,7 +90,7 @@ const PatientTable = ({ patients_data }: any) => {
                 {patient.fileId}
               </TableCell>
               <TableCell>
-                <p>{formatDate(patient.dateOfBirth, "DD-MM-YYYY")}</p>
+                <p>{moment(patient.dateOfBirth).format("DD-MM-YYYY")}</p>
                 <p className="text-sm text-gray-500">{patient.gender}</p>
               </TableCell>
               <TableCell>
@@ -96,7 +98,7 @@ const PatientTable = ({ patients_data }: any) => {
                 <p className="text-sm text-gray-500">{patient.phoneNumber}</p>
               </TableCell>
               <TableCell>
-                {formatDate(patient.createdAt, "DD-MM-YYYY")}
+                {moment(patient.createdAt).format("DD-MM-YYYY")}
               </TableCell>
             </TableRow>
           ))}
