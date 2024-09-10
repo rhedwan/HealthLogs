@@ -412,6 +412,7 @@ import {
   BarElement,
   Title,
 } from "chart.js";
+import { extractTimeFromDate } from "@/lib/utils";
 // import withAuth from "../protected";
 
 ChartJS.register(
@@ -529,7 +530,7 @@ const GetDashboard = ({ data }: any) => {
               <Users className="h-4 w-4 opacity-70" />
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold">15</div>
+              <div className="text-4xl font-bold">{data.newPatient}</div>
             </CardContent>
           </Card>
         </div>
@@ -541,7 +542,7 @@ const GetDashboard = ({ data }: any) => {
             <Users className="h-4 w-4 opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold">47</div>
+            <div className="text-4xl font-bold">{data.totalPatient}</div>
           </CardContent>
         </Card>
         <Card className="bg-emerald-400 text-white">
@@ -561,7 +562,7 @@ const GetDashboard = ({ data }: any) => {
           <CardHeader>
             <CardTitle className="text-xl font-semibold flex items-center">
               <Calendar className="mr-2 h-5 w-5" />
-              {"Today's Appointments"} (15)
+              {"Today's Appointments"} {data?.appointmentForToday.length}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -575,48 +576,26 @@ const GetDashboard = ({ data }: any) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center">
-                      <Avatar className="h-8 w-8 mr-2">
-                        <AvatarImage src="/placeholder.svg" />
-                        <AvatarFallback>RC</AvatarFallback>
-                      </Avatar>
-                      Rosa Charles
-                    </div>
-                  </TableCell>
-                  <TableCell>Consultation</TableCell>
-                  <TableCell>Headache</TableCell>
-                  <TableCell>9:00 AM</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center">
-                      <Avatar className="h-8 w-8 mr-2">
-                        <AvatarImage src="/placeholder.svg" />
-                        <AvatarFallback>AW</AvatarFallback>
-                      </Avatar>
-                      Alexander Wells
-                    </div>
-                  </TableCell>
-                  <TableCell>Checkup</TableCell>
-                  <TableCell>Allergies</TableCell>
-                  <TableCell>9:30 AM</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center">
-                      <Avatar className="h-8 w-8 mr-2">
-                        <AvatarImage src="/placeholder.svg" />
-                        <AvatarFallback>MP</AvatarFallback>
-                      </Avatar>
-                      Mary Poppins
-                    </div>
-                  </TableCell>
-                  <TableCell>Follow-up</TableCell>
-                  <TableCell>Flu</TableCell>
-                  <TableCell>10:00 AM</TableCell>
-                </TableRow>
+                {data.appointmentForToday.map((appointment: any) => (
+                  <TableRow>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center">
+                        <Avatar className="h-8 w-8 mr-2">
+                          <AvatarImage src="/placeholder.svg" />
+                          <AvatarFallback>RC</AvatarFallback>
+                        </Avatar>
+                        {appointment.patient.firstName +
+                          " " +
+                          appointment.patient.lastName}
+                      </div>
+                    </TableCell>
+                    <TableCell>{appointment.appointmentType}</TableCell>
+                    <TableCell>{"Diagnosis"}</TableCell>
+                    <TableCell>
+                      {extractTimeFromDate(appointment.startTime)}
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>
