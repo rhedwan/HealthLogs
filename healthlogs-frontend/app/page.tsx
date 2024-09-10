@@ -169,13 +169,13 @@ export default function HomePage() {
       website: "www.rhedwan.com",
     },
     {
-      name: "Jane Smith",
-      role: "Head of Technology",
-      bio: "Jane Smith is a tech-savvy leader with a proven track record of driving innovation in healthcare.",
-      image: "/placeholder.svg?height=300&width=300",
-      linkedIn: "https://linkedin.com/in/rhedwan",
-      twitter: "https://x.com/_rhedwan",
-      website: "www.rhedwan.com",
+      name: "Chineletam Ugwuadu (Letam)",
+      role: "Software Engineer",
+      bio: "Solving world problems one line of code at a time",
+      image: "/letam.png",
+      linkedIn: "https://www.linkedin.com/in/chineletam-ugwuadu-87422622b/",
+      twitter: "https://x.com/LetamDavidson",
+      website: "https://letam.vercel.app/",
     },
   ];
 
