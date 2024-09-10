@@ -69,7 +69,6 @@ interface Patient {
 }
 
 const GetAppointment = ({ data }: any) => {
-  console.log(data);
   const initialState: State = { message: "", errors: {} };
   // @ts-ignore
   const [state, formAction] = useFormState(createAppointment, initialState);
