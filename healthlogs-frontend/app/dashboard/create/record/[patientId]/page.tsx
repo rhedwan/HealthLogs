@@ -250,9 +250,9 @@ export default function PatientEncounterPage() {
         </Card>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="">
           {/* Left Column - Previous Information */}
-          <Tabs defaultValue="summary" className="space-y-6">
+          {/* <Tabs defaultValue="summary" className="space-y-6">
             <TabsList>
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="graphs">Graphs</TabsTrigger>
@@ -360,7 +360,7 @@ export default function PatientEncounterPage() {
                 </CardContent>
               </Card>
             </TabsContent>
-          </Tabs>
+          </Tabs> */}
 
           {/* Right Column - New Encounter */}
           <Card>
@@ -464,6 +464,7 @@ export default function PatientEncounterPage() {
                       <Label htmlFor="bmi">BMI</Label>
                       <Input
                         id="bmi"
+                        disabled
                         name="bmi"
                         value={newEncounter.bmi}
                         onChange={handleInputChange}

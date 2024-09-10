@@ -271,117 +271,7 @@ export default function EncounterDetailsPage() {
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Previous Information */}
-          <Tabs defaultValue="summary" className="space-y-6">
-            <TabsList>
-              <TabsTrigger value="summary">Summary</TabsTrigger>
-              <TabsTrigger value="graphs">Graphs</TabsTrigger>
-            </TabsList>
 
-            <TabsContent value="summary">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Social Profile</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    <strong>Tobacco use:</strong> No tobacco use recorded
-                  </p>
-                  <p>
-                    <strong>Social history:</strong> Never smoker, 1-2 beers per
-                    night, no illicits
-                  </p>
-                  <p>
-                    <strong>Gender identity:</strong> No gender identity
-                    recorded
-                  </p>
-                  <p>
-                    <strong>Sexual orientation:</strong> No sexual orientation
-                    recorded
-                  </p>
-                  <p>
-                    <strong>Nutrition history:</strong> No nutrition history
-                    recorded
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Allergies</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="list-disc list-inside">
-                    <li>Peanut</li>
-                    <li>Penicillin G</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Family Health History</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    Father (deceased from colon cancer), Mother (hypertension)
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Past Medical History</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    <strong>Ongoing medical problems:</strong> Hypothyroidism,
-                    CAD, Melena, Colonic polyps, Diverticulosis
-                  </p>
-                  <p>
-                    <strong>Preventive care:</strong> Annual flu shot, up to
-                    date on DTaP
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Previous Encounters</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li>Nov 17, 2022 - Consultation</li>
-                    <li>Feb 21, 2022 - Re-visit</li>
-                    <li>Aug 3, 2022 - Scheduled visit</li>
-                    <li>Nov 17, 2021 - Scheduled visit</li>
-                    <li>Feb 21, 2021 - Consultation</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="graphs">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Weight Over Time</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Line options={chartOptions} data={weightData} />
-                </CardContent>
-              </Card>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Blood Pressure Over Time</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Line options={chartOptions} data={bpData} />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-
-          {/* Right Column - New Encounter Details and AI Diagnostic */}
           <Tabs defaultValue="new-encounter" className="space-y-6">
             <TabsList>
               <TabsTrigger value="new-encounter">New Encounter</TabsTrigger>
@@ -501,6 +391,117 @@ export default function EncounterDetailsPage() {
                       </p>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+          {/* Right Column - New Encounter Details and AI Diagnostic */}
+
+          <Tabs defaultValue="summary" className="space-y-6">
+            <TabsList>
+              <TabsTrigger value="summary">Summary</TabsTrigger>
+              <TabsTrigger value="graphs">Graphs</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="summary">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Social Profile</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    <strong>Tobacco use:</strong> No tobacco use recorded
+                  </p>
+                  <p>
+                    <strong>Social history:</strong> Never smoker, 1-2 beers per
+                    night, no illicits
+                  </p>
+                  <p>
+                    <strong>Gender identity:</strong> No gender identity
+                    recorded
+                  </p>
+                  <p>
+                    <strong>Sexual orientation:</strong> No sexual orientation
+                    recorded
+                  </p>
+                  <p>
+                    <strong>Nutrition history:</strong> No nutrition history
+                    recorded
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>Allergies</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="list-disc list-inside">
+                    <li>Peanut</li>
+                    <li>Penicillin G</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>Family Health History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    Father (deceased from colon cancer), Mother (hypertension)
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>Past Medical History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    <strong>Ongoing medical problems:</strong> Hypothyroidism,
+                    CAD, Melena, Colonic polyps, Diverticulosis
+                  </p>
+                  <p>
+                    <strong>Preventive care:</strong> Annual flu shot, up to
+                    date on DTaP
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>Previous Encounters</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    <li>Nov 17, 2022 - Consultation</li>
+                    <li>Feb 21, 2022 - Re-visit</li>
+                    <li>Aug 3, 2022 - Scheduled visit</li>
+                    <li>Nov 17, 2021 - Scheduled visit</li>
+                    <li>Feb 21, 2021 - Consultation</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="graphs">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Weight Over Time</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Line options={chartOptions} data={weightData} />
+                </CardContent>
+              </Card>
+
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>Blood Pressure Over Time</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Line options={chartOptions} data={bpData} />
                 </CardContent>
               </Card>
             </TabsContent>
