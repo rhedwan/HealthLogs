@@ -601,8 +601,8 @@ const GetPatientById = ({ patient }: any) => {
                     <TableRow key={history._id} className="items-center">
                       <TableCell>{history.description}</TableCell>
                       <div className="flex items-center mt-2">
-                        {history.relatives.map((relative) => (
-                          <Badge>{relative}</Badge>
+                        {history.relatives.map((relative, index) => (
+                          <Badge key={index}>{relative}</Badge>
                         ))}
                       </div>
                     </TableRow>
