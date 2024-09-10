@@ -169,8 +169,25 @@ exports.getAllPatientsAppointment = catchAsync(async (req, res, next) => {
     path: "patient",
     select: "firstName lastName fileId",
   });
+  const activeAppointments = appointments.filter(
+    (appointment) => appointment.status === "Active"
+  );
+  const completedAppointments = appointments.filter(
+    (appointment) => appointment.status === "Completed"
+  );
+  const nextAppointment =
+    activeAppointments.length > 0
+      ? activeAppointments.reduce((earliest, current) =>
+          new Date(current.date) < new Date(earliest.date) ? current : earliest
+        )
+      : null;
   res.status(201).json({
     status: "success",
     appointments,
+    metaData: {
+      activeAppointments: activeAppointments.length,
+      completedAppointments: completedAppointments.length,
+      nextAppointment: nextAppointment.date,
+    },
   });
 });
