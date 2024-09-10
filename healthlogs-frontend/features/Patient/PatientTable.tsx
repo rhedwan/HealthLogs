@@ -32,29 +32,29 @@ const PatientTable = ({ patients_data }: any) => {
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="p-4 border-b flex justify-between items-center">
-        <div className="flex items-center space-x-2">
+        {/* <div className="flex items-center space-x-2">
           <Input placeholder="All providers" className="w-40" />
           <Button variant="outline">Scheduled</Button>
           <Button variant="outline" className="bg-blue-100 text-blue-700">
             Recent
           </Button>
           <Button variant="outline">Show inactive</Button>
-        </div>
+        </div> */}
         <div className="flex items-center space-x-2">
           <Input
             type="text"
-            placeholder="Search by ID or name..."
+            placeholder="Search by File ID"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-64"
             aria-label="Search patients"
           />
-          <Link href="/dashboard/create/new-patient">
-            <Button className="bg-orange-500 text-white hover:bg-orange-600">
-              Add patient
-            </Button>
-          </Link>
         </div>
+        <Link href="/dashboard/create/new-patient">
+          <Button className="bg-orange-500 text-white hover:bg-orange-600">
+            Add patient
+          </Button>
+        </Link>
       </div>
       <Table>
         <TableHeader>
