@@ -39,6 +39,7 @@ import {
   Title,
 } from "chart.js";
 import { extractTimeFromDate } from "@/lib/utils";
+import { exportToCSV } from "@/lib/exportCsv";
 
 ChartJS.register(
   ArcElement,
@@ -63,7 +64,6 @@ const GetDashboard = ({ data }: any) => {
       },
     },
   };
-
   return (
     <main className="flex-1 p-8 overflow-auto">
       {/* {theData.status} */}
@@ -74,7 +74,7 @@ const GetDashboard = ({ data }: any) => {
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input className="pl-8" placeholder="Search..." />
           </div>
-          <Popover>
+          {/* <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" className="relative">
                 <Bell />
@@ -107,7 +107,7 @@ const GetDashboard = ({ data }: any) => {
                 </div>
               </div>
             </PopoverContent>
-          </Popover>
+          </Popover> */}
           <Avatar>
             <AvatarImage src="/placeholder.svg" />
             <AvatarFallback>CN</AvatarFallback>
@@ -200,9 +200,19 @@ const GetDashboard = ({ data }: any) => {
         {/* Pie chart */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl font-semibold flex items-center">
-              <FileText className="mr-2 h-5 w-5" />
-              Appointments by Diagnosis
+            <CardTitle className="text-xl font-semibold flex items-center justify-between">
+              <div className="text-xl font-semibold flex items-center">
+                <FileText className="mr-2 h-5 w-5" />
+                Appointments by Diagnosis
+              </div>
+              <Button
+                className="bg-purple-500 hover:bg-purple-700"
+                onClick={() =>
+                  exportToCSV(data.pieChartData, "Appointments by Diagnosis")
+                }
+              >
+                Export
+              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -214,9 +224,17 @@ const GetDashboard = ({ data }: any) => {
       {/* Patients by Gender */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl font-semibold flex items-center">
-            <BarChart className="mr-2 h-5 w-5" />
-            Patients by Gender
+          <CardTitle className="text-xl font-semibold flex items-center justify-between">
+            <div className="text-xl font-semibold flex items-center">
+              <BarChart className="mr-2 h-5 w-5" />
+              Patients by Gender
+            </div>
+            <Button
+              className="bg-purple-500 hover:bg-purple-700"
+              onClick={() => exportToCSV(data.chartData, "Patients by Gender")}
+            >
+              Export
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
