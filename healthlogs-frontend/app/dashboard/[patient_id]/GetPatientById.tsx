@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { PatientSchema } from "@/app/dashboard/all-patient/page";
+import { formatDate } from "@/lib/utils";
 
 ChartJS.register(
   CategoryScale,
@@ -311,24 +312,33 @@ const GetPatientById = ({ patient }: any) => {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
-              Appointments (3)
+              Appointments ({patient.patientAppointment.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableBody>
-                <TableRow>
-                  <TableCell>Consultation</TableCell>
-                  <TableCell className="text-right">Nov 17, 2023</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Scheduled visit</TableCell>
-                  <TableCell className="text-right">Feb 21, 2023</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Scheduled visit</TableCell>
-                  <TableCell className="text-right">Aug 3, 2023</TableCell>
-                </TableRow>
+                {patient.patientAppointment.map(
+                  (appointment: {
+                    _id: string;
+                    patient: string;
+                    appointmentType: string;
+                    duration: number;
+                    date: string;
+                    startTime: string;
+                    endTime: string;
+                    status: string;
+                    createdAt: string;
+                    updatedAt: string;
+                  }) => (
+                    <TableRow>
+                      <TableCell>{appointment.appointmentType}</TableCell>
+                      <TableCell className="text-right">
+                        {formatDate(appointment.startTime, "MMM DD, YYYY")}
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
               </TableBody>
             </Table>
           </CardContent>
@@ -336,7 +346,7 @@ const GetPatientById = ({ patient }: any) => {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
-              Last visits (6)
+              Last visits (5)
             </CardTitle>
           </CardHeader>
           <CardContent>
