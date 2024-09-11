@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -57,7 +57,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { PatientSchema } from "@/app/dashboard/all-patient/page";
-import { formatDate } from "@/lib/utils";
+import { closeModalAndToast, formatDate } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useFormState, useFormStatus } from "react-dom";
@@ -66,6 +66,9 @@ import { PatientRecord } from "@/schema/PatientRecord";
 import { PatientAllergy } from "@/schema/PatientAllergy";
 import { PatientFamilyHistory } from "@/schema/PatientFamilyHistory";
 import { exportToCSV } from "@/lib/exportCsv";
+import { Textarea } from "@/components/ui/textarea";
+import { AddAllergy } from "@/app/actions/allergy";
+import { useToast } from "@/hooks/use-toast";
 
 ChartJS.register(
   CategoryScale,
@@ -78,6 +81,7 @@ ChartJS.register(
 );
 
 const GetPatientById = ({ patient }: any) => {
+  const { toast } = useToast();
   const visitHistory = {
     labels: [
       "Jan",
@@ -127,9 +131,49 @@ const GetPatientById = ({ patient }: any) => {
     "Wellness Exam",
   ];
   const initialState: State = { message: "", errors: {} };
+  const [appointmentState, formActionAppointment] = useFormState(
+    // @ts-ignore
+    createAppointment,
+    initialState
+  );
+  const addAllergyWithId = useCallback(
+    (prevState: any, formData: FormData) =>
+      AddAllergy(prevState, formData, patient.id),
+    [patient.id]
+  );
   // @ts-ignore
-  const [state, formAction] = useFormState(createAppointment, initialState);
+  const [allergyState, formActionAllergy] = useFormState(
+    addAllergyWithId,
+    initialState
+  );
   const { pending } = useFormStatus();
+  const [openAllergy, setOpenAllergy] = useState(false);
+  const [openAppointment, setOpenAppointment] = useState(false);
+
+  useEffect(() => {
+    closeModalAndToast(
+      allergyState,
+      formActionAllergy,
+      toast,
+      openAllergy,
+      setOpenAllergy,
+      "Success",
+      "The allergy has been added to the patient's record.",
+      "Allergy added successfully!"
+    );
+  }, [allergyState.message, openAllergy]);
+  useEffect(() => {
+    closeModalAndToast(
+      appointmentState,
+      formActionAppointment,
+      toast,
+      openAppointment,
+      setOpenAppointment,
+      "Success",
+      "Appointment added successfully!",
+      "Appointment added successfully!"
+    );
+  }, [appointmentState.message, openAppointment]);
   return (
     <main className="flex-1 p-8 overflow-auto">
       <Card className="mb-6">
@@ -399,7 +443,16 @@ const GetPatientById = ({ patient }: any) => {
               <p className="text-lg font-semibold">
                 Appointments ({patient.patientAppointment.length})
               </p>
-              <Dialog>
+              <Dialog
+                open={openAppointment}
+                onOpenChange={(newOpen) => {
+                  setOpenAppointment(newOpen);
+                  if (!newOpen) {
+                    // Reset the state when closing the dialog
+                    // formActionAppointment(new FormData());
+                  }
+                }}
+              >
                 <DialogTrigger asChild>
                   <Button>New +</Button>
                 </DialogTrigger>
@@ -407,7 +460,7 @@ const GetPatientById = ({ patient }: any) => {
                   <DialogHeader>
                     <DialogTitle>Create Appointment</DialogTitle>
                   </DialogHeader>
-                  <form action={formAction}>
+                  <form action={formActionAppointment}>
                     <div className="space-y-2 hidden">
                       <Label htmlFor="patientId">Patient ID</Label>
                       <Input
@@ -416,12 +469,14 @@ const GetPatientById = ({ patient }: any) => {
                         value={patient.fileId}
                         placeholder="Enter Patient ID"
                         className={
-                          state?.errors?.patientId ? "border-red-500" : ""
+                          appointmentState?.errors?.patientId
+                            ? "border-red-500"
+                            : ""
                         }
                       />
-                      {state?.errors?.patientId && (
+                      {appointmentState?.errors?.patientId && (
                         <p className="text-red-500 text-sm">
-                          {state.errors.patientId[0]}
+                          {appointmentState.errors.patientId[0]}
                         </p>
                       )}
                     </div>
@@ -430,7 +485,7 @@ const GetPatientById = ({ patient }: any) => {
                       <Select name="appointmentType">
                         <SelectTrigger
                           className={
-                            state?.errors?.appointmentType
+                            appointmentState?.errors?.appointmentType
                               ? "border-red-500"
                               : ""
                           }
@@ -447,9 +502,9 @@ const GetPatientById = ({ patient }: any) => {
                           })}
                         </SelectContent>
                       </Select>
-                      {state?.errors?.appointmentType && (
+                      {appointmentState?.errors?.appointmentType && (
                         <p className="text-red-500 text-sm">
-                          {state.errors.appointmentType[0]}
+                          {appointmentState.errors.appointmentType[0]}
                         </p>
                       )}
                     </div>
@@ -459,11 +514,13 @@ const GetPatientById = ({ patient }: any) => {
                         id="date"
                         type="date"
                         name="date"
-                        className={state?.errors?.date ? "border-red-500" : ""}
+                        className={
+                          appointmentState?.errors?.date ? "border-red-500" : ""
+                        }
                       />
-                      {state?.errors?.date && (
+                      {appointmentState?.errors?.date && (
                         <p className="text-red-500 text-sm">
-                          {state.errors.date[0]}
+                          {appointmentState.errors.date[0]}
                         </p>
                       )}
                     </div>
@@ -472,7 +529,9 @@ const GetPatientById = ({ patient }: any) => {
                       <Select name="startTime">
                         <SelectTrigger
                           className={
-                            state?.errors?.startTime ? "border-red-500" : ""
+                            appointmentState?.errors?.startTime
+                              ? "border-red-500"
+                              : ""
                           }
                         >
                           <SelectValue placeholder="Select a start time" />
@@ -490,9 +549,9 @@ const GetPatientById = ({ patient }: any) => {
                           )}
                         </SelectContent>
                       </Select>
-                      {state?.errors?.startTime && (
+                      {appointmentState?.errors?.startTime && (
                         <p className="text-red-500 text-sm">
-                          {state.errors.startTime[0]}
+                          {appointmentState.errors.startTime[0]}
                         </p>
                       )}
                     </div>
@@ -501,7 +560,9 @@ const GetPatientById = ({ patient }: any) => {
                       <Select name="endTime">
                         <SelectTrigger
                           className={
-                            state?.errors?.endTime ? "border-red-500" : ""
+                            appointmentState?.errors?.endTime
+                              ? "border-red-500"
+                              : ""
                           }
                         >
                           <SelectValue placeholder="Select an End time" />
@@ -519,14 +580,16 @@ const GetPatientById = ({ patient }: any) => {
                           )}
                         </SelectContent>
                       </Select>
-                      {state?.errors?.endTime && (
+                      {appointmentState?.errors?.endTime && (
                         <p className="text-red-500 text-sm">
-                          {state.errors.endTime[0]}
+                          {appointmentState.errors.endTime[0]}
                         </p>
                       )}
                     </div>
                     <DialogFooter className="mt-5">
-                      <Button type="submit">Schedule Appointment</Button>
+                      <Button type="submit">
+                        {pending ? "Scheduling..." : " Schedule Appointment"}
+                      </Button>
                     </DialogFooter>
                   </form>
                 </DialogContent>
@@ -563,8 +626,140 @@ const GetPatientById = ({ patient }: any) => {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              Allegies ({patient.patientAllergy.length})
+            <CardTitle className="flex items-center justify-between">
+              <p className="text-lg font-semibold">
+                Allegies ({patient.patientAllergy.length})
+              </p>
+              <Dialog
+                open={openAllergy}
+                onOpenChange={(newOpen) => {
+                  setOpenAllergy(newOpen);
+                  if (!newOpen) {
+                    // Reset the state when closing the dialog
+                    // formActionAllergy(new FormData());
+                  }
+                }}
+              >
+                <DialogTrigger asChild>
+                  <Button>New Allergy</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Create New Allergy</DialogTitle>
+                  </DialogHeader>
+                  <form action={formActionAllergy}>
+                    <div className="space-y-2">
+                      <Label htmlFor="allergen">Allergen</Label>
+                      <Select name="allergen">
+                        <SelectTrigger
+                          className={
+                            allergyState?.errors?.allergen
+                              ? "border-red-500"
+                              : ""
+                          }
+                        >
+                          <SelectValue placeholder="Select Allergen" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={"Food"}>Food</SelectItem>
+                          <SelectItem value={"Drug"}>Drug</SelectItem>
+                          <SelectItem value={"Environment"}>
+                            Environment
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {allergyState?.errors?.allergen && (
+                        <p className="text-red-500 text-sm">
+                          {allergyState.errors.allergen[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="severity">Severity</Label>
+                      <Select name="severity">
+                        <SelectTrigger
+                          className={
+                            allergyState?.errors?.severity
+                              ? "border-red-500"
+                              : ""
+                          }
+                        >
+                          <SelectValue placeholder="Select Severity" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={"Very Mild"}>Very Mild</SelectItem>
+                          <SelectItem value={"Mild"}>Mild</SelectItem>
+                          <SelectItem value={"Moderate"}>Moderate</SelectItem>
+                          <SelectItem value={"Severe"}>Severe</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {allergyState?.errors?.severity && (
+                        <p className="text-red-500 text-sm">
+                          {allergyState.errors.severity[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="reaction">Reaction</Label>
+                      <Input
+                        id="reaction"
+                        type="text"
+                        name="reaction"
+                        className={
+                          allergyState?.errors?.reaction ? "border-red-500" : ""
+                        }
+                      />
+                      {allergyState?.errors?.reaction && (
+                        <p className="text-red-500 text-sm">
+                          {allergyState.errors.reaction[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="comment">Comment</Label>
+                      <Textarea
+                        id="comment"
+                        name="comment"
+                        className={
+                          allergyState?.errors?.comment ? "border-red-500" : ""
+                        }
+                      />
+                      {allergyState?.errors?.comment && (
+                        <p className="text-red-500 text-sm">
+                          {allergyState.errors.comment[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor="onset">Onset</Label>
+                      <Select name="onset">
+                        <SelectTrigger
+                          className={
+                            allergyState?.errors?.onset ? "border-red-500" : ""
+                          }
+                        >
+                          <SelectValue placeholder="Select an onset" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Childhood">Childhood</SelectItem>
+                          <SelectItem value="Adulthood">Adulthood</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {allergyState?.errors?.onset && (
+                        <p className="text-red-500 text-sm">
+                          {allergyState.errors.onset[0]}
+                        </p>
+                      )}
+                    </div>
+
+                    <DialogFooter className="mt-5">
+                      <Button type="submit">
+                        {pending ? "Adding..." : "Add Allergy"}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </CardTitle>
           </CardHeader>
           <CardContent>

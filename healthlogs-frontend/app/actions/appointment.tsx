@@ -84,8 +84,8 @@ export async function createAppointment(prevState: State, formData: FormData) {
       formData.get("date") as string
     ),
     duration: timeDifference(
-      formData.get("startTime"),
-      formData.get("endTime")
+      formData.get("startTime") as string,
+      formData.get("endTime") as string
     ),
     status: "Active",
   });
@@ -102,14 +102,17 @@ export async function createAppointment(prevState: State, formData: FormData) {
   console.log(validatedFields);
   try {
     console.log("Sending request to API...");
-    const response = await fetch(`${url}api/v1/appointment`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(validatedFields.data),
-    });
+    const response = await fetch(
+      `${url}api/v1/appointment/${formData.get("patientId")}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(validatedFields.data),
+      }
+    );
 
     if (!response.ok) {
       const errorBody = await response.text();
@@ -121,6 +124,8 @@ export async function createAppointment(prevState: State, formData: FormData) {
     const data = await response.json();
     console.log(data);
     revalidatePath("/dashboard/appointment"); // Update cached posts
+    revalidatePath(`/dashboard/${data.appointment.patient}`); // Update cached posts
+
     return {
       message: "Appointment added successfully!",
     };
@@ -130,6 +135,6 @@ export async function createAppointment(prevState: State, formData: FormData) {
       message: "An error occurred while submitting Appointment data.",
     };
   } finally {
-    redirect(`/dashboard/appointment`); // Navigate to the new post page
+    // redirect(`/dashboard/appointment`); // Navigate to the new post page
   }
 }
