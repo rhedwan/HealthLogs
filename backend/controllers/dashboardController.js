@@ -3,7 +3,10 @@ const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const { MedicalRecord } = require("../models/medicalRecordModel");
 exports.dashboardOverview = catchAsync(async (req, res, next) => {
-  users = await User.find({ role: "patient" });
+  const users = await User.find({ role: "patient" });
+  const staffCount = await User.countDocuments({
+    role: { $in: ["admin", "doctor"] },
+  });
 
   const currentDate = new Date();
   const past30Days = new Date(currentDate.setDate(currentDate.getDate() - 30));
@@ -154,10 +157,16 @@ exports.dashboardOverview = catchAsync(async (req, res, next) => {
     }
   });
 
+  const patientCount = users.length;
+
+  let staffToPatientRatio = staffCount / patientCount;
+  let formattedRatio = `1:${Math.round(1 / staffToPatientRatio)}`;
+
   res.status(200).json({
     status: "success",
     newPatient: past30DaysPatient.length,
     totalPatient: users.length,
+    doctorToPatientRatio: formattedRatio,
     appointmentForToday,
     pieChartData,
     chartData,
