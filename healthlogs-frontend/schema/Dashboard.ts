@@ -1,4 +1,4 @@
-export interface PieChartData {
+export interface ChartJSData {
   labels: string[];
   datasets: [
     {

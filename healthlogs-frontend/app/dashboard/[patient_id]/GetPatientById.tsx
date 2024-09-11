@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,9 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Line } from "react-chartjs-2";
 import {
   Dialog,
   DialogContent,
@@ -23,16 +21,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
 import {
   Select,
   SelectContent,
@@ -57,7 +45,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { PatientSchema } from "@/app/dashboard/all-patient/page";
-import { closeModalAndToast, formatDate } from "@/lib/utils";
+import { closeModalAndToast, formatDate, formatDateChart } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useFormState, useFormStatus } from "react-dom";
@@ -65,63 +53,32 @@ import { State, createAppointment } from "@/app/actions/appointment";
 import { PatientRecord } from "@/schema/PatientRecord";
 import { PatientAllergy } from "@/schema/PatientAllergy";
 import { PatientFamilyHistory } from "@/schema/PatientFamilyHistory";
-import { exportToCSV } from "@/lib/exportCsv";
+import { exportToCSV, exportToCSVRecharts } from "@/lib/exportCsv";
 import { Textarea } from "@/components/ui/textarea";
 import { AddAllergy } from "@/app/actions/allergy";
 import { useToast } from "@/hooks/use-toast";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
-  Legend
-);
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 const GetPatientById = ({ patient }: any) => {
   const { toast } = useToast();
-  const visitHistory = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-    datasets: [
-      {
-        data: [2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 6, 1],
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
-      },
-    ],
-  };
+  const visits = [
+    { date: "2023-01-15", weight: 180, systolic: 120, diastolic: 80 },
+    { date: "2023-02-20", weight: 182, systolic: 122, diastolic: 82 },
+    { date: "2023-03-18", weight: 181, systolic: 125, diastolic: 83 },
+    { date: "2023-04-22", weight: 183, systolic: 123, diastolic: 81 },
+    { date: "2023-05-20", weight: 180, systolic: 121, diastolic: 80 },
+    { date: "2023-06-17", weight: 179, systolic: 120, diastolic: 79 },
+  ];
 
-  const chartOptions = {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          stepSize: 2,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-  };
   const appointmentTypes = [
     "Follow-Up Visit",
     "New Patient Visit",
@@ -842,7 +799,7 @@ const GetPatientById = ({ patient }: any) => {
         </Card>
       </div>
 
-      <div>
+      {/* <div>
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -857,11 +814,99 @@ const GetPatientById = ({ patient }: any) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {/* <div className="h-64"> */}
             <Line data={visitHistory} options={chartOptions} />
-            {/* </div> */}
           </CardContent>
         </Card>
+      </div> */}
+      <div>
+        <Tabs defaultValue="bloodPressure" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="weight">Weight</TabsTrigger>
+            <TabsTrigger value="bloodPressure">Blood Pressure</TabsTrigger>
+          </TabsList>
+          <TabsContent value="weight">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <p>Weight Over Time</p>
+                  <Button
+                    className="bg-purple-500 hover:bg-purple-700"
+                    onClick={() => exportToCSVRecharts(visits)}
+                  >
+                    Export
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={visits}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" tickFormatter={formatDateChart} />
+                    <YAxis />
+                    <Tooltip
+                      labelFormatter={formatDateChart}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--background))",
+                        borderColor: "hsl(var(--border))",
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="weight"
+                      stroke="hsl(var(--primary))"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="bloodPressure">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <p>Blood Pressure Over Time</p>
+                  <Button
+                    className="bg-purple-500 hover:bg-purple-700"
+                    onClick={() => exportToCSVRecharts(visits)}
+                  >
+                    Export
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={visits}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" tickFormatter={formatDateChart} />
+                    <YAxis />
+                    <Tooltip
+                      labelFormatter={formatDateChart}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--background))",
+                        borderColor: "hsl(var(--border))",
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="systolic"
+                      stroke="hsl(var(--destructive))"
+                      activeDot={{ r: 8 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="diastolic"
+                      stroke="hsl(var(--primary))"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </main>
   );
