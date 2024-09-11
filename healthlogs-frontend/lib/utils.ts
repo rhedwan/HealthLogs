@@ -145,6 +145,10 @@ export function extractTimeFromDate(dateString: string): string {
 
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
+export const formatDateChart = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+};
 
 export const closeModalAndToast = (
   state: { message: string },
