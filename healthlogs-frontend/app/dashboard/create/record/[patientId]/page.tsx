@@ -44,7 +44,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
+import { State, createRecord } from "@/app/actions/record";
+import { useFormState } from "react-dom";
+import { toast } from "@/hooks/use-toast";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -55,74 +57,12 @@ ChartJS.register(
   Legend
 );
 
-export default function PatientEncounterPage() {
-  const [newEncounter, setNewEncounter] = useState({
-    encounterType: "",
-    noteType: "",
-    date: "",
-    seenBy: "",
-    chiefComplaint: "",
-    height: "",
-    weight: "",
-    bmi: "",
-    bloodPressure: "",
-    temperature: "",
-    pulse: "",
-  });
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setNewEncounter((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSelectChange = (name: string) => (value: string) => {
-    setNewEncounter((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const weightData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Weight (lbs)",
-        data: [180, 182, 181, 183, 180, 179],
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
-      },
-    ],
-  };
-
-  const bpData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Systolic",
-        data: [120, 122, 125, 123, 121, 120],
-        borderColor: "rgb(255, 99, 132)",
-        tension: 0.1,
-      },
-      {
-        label: "Diastolic",
-        data: [80, 82, 83, 81, 80, 79],
-        borderColor: "rgb(54, 162, 235)",
-        tension: 0.1,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Patient Data Over Time",
-      },
-    },
-  };
+export default function PatientEncounterPage({
+  params,
+}: {
+  params: { patientId: string };
+}) {
+  const { patientId } = params;
 
   // Mock patient data
   const patient = {
@@ -143,7 +83,15 @@ export default function PatientEncounterPage() {
       genotype: "AA",
     },
   };
-
+  const initialState: State = { message: "", errors: {} };
+  // @ts-ignore
+  const [state, formAction] = useFormState(createRecord, initialState);
+  if (state.message === "Patient Record created successfully!") {
+    toast({
+      title: "Success",
+      description: "Patient Record created successfully!",
+    });
+  }
   return (
     <main className="flex-1 p-8 overflow-auto">
       <div className="container mx-auto">
@@ -368,63 +316,77 @@ export default function PatientEncounterPage() {
               <CardTitle>New Encounter</CardTitle>
             </CardHeader>
             <CardContent>
-              <form className="space-y-4">
+              <form className="space-y-4" action={formAction}>
+                <div className="hidden">
+                  <Label htmlFor="patient">Patient ID</Label>
+                  <Input id="patient" name="patient" value={patientId} />
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="encounterType">Encounter Type</Label>
-                    <Select
-                      name="encounterType"
-                      value={newEncounter.encounterType}
-                      onValueChange={handleSelectChange("encounterType")}
-                    >
-                      <SelectTrigger>
+                    <Label htmlFor="visitType">Visit Type</Label>
+                    <Select name="visitType">
+                      <SelectTrigger
+                        className={
+                          state.errors?.visitType ? "border-red-500" : ""
+                        }
+                      >
                         <SelectValue placeholder="Select encounter type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="office-visit">
-                          Office Visit
-                        </SelectItem>
-                        <SelectItem value="follow-up">Follow-up</SelectItem>
-                        <SelectItem value="emergency">Emergency</SelectItem>
+                        <SelectItem value="Follow-Up">Follow-Up</SelectItem>
+                        <SelectItem value="In Patient">In Patient</SelectItem>
+                        <SelectItem value="Emergency">Emergency</SelectItem>
+                        <SelectItem value="Out Patient">Out Patient</SelectItem>
                       </SelectContent>
                     </Select>
+                    {state.errors?.visitType && (
+                      <p className="text-red-500 text-sm">
+                        {state.errors.visitType[0]}
+                      </p>
+                    )}
                   </div>
                   <div>
-                    <Label htmlFor="noteType">Note Type</Label>
-                    <Select
-                      name="noteType"
-                      value={newEncounter.noteType}
-                      onValueChange={handleSelectChange("noteType")}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select note type" />
+                    <Label htmlFor="department">Department</Label>
+                    <Select name="department">
+                      <SelectTrigger
+                        className={
+                          state.errors?.department ? "border-red-500" : ""
+                        }
+                      >
+                        <SelectValue placeholder="Select Department" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="case-review">Case Review</SelectItem>
-                        <SelectItem value="progress-note">
-                          Progress Note
+                        <SelectItem value="Cardiology">Cardiology</SelectItem>
+                        <SelectItem value="Obstetrics and Gynecology">
+                          Obstetrics and Gynecology
                         </SelectItem>
+                        <SelectItem value="Oncology">Oncology</SelectItem>
+                        <SelectItem value="Orthopedics">Orthopedics</SelectItem>
+                        <SelectItem value="Radiology">Radiology</SelectItem>
                       </SelectContent>
                     </Select>
+                    {state.errors?.department && (
+                      <p className="text-red-500 text-sm">
+                        {state.errors.department[0]}
+                      </p>
+                    )}
                   </div>
+
                   <div>
-                    <Label htmlFor="date">Date</Label>
+                    <Label htmlFor="healthConcerns">Health Concerns</Label>
                     <Input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={newEncounter.date}
-                      onChange={handleInputChange}
+                      id="healthConcerns"
+                      name="healthConcerns"
+                      placeholder="Health Concerns"
+                      className={
+                        state.errors?.healthConcerns ? "border-red-500" : ""
+                      }
                     />
-                  </div>
-                  <div>
-                    <Label htmlFor="seenBy">Seen By</Label>
-                    <Input
-                      id="seenBy"
-                      name="seenBy"
-                      value={newEncounter.seenBy}
-                      onChange={handleInputChange}
-                    />
+                    {state.errors?.healthConcerns && (
+                      <p className="text-red-500 text-sm">
+                        {state.errors.healthConcerns[0]}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -434,9 +396,15 @@ export default function PatientEncounterPage() {
                     id="chiefComplaint"
                     name="chiefComplaint"
                     placeholder="Add any problems or symptoms here"
-                    value={newEncounter.chiefComplaint}
-                    onChange={handleInputChange}
+                    className={
+                      state.errors?.chiefComplaint ? "border-red-500" : ""
+                    }
                   />
+                  {state.errors?.chiefComplaint && (
+                    <p className="text-red-500 text-sm">
+                      {state.errors.chiefComplaint[0]}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -447,55 +415,149 @@ export default function PatientEncounterPage() {
                       <Input
                         id="height"
                         name="height"
-                        value={newEncounter.height}
-                        onChange={handleInputChange}
+                        type="number"
+                        className={
+                          // @ts-ignore
+                          state.errors?.physicalExamination?.height
+                            ? "border-red-500"
+                            : ""
+                        }
                       />
+                      {/* @ts-ignore */}
+                      {state.errors?.physicalExamination?.height && (
+                        <p className="text-red-500 text-sm">
+                          {/* @ts-ignore */}
+                          {state.errors.physicalExamination?.height[0]}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="weight">Weight (lb)</Label>
                       <Input
                         id="weight"
                         name="weight"
-                        value={newEncounter.weight}
-                        onChange={handleInputChange}
+                        type="number"
+                        className={
+                          // @ts-ignore
+                          state.errors?.physicalExamination?.weight
+                            ? "border-red-500"
+                            : ""
+                        }
                       />
+                      {/* @ts-ignore */}
+                      {state.errors?.physicalExamination?.weight && (
+                        <p className="text-red-500 text-sm">
+                          {/* @ts-ignore */}
+                          {state.errors.physicalExamination?.weight[0]}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="bmi">BMI</Label>
-                      <Input
-                        id="bmi"
-                        disabled
-                        name="bmi"
-                        value={newEncounter.bmi}
-                        onChange={handleInputChange}
-                      />
+                      <Input id="bmi" disabled name="bmi" value={88} />
                     </div>
                     <div>
-                      <Label htmlFor="bloodPressure">Blood Pressure</Label>
-                      <Input
-                        id="bloodPressure"
-                        name="bloodPressure"
-                        value={newEncounter.bloodPressure}
-                        onChange={handleInputChange}
-                      />
+                      <Label>Blood Pressure</Label>
+                      <div className="flex items-center space-x-1">
+                        <div className="flex flex-col">
+                          <Input
+                            id="systolicPressure"
+                            name="systolicPressure"
+                            placeholder="Systo"
+                            type="number"
+                            className={
+                              // @ts-ignore
+                              state.errors?.physicalExamination?.height
+                                ? "border-red-500"
+                                : ""
+                            }
+                          />
+                          {/* @ts-ignore */}
+                          {state.errors?.physicalExamination?.bloodPressure
+                            ?.systolicPressure && (
+                            <p className="text-red-500 text-sm">
+                              {
+                                // @ts-ignore
+                                state.errors?.physicalExamination?.bloodPressure
+                                  ?.systolicPressure[0]
+                              }
+                            </p>
+                          )}
+                        </div>
+                        <p>/</p>
+                        <div className="flex flex-col">
+                          <Input
+                            id="diastolicPressure"
+                            name="diastolicPressure"
+                            placeholder="Diasto"
+                            type="number"
+                            className={
+                              // @ts-ignore
+                              state.errors?.physicalExamination?.bloodPressure
+                                ?.diastolicPressure
+                                ? "border-red-500"
+                                : ""
+                            }
+                          />
+                          {/* @ts-ignore */}
+                          {state.errors?.physicalExamination?.bloodPressure
+                            ?.diastolicPressure && (
+                            <p className="text-red-500 text-sm">
+                              {
+                                // @ts-ignore
+                                state.errors?.physicalExamination?.bloodPressure
+                                  ?.diastolicPressure[0]
+                              }
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="temperature">Temperature (°F)</Label>
                       <Input
                         id="temperature"
                         name="temperature"
-                        value={newEncounter.temperature}
-                        onChange={handleInputChange}
+                        type="number"
+                        className={
+                          // @ts-ignore
+                          state.errors?.physicalExamination?.temperature
+                            ? "border-red-500"
+                            : ""
+                        }
                       />
+                      {/* @ts-ignore */}
+                      {state.errors?.physicalExamination?.temperature && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            // @ts-ignore
+                            state.errors?.physicalExamination?.temperature[0]
+                          }
+                        </p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="pulse">Pulse (bpm)</Label>
                       <Input
                         id="pulse"
                         name="pulse"
-                        value={newEncounter.pulse}
-                        onChange={handleInputChange}
+                        type="number"
+                        className={
+                          // @ts-ignore
+                          state.errors?.physicalExamination?.pulse
+                            ? "border-red-500"
+                            : ""
+                        }
                       />
+                      {/* @ts-ignore */}
+                      {state.errors?.physicalExamination?.pulse && (
+                        <p className="text-red-500 text-sm">
+                          {
+                            // @ts-ignore
+                            state.errors?.physicalExamination?.pulse[0]
+                          }
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
