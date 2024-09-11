@@ -174,7 +174,8 @@ exports.getPatientById = catchAsync(async (req, res, next) => {
     .populate({
       path: "patientAllergy",
     })
-    .populate("patientFamilyHistory");
+    .populate("patientFamilyHistory")
+    .lean();
 
   const visits = currentPatient.patientRecord.map((record) => {
     const physicalExam = record.physicalExamination || {};
@@ -186,10 +187,9 @@ exports.getPatientById = catchAsync(async (req, res, next) => {
       diastolic: bp.diastolicPressure || 0,
     };
   });
-
+  currentPatient.visits = visits;
   res.status(200).json({
     status: "success",
-    visits,
     currentPatient,
   });
 });
