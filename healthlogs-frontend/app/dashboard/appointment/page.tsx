@@ -13,7 +13,13 @@ const AppointmentPage = async () => {
     },
   });
   let appointments_data = await data.json();
-  return <GetAppointment data={appointments_data.appointments} />;
+  console.log(appointments_data.metaData);
+  return (
+    <GetAppointment
+      data={appointments_data.appointments}
+      metaData={appointments_data.metaData}
+    />
+  );
 };
 
 export default AppointmentPage;
