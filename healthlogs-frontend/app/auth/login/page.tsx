@@ -16,6 +16,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { State, login } from "@/app/actions/auth";
 import { useFormState, useFormStatus } from "react-dom";
+import Image from "next/image";
 
 export default function LoginPage() {
   const initialState: State = { message: "", errors: {} };
@@ -26,10 +27,18 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2">
+          {/* <Link href="/" className="inline-flex items-center space-x-2">
             <FileHeart className="h-8 w-8 text-[#7457D3]" />
             <span className="text-2xl font-bold text-gray-800">HealthLogs</span>
-          </Link>
+          </Link> */}
+
+          <Image
+            className="inline-flex items-center space-x-2"
+            src="/logo.png"
+            width={180}
+            height={90}
+            alt="Logo"
+          />
         </div>
         <Card>
           <CardHeader>
@@ -87,23 +96,28 @@ export default function LoginPage() {
                 >
                   {pending ? "Logging in" : "Log In"}
                 </Button>
-                <div className="mt-4 text-sm text-center">
+                {/* <div className="mt-4 text-sm text-center">
                   <Link
                     href="/forgot-password"
                     className="text-[#7457D3] hover:underline"
                   >
                     Forgot password?
                   </Link>
-                </div>
+                </div>*/}
               </CardFooter>
             </form>
           </CardContent>
         </Card>
         <div className="mt-8 text-center text-sm text-gray-600">
+          <p className="text-[#7457D3]">
+            {"Don't have an account? Contact your administrator"}
+          </p>
+          {/*
           {"Don't have an account?"}{" "}
-          <Link href="/register" className="text-[#7457D3] hover:underline">
-            Contact your administrator
-          </Link>
+         <Link
+            href="/register"
+            className="text-[#7457D3] hover:underline"
+          ></Link> */}
         </div>
       </div>
     </div>
