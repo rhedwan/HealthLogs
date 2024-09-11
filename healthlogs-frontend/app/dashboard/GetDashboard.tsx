@@ -11,6 +11,7 @@ import {
   Calendar,
   FileText,
   Home,
+  LogOutIcon,
   Search,
   Users,
 } from "lucide-react";
@@ -27,6 +28,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Pie, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -40,6 +51,7 @@ import {
 } from "chart.js";
 import { extractTimeFromDate } from "@/lib/utils";
 import { exportToCSV } from "@/lib/exportCsv";
+import { logout } from "../actions/auth";
 
 ChartJS.register(
   ArcElement,
@@ -70,10 +82,10 @@ const GetDashboard = ({ data }: any) => {
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold">Overview</h2>
         <div className="flex items-center space-x-4">
-          <div className="relative">
+          {/* <div className="relative">
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input className="pl-8" placeholder="Search..." />
-          </div>
+          </div> */}
           {/* <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" className="relative">
@@ -108,10 +120,46 @@ const GetDashboard = ({ data }: any) => {
               </div>
             </PopoverContent>
           </Popover> */}
-          <Avatar>
-            <AvatarImage src="/placeholder.svg" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Avatar className="cursor-pointer">
+                <AvatarImage src="/placeholder.svg" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </PopoverTrigger>
+            <PopoverContent className="w-40 flex justify-center mr-8">
+              <div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <div className="flex items-center space-x-2 cursor-pointer">
+                      <LogOutIcon className="size-5" />
+                      <p>Log Out</p>
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <p className="text-center font-bold text-xl">Log Out?</p>
+                    <div className="flex space-x-20 mt-7 justify-center items-center w-full">
+                      <DialogClose>
+                        <Button
+                          className="flex items-center space-x-2 bg-red-500 text-white hover:bg-red-500 active:scale-50"
+                          // onClick={() => logout()}
+                        >
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                      <Button
+                        className="flex items-center space-x-2 active:scale-50"
+                        onClick={() => logout()}
+                      >
+                        confirm
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 

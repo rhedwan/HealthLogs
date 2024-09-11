@@ -71,5 +71,6 @@ export async function login(prevState: any, formData: FormData) {
 }
 export async function logout() {
   deleteSession();
+  console.log("Log out successful");
   redirect("/auth/login");
 }
