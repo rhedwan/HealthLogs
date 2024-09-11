@@ -69,7 +69,9 @@ interface Patient {
   id: string;
 }
 
-const GetAppointment = ({ data }: any) => {
+const GetAppointment = ({ data, metaData }: any) => {
+  console.log("meta");
+  console.log(data);
   const { toast } = useToast();
 
   const initialState: State = { message: "", errors: {} };
@@ -131,12 +133,9 @@ const GetAppointment = ({ data }: any) => {
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {/* <div className="text-2xl font-bold">
-                {
-                  filteredAppointments.filter((a) => a.status === "Active")
-                    .length
-                }
-              </div> */}
+              <div className="text-2xl font-bold">
+                {metaData.activeAppointments}
+              </div>
             </CardContent>
           </Card>
 
@@ -149,12 +148,9 @@ const GetAppointment = ({ data }: any) => {
               <XCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {/* <div className="text-2xl font-bold">
-                {
-                  filteredAppointments.filter((a) => a.status === "Completed")
-                    .length
-                }
-              </div> */}
+              <div className="text-2xl font-bold">
+                {metaData.completedAppointments}
+              </div>
             </CardContent>
           </Card>
 
@@ -167,14 +163,15 @@ const GetAppointment = ({ data }: any) => {
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {/* <div className="text-2xl font-bold">
-                {new Date(
-                  filteredAppointments[0]?.startTime
-                ).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </div> */}
+              <div className="text-2xl font-bold">
+                {new Date(metaData.completedAppointments).toLocaleTimeString(
+                  [],
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
