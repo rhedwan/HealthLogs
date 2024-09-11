@@ -118,6 +118,29 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError("Incorrect email and passsword", 401));
 
+  if (user.role === "patient")
+    return next(new AppError("This login is for Admins Only", 401));
+
+  let token = signToken(user._id);
+  res.status(200).json({
+    status: "success",
+    token,
+  });
+});
+
+exports.loginPatient = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+  if (!email || !password)
+    return next(new AppError("Please provide an email and passsword", 400));
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user || !(await user.correctPassword(password, user.password)))
+    return next(new AppError("Incorrect email and passsword", 401));
+
+  if (user.role !== "patient")
+    return next(new AppError("This login is for Patient Only", 401));
+
   let token = signToken(user._id);
   res.status(200).json({
     status: "success",
@@ -153,16 +176,16 @@ exports.getPatientById = catchAsync(async (req, res, next) => {
     })
     .populate("patientFamilyHistory");
 
-const visits = currentPatient.patientRecord.map((record) => {
-  const physicalExam = record.physicalExamination || {};
-  const bp = physicalExam.bloodPressure || {};
-  return {
-    date: record.createdAt.toISOString().split("T")[0],
-    weight: physicalExam.weight || 0,
-    systolic: bp.systolicPressure || 0,
-    diastolic: bp.diastolicPressure || 0,
-  };
-});
+  const visits = currentPatient.patientRecord.map((record) => {
+    const physicalExam = record.physicalExamination || {};
+    const bp = physicalExam.bloodPressure || {};
+    return {
+      date: record.createdAt.toISOString().split("T")[0],
+      weight: physicalExam.weight || 0,
+      systolic: bp.systolicPressure || 0,
+      diastolic: bp.diastolicPressure || 0,
+    };
+  });
 
   res.status(200).json({
     status: "success",

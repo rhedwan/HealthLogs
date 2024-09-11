@@ -3,6 +3,7 @@ const express = require("express");
 const {
   createUser,
   login,
+  loginPatient,
   getAllPatients,
   getPatientById,
   updateUser,
@@ -26,6 +27,7 @@ router.use("/:patientId/medicalRecords", medicalRecordRouter);
 
 router.post("/create_user", createUser);
 router.post("/login", login);
+router.post("/login/patient", loginPatient);
 router.post("/forgetPassword", forgetPassword);
 router.patch("/resetPassword/:token", resetPassword);
 router.patch("/updatePassword", protect, updatePassword);
