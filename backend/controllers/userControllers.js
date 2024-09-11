@@ -7,6 +7,7 @@ const AppError = require("../utils/appError");
 const Email = require("../utils/email");
 const cloudinary = require("cloudinary").v2;
 const { unlink } = require("node:fs/promises");
+const { MedicalRecord } = require("../models/medicalRecordModel");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -151,8 +152,21 @@ exports.getPatientById = catchAsync(async (req, res, next) => {
       path: "patientAllergy",
     })
     .populate("patientFamilyHistory");
+
+const visits = currentPatient.patientRecord.map((record) => {
+  const physicalExam = record.physicalExamination || {};
+  const bp = physicalExam.bloodPressure || {};
+  return {
+    date: record.createdAt.toISOString().split("T")[0],
+    weight: physicalExam.weight || 0,
+    systolic: bp.systolicPressure || 0,
+    diastolic: bp.diastolicPressure || 0,
+  };
+});
+
   res.status(200).json({
     status: "success",
+    visits,
     currentPatient,
   });
 });
