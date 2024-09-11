@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Others",
       enum: ["Male", "Female", "Others"],
+      required: [true, "Please enter your gender"],
     },
     occupation: String,
     homeAddress: String,
@@ -95,10 +96,6 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
     dateOfBirth: Date,
-    gender: {
-      type: String,
-      enum: ["Male", "Female", "Others"],
-    },
     preferredLanguage: String,
     passwordChangedAt: Date,
     role: {
