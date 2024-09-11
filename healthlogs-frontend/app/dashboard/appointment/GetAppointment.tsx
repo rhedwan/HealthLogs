@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, Clock, FileText, CheckCircle, XCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -31,7 +31,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useFormStatus } from "react-dom";
-import { formatDate } from "@/lib/utils";
+import { closeModalAndToast, formatDate } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const appointmentTypes = [
   "Follow-Up Visit",
@@ -69,9 +70,13 @@ interface Patient {
 }
 
 const GetAppointment = ({ data }: any) => {
+  const { toast } = useToast();
+
   const initialState: State = { message: "", errors: {} };
   // @ts-ignore
   const [state, formAction] = useFormState(createAppointment, initialState);
+  const [open, setOpen] = useState(false);
+
   const { pending } = useFormStatus();
 
   // Filtering logic based on search term and selected type
@@ -86,7 +91,18 @@ const GetAppointment = ({ data }: any) => {
   //     : true;
   //   return matchesType && matchesSearch;
   // });
-
+  useEffect(() => {
+    closeModalAndToast(
+      state,
+      formAction,
+      toast,
+      open,
+      setOpen,
+      "Success",
+      "Appointment added successfully!",
+      "Appointment added successfully!"
+    );
+  }, [state.message, open]);
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Main Content */}
@@ -188,7 +204,16 @@ const GetAppointment = ({ data }: any) => {
                   </SelectContent>
                 </Select>
               </div>
-              <Dialog>
+              <Dialog
+                open={open}
+                onOpenChange={(newOpen) => {
+                  setOpen(newOpen);
+                  if (!newOpen) {
+                    // Reset the state when closing the dialog
+                    // formAction(new FormData());
+                  }
+                }}
+              >
                 <DialogTrigger asChild>
                   <Button>Add Appointment</Button>
                 </DialogTrigger>
