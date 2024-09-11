@@ -113,7 +113,17 @@ const GetPatientById = ({ patient }: any) => {
             <Heart className="h-4 w-4 opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">120/80</div>
+            <div className="text-2xl font-bold">
+              {
+                patient.patientRecord[patient.patientRecord.length - 1]
+                  .physicalExamination.bloodPressure.systolicPressure
+              }
+              /
+              {
+                patient.patientRecord[patient.patientRecord.length - 1]
+                  .physicalExamination.bloodPressure.diastolicPressure
+              }
+            </div>
             <p className="text-xs opacity-70">mm Hg</p>
           </CardContent>
         </Card>
@@ -134,7 +144,7 @@ const GetPatientById = ({ patient }: any) => {
             <FileText className="h-4 w-4 opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">4</div>
+            <div className="text-2xl font-bold">{patient.visits.length}</div>
           </CardContent>
         </Card>
         <Card className="bg-emerald-400 text-white">
@@ -145,7 +155,7 @@ const GetPatientById = ({ patient }: any) => {
             <Calendar className="h-4 w-4 opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
+            <div className="text-2xl font-bold">{patient.visits.length}</div>
           </CardContent>
         </Card>
       </div>
