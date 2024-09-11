@@ -143,11 +143,15 @@ const GetDashboard = ({ data }: any) => {
         </Card>
         <Card className="bg-emerald-400 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rooms</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Doctor To Patient Ratio
+            </CardTitle>
             <Home className="h-4 w-4 opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold">76</div>
+            <div className="text-4xl font-bold">
+              {data.doctorToPatientRatio}
+            </div>
           </CardContent>
         </Card>
       </div>
