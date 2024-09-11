@@ -136,14 +136,10 @@ const GetPatientById = ({ patient }: any) => {
     createAppointment,
     initialState
   );
-  const addAllergyWithId = useCallback(
-    (prevState: any, formData: FormData) =>
-      AddAllergy(prevState, formData, patient.id),
-    [patient.id]
-  );
+
   // @ts-ignore
   const [allergyState, formActionAllergy] = useFormState(
-    addAllergyWithId,
+    AddAllergy,
     initialState
   );
   const { pending } = useFormStatus();
@@ -712,6 +708,25 @@ const GetPatientById = ({ patient }: any) => {
                       {allergyState?.errors?.reaction && (
                         <p className="text-red-500 text-sm">
                           {allergyState.errors.reaction[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2 hidden">
+                      <Label htmlFor="patientId">Patient Id</Label>
+                      <Input
+                        id="patientId"
+                        value={patient.id}
+                        type="text"
+                        name="patientId"
+                        className={
+                          allergyState?.errors?.patientId
+                            ? "border-red-500"
+                            : ""
+                        }
+                      />
+                      {allergyState?.errors?.patientId && (
+                        <p className="text-red-500 text-sm">
+                          {allergyState.errors.patientId[0]}
                         </p>
                       )}
                     </div>

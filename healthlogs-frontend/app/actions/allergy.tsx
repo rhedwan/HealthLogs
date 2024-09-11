@@ -26,6 +26,7 @@ const FormSchema = z.object({
     required_error: "A date is required.",
   }),
   status: z.string(),
+  patientId: z.string(),
 });
 
 export type AllergyState = {
@@ -37,14 +38,11 @@ export type AllergyState = {
     onset?: string[];
     comment?: string[];
     status?: string[];
+    patientId?: string[];
   };
   message?: string | null;
 };
-export async function AddAllergy(
-  prevState: AllergyState,
-  formData: FormData,
-  patientId: string
-) {
+export async function AddAllergy(prevState: AllergyState, formData: FormData) {
   const url = process.env.API_URL;
   const token = cookies().get("session")?.value;
   if (!url || !token) {
@@ -63,6 +61,7 @@ export async function AddAllergy(
     comment: formData.get("comment"),
     status: "Active",
     reaction: formData.get("reaction"),
+    patientId: formData.get("patientId"),
   });
 
   if (!validatedFields.success) {
@@ -77,14 +76,17 @@ export async function AddAllergy(
   console.log(validatedFields);
   try {
     console.log("Sending request to API...");
-    const response = await fetch(`${url}api/v1/allergy/${patientId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(validatedFields.data),
-    });
+    const response = await fetch(
+      `${url}api/v1/allergy/${formData.get("patientId")}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(validatedFields.data),
+      }
+    );
 
     if (!response.ok) {
       const errorBody = await response.text();
