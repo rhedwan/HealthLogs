@@ -70,15 +70,6 @@ import {
 
 const GetPatientById = ({ patient }: any) => {
   const { toast } = useToast();
-  const visits = [
-    { date: "2023-01-15", weight: 180, systolic: 120, diastolic: 80 },
-    { date: "2023-02-20", weight: 182, systolic: 122, diastolic: 82 },
-    { date: "2023-03-18", weight: 181, systolic: 125, diastolic: 83 },
-    { date: "2023-04-22", weight: 183, systolic: 123, diastolic: 81 },
-    { date: "2023-05-20", weight: 180, systolic: 121, diastolic: 80 },
-    { date: "2023-06-17", weight: 179, systolic: 120, diastolic: 79 },
-  ];
-
   const appointmentTypes = [
     "Follow-Up Visit",
     "New Patient Visit",
@@ -831,7 +822,7 @@ const GetPatientById = ({ patient }: any) => {
                   <p>Weight Over Time</p>
                   <Button
                     className="bg-purple-500 hover:bg-purple-700"
-                    onClick={() => exportToCSVRecharts(visits)}
+                    onClick={() => exportToCSVRecharts(patient.visits)}
                   >
                     Export
                   </Button>
@@ -839,7 +830,7 @@ const GetPatientById = ({ patient }: any) => {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={visits}>
+                  <LineChart data={patient.visits}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" tickFormatter={formatDateChart} />
                     <YAxis />
@@ -869,7 +860,7 @@ const GetPatientById = ({ patient }: any) => {
                   <p>Blood Pressure Over Time</p>
                   <Button
                     className="bg-purple-500 hover:bg-purple-700"
-                    onClick={() => exportToCSVRecharts(visits)}
+                    onClick={() => exportToCSVRecharts(patient.visits)}
                   >
                     Export
                   </Button>
@@ -877,7 +868,7 @@ const GetPatientById = ({ patient }: any) => {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={visits}>
+                  <LineChart data={patient.visits}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" tickFormatter={formatDateChart} />
                     <YAxis />
