@@ -4,6 +4,7 @@ const {
   createUser,
   login,
   loginPatient,
+  getUser,
   getAllPatients,
   getPatientById,
   updateUser,
@@ -25,6 +26,7 @@ const router = express.Router();
 
 router.use("/:patientId/medicalRecords", medicalRecordRouter);
 
+router.get("/", protect, getUser);
 router.post("/create_user", createUser);
 router.post("/login", login);
 router.post("/login/patient", loginPatient);

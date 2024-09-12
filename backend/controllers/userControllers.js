@@ -156,6 +156,14 @@ exports.getAllPatients = catchAsync(async (req, res, next) => {
     patients,
   });
 });
+
+exports.getUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+  res.status(200).json({
+    status: "success",
+    user,
+  });
+});
 exports.getPatientById = catchAsync(async (req, res, next) => {
   const currentPatient = await User.findById({
     _id: req.params.id,
