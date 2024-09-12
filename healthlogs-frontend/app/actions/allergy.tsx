@@ -55,7 +55,7 @@ export async function AddAllergy(prevState: AllergyState, formData: FormData) {
   console.log("Validating form data...");
   const validatedFields = FormSchema.safeParse({
     allergen: formData.get("allergen"),
-    date: "2022-11-10T00:00:00Z",
+    date: new Date().toISOString().split("T")[0] + "T00:00:00Z",
     severity: formData.get("severity"),
     onset: formData.get("onset"),
     comment: formData.get("comment"),
