@@ -11,9 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileHeart, Lock, User } from "lucide-react";
+import { Lock, User } from "lucide-react";
 import Link from "next/link";
-import { cookies } from "next/headers";
 import { State, login } from "@/app/actions/auth";
 import { useFormState, useFormStatus } from "react-dom";
 import Image from "next/image";
@@ -23,15 +22,11 @@ export default function LoginPage() {
   // @ts-ignore
   const [state, formAction] = useFormState(login, initialState);
   const { pending } = useFormStatus();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          {/* <Link href="/" className="inline-flex items-center space-x-2">
-            <FileHeart className="h-8 w-8 text-[#7457D3]" />
-            <span className="text-2xl font-bold text-gray-800">HealthLogs</span>
-          </Link> */}
-
           <Image
             className="inline-flex items-center space-x-2"
             src="/logo.png"
@@ -40,6 +35,23 @@ export default function LoginPage() {
             alt="Logo"
           />
         </div>
+
+        {/* New component for default credentials */}
+        <Card className="mb-6 relative">
+          <CardContent className="pt-6">
+            <p className="text-sm text-gray-600 mb-2">Default Credentials:</p>
+            <p>
+              <strong>Email:</strong> hello@rhedwan.com
+            </p>
+            <p>
+              <strong>Password:</strong> password1234
+            </p>
+          </CardContent>
+          <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-800 text-xs font-semibold px-2 py-1 rounded-bl-lg rounded-tr-md">
+            Demo
+          </div>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Login</CardTitle>
@@ -96,14 +108,6 @@ export default function LoginPage() {
                 >
                   {pending ? "Logging in" : "Log In"}
                 </Button>
-                {/* <div className="mt-4 text-sm text-center">
-                  <Link
-                    href="/forgot-password"
-                    className="text-[#7457D3] hover:underline"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>*/}
               </CardFooter>
             </form>
           </CardContent>
@@ -112,12 +116,6 @@ export default function LoginPage() {
           <p className="text-[#7457D3]">
             {"Don't have an account? Contact your administrator"}
           </p>
-          {/*
-          {"Don't have an account?"}{" "}
-         <Link
-            href="/register"
-            className="text-[#7457D3] hover:underline"
-          ></Link> */}
         </div>
       </div>
     </div>
