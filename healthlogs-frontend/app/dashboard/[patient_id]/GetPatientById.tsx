@@ -554,7 +554,7 @@ const GetPatientById = ({ patient }: any) => {
                       <Label htmlFor="patientId">Patient Id</Label>
                       <Input
                         id="patientId"
-                        value={patient.id}
+                        value={patient._id}
                         type="text"
                         name="patientId"
                         className={
