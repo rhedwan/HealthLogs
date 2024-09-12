@@ -83,13 +83,18 @@ export default function PatientEncounterPage({
       genotype: "AA",
     },
   };
-  const initialState: State = { message: "", errors: {} };
+  const initialState: State = { message: "", status: "", errors: {} };
   // @ts-ignore
   const [state, formAction] = useFormState(createRecord, initialState);
-  if (state.message === "Patient Record created successfully!") {
+  if (state.status === "Success") {
     toast({
-      title: "Success",
-      description: "Patient Record created successfully!",
+      title: state.status,
+      description: state.message,
+    });
+  } else if (state.status === "Error") {
+    toast({
+      title: state.status,
+      description: state.message,
     });
   }
   return (

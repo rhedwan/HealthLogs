@@ -79,6 +79,7 @@ export type State = {
     createdBy?: string[];
     message?: string[];
   };
+  status?: string;
   message?: string | number | null;
 };
 
@@ -153,11 +154,13 @@ export async function createRecord(prevState: State, formData: FormData) {
     revalidatePath(`/dashboard/${formData.get("patient")}`); // Update cached posts
 
     return {
+      status: "Success",
       message: "Patient Record created successfully!",
     };
   } catch (error) {
     console.error("Error occurred:", error);
     return {
+      status: "Error",
       message: "An error occurred while submitting user data.",
     };
   } finally {
