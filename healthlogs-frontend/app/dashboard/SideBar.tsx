@@ -22,11 +22,11 @@ export default function SideBar() {
     // { href: "/dashboard/rooms", icon: Home, label: "Rooms" },
     // { href: "/dashboard/messages", icon: MessageSquare, label: "Messages" },
     // { href: "/dashboard/files", icon: FileText, label: "Files" },
-    {
-      href: "/dashboard/authentications",
-      icon: Users,
-      label: "Authentications",
-    },
+    // {
+    //   href: "/dashboard/authentications",
+    //   icon: Users,
+    //   label: "Authentications",
+    // },
     // { href: "/dashboard/utility", icon: Settings, label: "Utility" },
   ];
 

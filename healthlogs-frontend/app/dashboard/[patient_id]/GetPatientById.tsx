@@ -554,7 +554,7 @@ const GetPatientById = ({ patient }: any) => {
                       <Label htmlFor="patientId">Patient Id</Label>
                       <Input
                         id="patientId"
-                        value={patient.id}
+                        value={patient._id}
                         type="text"
                         name="patientId"
                         className={
@@ -635,7 +635,7 @@ const GetPatientById = ({ patient }: any) => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-1 gap-4 mb-8">
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
@@ -649,7 +649,7 @@ const GetPatientById = ({ patient }: any) => {
                   (history: PatientFamilyHistory) => (
                     <TableRow key={history._id} className="items-center">
                       <TableCell>{history.description}</TableCell>
-                      <div className="flex items-center mt-2">
+                      <div className="flex items-center space-x-3 mt-2">
                         {history.relatives.map((relative, index) => (
                           <Badge key={index}>{relative}</Badge>
                         ))}
@@ -661,7 +661,7 @@ const GetPatientById = ({ patient }: any) => {
             </Table>
           </CardContent>
         </Card>
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">Meds (6)</CardTitle>
           </CardHeader>
@@ -678,7 +678,7 @@ const GetPatientById = ({ patient }: any) => {
               Add
             </Button>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
       {/* <div>
