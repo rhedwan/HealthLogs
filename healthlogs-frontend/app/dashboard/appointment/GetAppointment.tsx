@@ -78,21 +78,25 @@ const GetAppointment = ({ data, metaData }: any) => {
   // @ts-ignore
   const [state, formAction] = useFormState(createAppointment, initialState);
   const [open, setOpen] = useState(false);
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
   const { pending } = useFormStatus();
-
-  // Filtering logic based on search term and selected type
-  // const filteredAppointments = appointments.filter((appointment) => {
-  //   const matchesType = selectedType
-  //     ? appointment.appointmentType === selectedType
-  //     : true;
-  //   const matchesSearch = searchTerm
-  //     ? appointment.patient.firstName
-  //         .toLowerCase()
-  //         .includes(searchTerm.toLowerCase())
-  //     : true;
-  //   return matchesType && matchesSearch;
-  // });
+  const filteredAppointments = data.filter((appointment: Appointment) => {
+    const matchesType =
+      selectedType === "all" || appointment.appointmentType === selectedType;
+    const matchesSearch = searchTerm
+      ? appointment.patient.firstName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        appointment.patient.lastName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        appointment.patient.fileId
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      : true;
+    return matchesType && matchesSearch;
+  });
   useEffect(() => {
     closeModalAndToast(
       state,
@@ -185,14 +189,20 @@ const GetAppointment = ({ data, metaData }: any) => {
             <div className="flex justify-between mb-4">
               <div className="flex space-x-2">
                 {/* Search Input */}
-                <Input placeholder="Search appointments" className="w-64" />
+                <Input
+                  placeholder="Search appointments"
+                  className="w-64"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
 
                 {/* Select Filter */}
-                <Select name="fill">
+                <Select value={selectedType} onValueChange={setSelectedType}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Filter by type" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
                     {appointmentTypes.map((type) => (
                       <SelectItem key={type} value={type}>
                         {type}
@@ -336,7 +346,9 @@ const GetAppointment = ({ data, metaData }: any) => {
                       )}
                     </div>
                     <DialogFooter className="mt-5">
-                      <Button type="submit">Schedule Appointment</Button>
+                      <Button type="submit">
+                        {pending ? "Scheduling" : "Schedule Appointment"}
+                      </Button>
                     </DialogFooter>
                   </form>
                 </DialogContent>
@@ -357,7 +369,7 @@ const GetAppointment = ({ data, metaData }: any) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.reverse().map((appointment: any) => (
+                {filteredAppointments.reverse().map((appointment: any) => (
                   <TableRow key={appointment._id}>
                     <TableCell>
                       {appointment.patient.firstName +
