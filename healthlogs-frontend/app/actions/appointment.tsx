@@ -27,9 +27,17 @@ const FormSchema = z
         required_error: "Please select an appointment type",
       }
     ),
-    date: z.string({
-      required_error: "A date is required.",
-    }),
+    date: z.string().refine(
+      (dateString) => {
+        const date = new Date(dateString);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return date >= today;
+      },
+      {
+        message: "Date must not be earlier than today",
+      }
+    ),
     startTime: z.date({
       required_error: "Start time is required.",
     }),
@@ -74,7 +82,7 @@ export async function createAppointment(prevState: State, formData: FormData) {
   const validatedFields = FormSchema.safeParse({
     patientId: formData.get("patientId"),
     date: formData.get("date"),
-    appointmentType: formData.get("appointmentType"),
+    appointmentType: formData.get("appointmentType") as string,
     startTime: convertToDateTime(
       formData.get("startTime") as string,
       formData.get("date") as string
