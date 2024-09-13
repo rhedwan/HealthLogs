@@ -33,7 +33,7 @@ import {
 //   Tooltip,
 //   Legend,
 // } from "chart.js";
-import { PatientRecord } from "@/schema/PatientRecord";
+import { Medication, PatientRecord } from "@/schema/PatientRecord";
 import { Input } from "@/components/ui/input";
 import { useFormState } from "react-dom";
 import { State, consultAi } from "@/app/actions/aiDiagnosis";
@@ -52,7 +52,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { formatDateChart } from "@/lib/utils";
+import { formatDate, formatDateChart } from "@/lib/utils";
 import { PatientFamilyHistory } from "@/schema/PatientFamilyHistory";
 import Link from "next/link";
 // ChartJS.register(
@@ -76,35 +76,6 @@ export default function GetMRecordById({
   encounter: PatientRecord;
   patient: any;
 }) {
-  const weightData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Weight (lbs)",
-        data: [180, 182, 181, 183, 180, 179],
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
-      },
-    ],
-  };
-
-  const bpData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Systolic",
-        data: [120, 122, 125, 123, 121, 120],
-        borderColor: "rgb(255, 99, 132)",
-        tension: 0.1,
-      },
-      {
-        label: "Diastolic",
-        data: [80, 82, 83, 81, 80, 79],
-        borderColor: "rgb(54, 162, 235)",
-        tension: 0.1,
-      },
-    ],
-  };
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -195,7 +166,10 @@ export default function GetMRecordById({
                       </div>
                       <div>
                         <p className="font-semibold">Seen By</p>
-                        {/* <p>{encounter.seenBy}</p> */}
+                        <p>
+                          {encounter.createdBy.firstName}{" "}
+                          {encounter.createdBy.lastName}
+                        </p>
                       </div>
                     </div>
 
@@ -244,6 +218,58 @@ export default function GetMRecordById({
                       </div>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+              <Card className="mt-4">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">
+                    Diagnoses
+                  </CardTitle>
+                  <CardDescription></CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        {/* <p className="font-semibold">Description</p> */}
+                        <p>{encounter.diagnosis.description}</p>
+                      </div>
+                      <div>
+                        {/* <p className="font-semibold">Start Date</p> */}
+                        <p>
+                          {formatDate(
+                            encounter.diagnosis.startDate,
+                            "DD MMM, YYYY"
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="mt-4">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">
+                    Medications ({encounter.medications.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableBody>
+                      {encounter.medications.map((medication: Medication) => (
+                        <TableRow key={medication._id} className="items-center">
+                          <TableCell>{medication.name}</TableCell>
+                          <TableCell>
+                            {medication.prescriptionDetails.prescriber}
+                          </TableCell>
+                          <TableCell>
+                            {formatDate(medication.startDate, "DD/MM/YYYY")}
+                          </TableCell>
+                          <TableCell>{medication.sig}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
             </TabsContent>

@@ -37,9 +37,39 @@ export interface PatientRecord {
   subjectiveNote: string;
   objectiveNote: string;
   assessmentNote: string;
-  createdBy: string;
+  createdBy: {
+    _id: string[];
+    firstName: string[];
+    lastName: string[];
+    role: string[];
+    photo: string[];
+    dateOfBirth: string[];
+    homeAddress: string;
+    phoneNumber: string[];
+    medicalBackground: {
+      bloodGroup: string[];
+      genotype: string[];
+    };
+    occupation: string[];
+    religion: string[];
+    ethnic: string[];
+    maritalStatus: string[];
+  };
   documents: string[];
   createdAt: string;
   updatedAt: string;
   id: string;
+}
+
+export interface Medication {
+  name: string;
+  sig: string;
+  startDate: string;
+  _id: string;
+  prescriptionDetails: {
+    recorded: string;
+    prescriber: string;
+    refills: number;
+    quantity: number;
+  };
 }
