@@ -55,9 +55,18 @@ export default async function EncounterDetailsPage({
 }: {
   params: { mRecordId: string; patient_id: string };
 }) {
-  const { mRecordId } = params;
+  const { mRecordId, patient_id } = params;
   const url = process.env.API_URL;
   const token = cookies().get("session")?.value;
+  let data = await fetch(`${url}api/v1/users/patient/${patient_id}`, {
+    method: "GET", // You can change this to POST, PUT, etc. depending on your needs
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  let currentPatient = await data.json();
+  console.log(currentPatient);
   let fetchMRecord = await fetch(`${url}api/v1/medicalRecord/${mRecordId}`, {
     method: "GET", // You can change this to POST, PUT, etc. depending on your needs
     headers: {
@@ -66,9 +75,13 @@ export default async function EncounterDetailsPage({
     },
   });
   let medicalRecord = await fetchMRecord.json();
+  console.log(medicalRecord);
   return (
     <main className="">
-      <GetMRecordById encounter={medicalRecord.medicalRecord} />
+      <GetMRecordById
+        encounter={medicalRecord.medicalRecord}
+        patient={currentPatient.currentPatient}
+      />
     </main>
   );
 }

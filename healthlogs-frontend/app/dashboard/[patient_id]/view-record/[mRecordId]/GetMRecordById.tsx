@@ -22,17 +22,17 @@ import {
   User,
   Users,
 } from "lucide-react";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+// import { Line } from "react-chartjs-2";
+// import {
+//   Chart as ChartJS,
+//   CategoryScale,
+//   LinearScale,
+//   PointElement,
+//   LineElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+// } from "chart.js";
 import { PatientRecord } from "@/schema/PatientRecord";
 import { Input } from "@/components/ui/input";
 import { useFormState } from "react-dom";
@@ -40,16 +40,30 @@ import { State, consultAi } from "@/app/actions/aiDiagnosis";
 import { Label } from "@/components/ui/label";
 import { useFormStatus } from "react-dom";
 import CircleLoader from "@/components/ui/CircleLoader";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
+import { PatientAllergy } from "@/schema/PatientAllergy";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
-  Legend
-);
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { formatDateChart } from "@/lib/utils";
+import { PatientFamilyHistory } from "@/schema/PatientFamilyHistory";
+import Link from "next/link";
+// ChartJS.register(
+//   CategoryScale,
+//   LinearScale,
+//   PointElement,
+//   LineElement,
+//   Title,
+//   Tooltip,
+//   Legend
+// );
 
 // export default function EncounterDetailsPage({
 //   actualPatient,
@@ -57,8 +71,10 @@ ChartJS.register(
 // }: EncounterDetailsPageProps) {
 export default function GetMRecordById({
   encounter,
+  patient,
 }: {
   encounter: PatientRecord;
+  patient: any;
 }) {
   const weightData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -129,7 +145,7 @@ export default function GetMRecordById({
     }
   }, [state?.results]);
   return (
-    <main className="flex-1 p-8 overflow-auto">
+    <main className="flex-1 py-8 overflow-auto">
       <div className="container mx-auto">
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -469,7 +485,7 @@ export default function GetMRecordById({
             </TabsList>
 
             <TabsContent value="summary">
-              <Card>
+              {/* <Card>
                 <CardHeader>
                   <CardTitle>Social Profile</CardTitle>
                 </CardHeader>
@@ -494,48 +510,123 @@ export default function GetMRecordById({
                     recorded
                   </p>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               <Card className="mt-6">
                 <CardHeader>
                   <CardTitle>Allergies</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="list-disc list-inside">
-                    <li>Peanut</li>
-                    <li>Penicillin G</li>
-                  </ul>
+                  <Table>
+                    <TableBody>
+                      {patient.patientAllergy.map((allergy: PatientAllergy) => (
+                        <TableRow key={allergy._id}>
+                          <TableCell>{allergy.allergen}</TableCell>
+                          <TableCell>{allergy.severity}</TableCell>
+                          <TableCell>{allergy.comment}</TableCell>
+                          <TableCell className="text-right">
+                            {allergy.onset}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
 
-              <Card className="mt-6">
+              <Card className="mt-4">
                 <CardHeader>
-                  <CardTitle>Family Health History</CardTitle>
+                  <CardTitle className="text-lg font-semibold">
+                    Family History ({patient.patientFamilyHistory.length})
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    Father (deceased from colon cancer), Mother (hypertension)
-                  </p>
+                  <Table>
+                    <TableBody>
+                      {patient.patientFamilyHistory.map(
+                        (history: PatientFamilyHistory) => (
+                          <TableRow key={history._id} className="items-center">
+                            <TableCell>{history.description}</TableCell>
+                            <div className="flex items-center space-x-3 mt-2">
+                              {history.relatives.map((relative, index) => (
+                                <Badge key={index}>{relative}</Badge>
+                              ))}
+                            </div>
+                          </TableRow>
+                        )
+                      )}
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
 
-              <Card className="mt-6">
+              <Card className="mt-4">
                 <CardHeader>
-                  <CardTitle>Past Medical History</CardTitle>
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-lg font-semibold">
+                      Patient Past Records
+                    </CardTitle>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    <strong>Ongoing medical problems:</strong> Hypothyroidism,
-                    CAD, Melena, Colonic polyps, Diverticulosis
-                  </p>
-                  <p>
-                    <strong>Preventive care:</strong> Annual flu shot, up to
-                    date on DTaP
-                  </p>
+                  <div className="space-y-4">
+                    {patient.patientRecord
+                      .slice(0, 2)
+                      .map((record: PatientRecord) => (
+                        <Link
+                          href={`/dashboard/${patient._id}/view-record/${record._id}`}
+                          key={record._id}
+                        >
+                          <Card className="mb-2">
+                            <CardHeader>
+                              <CardTitle className="text-lg">
+                                {record.vistType} - {record.department}
+                              </CardTitle>
+                              <CardDescription>
+                                {new Date(record.createdAt).toLocaleString()}
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <p className="text-sm mb-2">
+                                {record.diagnosis
+                                  ? record.diagnosis?.description
+                                  : "No diagnosis yet"}
+                              </p>
+                              <div className="grid grid-cols-3 gap-2 text-sm">
+                                <div>
+                                  <span className="font-medium">
+                                    Temperature:
+                                  </span>{" "}
+                                  {record.physicalExamination?.temperature}
+                                </div>
+                                <div>
+                                  <span className="font-medium">
+                                    Blood Pressure:
+                                  </span>{" "}
+                                  {
+                                    record.physicalExamination?.bloodPressure
+                                      .systolicPressure
+                                  }
+                                  /
+                                  {
+                                    record.physicalExamination?.bloodPressure
+                                      .diastolicPressure
+                                  }
+                                </div>
+                                <div>
+                                  <span className="font-medium">Weight:</span>{" "}
+                                  {record.physicalExamination?.weight} kg
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      ))}
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="mt-6">
+              {/* <Card className="mt-6">
                 <CardHeader>
                   <CardTitle>Previous Encounters</CardTitle>
                 </CardHeader>
@@ -548,7 +639,7 @@ export default function GetMRecordById({
                     <li>Feb 21, 2021 - Consultation</li>
                   </ul>
                 </CardContent>
-              </Card>
+              </Card> */}
             </TabsContent>
 
             <TabsContent value="graphs">
@@ -557,7 +648,27 @@ export default function GetMRecordById({
                   <CardTitle>Weight Over Time</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Line options={chartOptions} data={weightData} />
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={patient.visits}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" tickFormatter={formatDateChart} />
+                      <YAxis />
+                      <Tooltip
+                        labelFormatter={formatDateChart}
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--background))",
+                          borderColor: "hsl(var(--border))",
+                        }}
+                      />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="weight"
+                        stroke="hsl(var(--primary))"
+                        activeDot={{ r: 8 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </CardContent>
               </Card>
 
@@ -566,7 +677,33 @@ export default function GetMRecordById({
                   <CardTitle>Blood Pressure Over Time</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Line options={chartOptions} data={bpData} />
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={patient.visits}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" tickFormatter={formatDateChart} />
+                      <YAxis />
+                      <Tooltip
+                        labelFormatter={formatDateChart}
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--background))",
+                          borderColor: "hsl(var(--border))",
+                        }}
+                      />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="systolic"
+                        stroke="hsl(var(--destructive))"
+                        activeDot={{ r: 8 }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="diastolic"
+                        stroke="hsl(var(--primary))"
+                        activeDot={{ r: 8 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </CardContent>
               </Card>
             </TabsContent>
