@@ -146,6 +146,7 @@ export default function PatientEncounterPage({
     // @ts-ignore
     formAction(formData);
   };
+  const userData = JSON.parse(localStorage.getItem("user") as string);
   return (
     <>
       {/* Main Content */}
@@ -271,6 +272,10 @@ export default function PatientEncounterPage({
               <div className="hidden">
                 <Label htmlFor="patient">Patient ID</Label>
                 <Input id="patient" name="patient" value={patient_id} />
+              </div>
+              <div className="hidden">
+                <Label htmlFor="createdBy">Creator ID</Label>
+                <Input id="createBy" name="createdBy" value={userData.id} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
