@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ import {
   MessageSquare,
   Search,
   Settings,
+  Trash2,
   User,
   Users,
 } from "lucide-react";
@@ -83,20 +84,68 @@ export default function PatientEncounterPage({
       genotype: "AA",
     },
   };
-  const initialState: State = { message: "", status: "", errors: {} };
+  const [weight, setWeight] = useState(0);
+  const [height, setHeight] = useState(0);
+  const initialState: State = { errors: {}, message: "", status: "" };
+  const [medications, setMedications] = useState<any[]>([]);
+
+  const addMedication = () => {
+    setMedications([
+      ...medications,
+      {
+        name: "",
+        sig: "",
+        startDate: "",
+        prescriptionDetails: {
+          recorded: "",
+          prescriber: "",
+          refills: 0,
+          quantity: 1,
+        },
+      },
+    ]);
+  };
   // @ts-ignore
   const [state, formAction] = useFormState(createRecord, initialState);
-  if (state.status === "Success") {
-    toast({
-      title: state.status,
-      description: state.message,
-    });
-  } else if (state.status === "Error") {
-    toast({
-      title: state.status,
-      description: state.message,
-    });
-  }
+  useEffect(() => {
+    if (state?.status === "Success") {
+      toast({
+        title: state?.status,
+        description: state?.message,
+      });
+    } else if (state?.status === "Error") {
+      toast({
+        title: state?.status,
+        description: state?.message,
+      });
+    }
+  }, [state]);
+  const updateMedication = (
+    index: number,
+    field: string,
+    value: string | number
+  ) => {
+    const updatedMedications = [...medications];
+    if (field.includes(".")) {
+      const [parent, child] = field.split(".");
+      updatedMedications[index][parent][child] = value;
+    } else {
+      updatedMedications[index][field] = value;
+    }
+    setMedications(updatedMedications);
+  };
+  const removeMedication = (index: number) => {
+    const updatedMedications = medications.filter((_, i) => i !== index);
+    setMedications(updatedMedications);
+  };
+
+  const handleFormAction = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    formData.append("medications", JSON.stringify(medications));
+    // @ts-ignore
+    formAction(formData);
+  };
   return (
     <>
       {/* Main Content */}
@@ -218,7 +267,7 @@ export default function PatientEncounterPage({
             <CardTitle>New Encounter</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4" action={formAction}>
+            <form className="space-y-4" onSubmit={handleFormAction}>
               <div className="hidden">
                 <Label htmlFor="patient">Patient ID</Label>
                 <Input id="patient" name="patient" value={patient_id} />
@@ -229,7 +278,7 @@ export default function PatientEncounterPage({
                   <Select name="visitType">
                     <SelectTrigger
                       className={
-                        state.errors?.visitType ? "border-red-500" : ""
+                        state?.errors?.visitType ? "border-red-500" : ""
                       }
                     >
                       <SelectValue placeholder="Select encounter type" />
@@ -241,9 +290,9 @@ export default function PatientEncounterPage({
                       <SelectItem value="Out Patient">Out Patient</SelectItem>
                     </SelectContent>
                   </Select>
-                  {state.errors?.visitType && (
+                  {state?.errors?.visitType && (
                     <p className="text-red-500 text-sm">
-                      {state.errors.visitType[0]}
+                      {state?.errors.visitType[0]}
                     </p>
                   )}
                 </div>
@@ -252,7 +301,7 @@ export default function PatientEncounterPage({
                   <Select name="department">
                     <SelectTrigger
                       className={
-                        state.errors?.department ? "border-red-500" : ""
+                        state?.errors?.department ? "border-red-500" : ""
                       }
                     >
                       <SelectValue placeholder="Select Department" />
@@ -267,9 +316,9 @@ export default function PatientEncounterPage({
                       <SelectItem value="Radiology">Radiology</SelectItem>
                     </SelectContent>
                   </Select>
-                  {state.errors?.department && (
+                  {state?.errors?.department && (
                     <p className="text-red-500 text-sm">
-                      {state.errors.department[0]}
+                      {state?.errors.department[0]}
                     </p>
                   )}
                 </div>
@@ -281,12 +330,12 @@ export default function PatientEncounterPage({
                     name="healthConcerns"
                     placeholder="Health Concerns"
                     className={
-                      state.errors?.healthConcerns ? "border-red-500" : ""
+                      state?.errors?.healthConcerns ? "border-red-500" : ""
                     }
                   />
-                  {state.errors?.healthConcerns && (
+                  {state?.errors?.healthConcerns && (
                     <p className="text-red-500 text-sm">
-                      {state.errors.healthConcerns[0]}
+                      {state?.errors.healthConcerns[0]}
                     </p>
                   )}
                 </div>
@@ -299,25 +348,272 @@ export default function PatientEncounterPage({
                   name="chiefComplaint"
                   placeholder="Add any problems or symptoms here"
                   className={
-                    state.errors?.chiefComplaint ? "border-red-500" : ""
+                    state?.errors?.chiefComplaint ? "border-red-500" : ""
                   }
                 />
-                {state.errors?.chiefComplaint && (
+                {state?.errors?.chiefComplaint && (
                   <p className="text-red-500 text-sm">
                     {state.errors.chiefComplaint[0]}
                   </p>
                 )}
               </div>
+              <div>
+                <Label htmlFor="subjectiveNote">Subjective Note</Label>
+                <Textarea
+                  id="subjectiveNote"
+                  name="subjectiveNote"
+                  placeholder="Subjective Note"
+                  className={
+                    state?.errors?.subjectiveNote ? "border-red-500" : ""
+                  }
+                />
+                {state?.errors?.subjectiveNote && (
+                  <p className="text-red-500 text-sm">
+                    {state.errors.subjectiveNote[0]}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="objectiveNote">Objective Note</Label>
+                <Textarea
+                  id="objectiveNote"
+                  name="objectiveNote"
+                  placeholder="Objective Note or None"
+                  className={
+                    state?.errors?.objectiveNote ? "border-red-500" : ""
+                  }
+                />
+                {state?.errors?.objectiveNote && (
+                  <p className="text-red-500 text-sm">
+                    {state?.errors.objectiveNote[0]}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="assessmentNote">Assessment Note</Label>
+                <Textarea
+                  id="assessmentNote"
+                  name="assessmentNote"
+                  placeholder="Assessment Note"
+                  className={
+                    state?.errors?.assessmentNote ? "border-red-500" : ""
+                  }
+                />
+                {state?.errors?.assessmentNote && (
+                  <p className="text-red-500 text-sm">
+                    {state.errors.assessmentNote[0]}
+                  </p>
+                )}
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Diagnosis</h3>
+                <div className="grid grid-cols-3 gap-x-4">
+                  <div className="col-span-3">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      name="description"
+                      placeholder="Diagnosis Description"
+                      className={
+                        // @ts-ignore
+                        state?.errors?.diagnosis?.description
+                          ? "border-red-500"
+                          : ""
+                      }
+                    />
+                    {/* @ts-ignore */}
+                    {state?.errors?.diagnosis?.description && (
+                      <p className="text-red-500 text-sm">
+                        {/* @ts-ignore */}
+                        {state.errors?.diagnosis?.description[0]}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900">
+                    Medications
+                  </h3>
+                  {medications.map((medication, index) => (
+                    <div
+                      key={index}
+                      className="mt-4 p-4 border rounded-md relative"
+                    >
+                      <Button
+                        type="button"
+                        onClick={() => removeMedication(index)}
+                        className="absolute top-1 right-2 p-1"
+                        variant="ghost"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Remove medication</span>
+                      </Button>
+                      <div>
+                        <Label
+                          htmlFor={`medication-name-${index}`}
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Medication Name
+                        </Label>
+                        <Input
+                          type="text"
+                          id={`medication-name-${index}`}
+                          value={medication.name}
+                          onChange={(e) =>
+                            updateMedication(index, "name", e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-4">
+                        <div className="mt-2">
+                          <Label
+                            htmlFor={`medication-sig-${index}`}
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Sig
+                          </Label>
+                          <Input
+                            type="text"
+                            id={`medication-sig-${index}`}
+                            value={medication.sig}
+                            onChange={(e) =>
+                              updateMedication(index, "sig", e.target.value)
+                            }
+                          />
+                        </div>
 
+                        <div className="mt-2">
+                          <Label
+                            htmlFor={`medication-start-date-${index}`}
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Start Date
+                          </Label>
+                          <Input
+                            type="date"
+                            id={`medication-start-date-${index}`}
+                            value={medication.startDate}
+                            onChange={(e) =>
+                              updateMedication(
+                                index,
+                                "startDate",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-2">
+                        <h4 className="text-sm font-medium text-gray-700">
+                          Prescription Details
+                        </h4>
+                        <div className="mt-1 grid grid-cols-2 gap-4">
+                          <div>
+                            <Label
+                              htmlFor={`medication-recorded-${index}`}
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Recorded
+                            </Label>
+                            <Input
+                              type="datetime-local"
+                              id={`medication-recorded-${index}`}
+                              value={medication.prescriptionDetails.recorded}
+                              onChange={(e) =>
+                                updateMedication(
+                                  index,
+                                  "prescriptionDetails.recorded",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Label
+                              htmlFor={`medication-prescriber-${index}`}
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Prescriber
+                            </Label>
+                            <Input
+                              type="text"
+                              id={`medication-prescriber-${index}`}
+                              value={medication.prescriptionDetails.prescriber}
+                              onChange={(e) =>
+                                updateMedication(
+                                  index,
+                                  "prescriptionDetails.prescriber",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Label
+                              htmlFor={`medication-refills-${index}`}
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Refills
+                            </Label>
+                            <Input
+                              type="number"
+                              id={`medication-refills-${index}`}
+                              value={medication.prescriptionDetails.refills}
+                              onChange={(e) =>
+                                updateMedication(
+                                  index,
+                                  "prescriptionDetails.refills",
+                                  parseInt(e.target.value)
+                                )
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Label
+                              htmlFor={`medication-quantity-${index}`}
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Quantity
+                            </Label>
+                            <Input
+                              type="number"
+                              id={`medication-quantity-${index}`}
+                              value={medication.prescriptionDetails.quantity}
+                              onChange={(e) =>
+                                updateMedication(
+                                  index,
+                                  "prescriptionDetails.quantity",
+                                  parseInt(e.target.value)
+                                )
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    onClick={addMedication}
+                    className="mt-4"
+                  >
+                    Add Medication
+                  </Button>
+                </div>
+              </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">Vitals</h3>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="height">Height (in)</Label>
+                    <Label htmlFor="height">Height (inch)</Label>
                     <Input
                       id="height"
                       name="height"
                       type="number"
+                      value={height}
+                      // @ts-ignore
+                      onChange={(e) => setHeight(e.target.value)}
                       className={
                         // @ts-ignore
                         state.errors?.physicalExamination?.height
@@ -339,6 +635,9 @@ export default function PatientEncounterPage({
                       id="weight"
                       name="weight"
                       type="number"
+                      value={weight}
+                      // @ts-ignore
+                      onChange={(e) => setWeight(e.target.value)}
                       className={
                         // @ts-ignore
                         state.errors?.physicalExamination?.weight
@@ -356,7 +655,12 @@ export default function PatientEncounterPage({
                   </div>
                   <div>
                     <Label htmlFor="bmi">BMI</Label>
-                    <Input id="bmi" disabled name="bmi" value={88} />
+                    <Input
+                      id="bmi"
+                      disabled
+                      name="bmi"
+                      value={((weight / (height * height)) * 703) | 0}
+                    />
                   </div>
                   <div>
                     <Label>Blood Pressure</Label>
