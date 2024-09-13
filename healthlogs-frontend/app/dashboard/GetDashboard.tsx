@@ -63,7 +63,7 @@ ChartJS.register(
   Title
 );
 
-const GetDashboard = ({ data }: any) => {
+const GetDashboard = ({ data, userData }: any) => {
   const barChartOptions = {
     responsive: true,
     plugins: {
@@ -124,7 +124,7 @@ const GetDashboard = ({ data }: any) => {
           <Popover>
             <PopoverTrigger asChild>
               <Avatar className="cursor-pointer">
-                <AvatarImage src="/placeholder.svg" />
+                <AvatarImage src={userData.photo} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </PopoverTrigger>

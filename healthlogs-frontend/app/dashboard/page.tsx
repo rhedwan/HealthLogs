@@ -15,9 +15,17 @@ const page = async () => {
   });
   const data = await response.json();
   console.log(data);
+  const userResponse = await fetch(`${url}api/v1/users/user`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const userData = await userResponse.json();
   return (
     // <main className="flex-1 p-8 overflow-auto">
-    <GetDashboard data={data} />
+    <GetDashboard data={data} userData={userData.user} />
     // </main>
   );
 };
