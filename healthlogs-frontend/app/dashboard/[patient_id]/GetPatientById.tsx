@@ -113,17 +113,19 @@ const GetPatientById = ({ patient }: any) => {
             <Heart className="h-4 w-4 opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {
-                patient.patientRecord[patient.patientRecord.length - 1]
-                  .physicalExamination.bloodPressure.systolicPressure
-              }
-              /
-              {
-                patient.patientRecord[patient.patientRecord.length - 1]
-                  .physicalExamination.bloodPressure.diastolicPressure
-              }
-            </div>
+            {patient.patientRecord.length > 0 && (
+              <div className="text-2xl font-bold">
+                {
+                  patient.patientRecord[patient.patientRecord.length - 1]
+                    .physicalExamination?.bloodPressure.systolicPressure
+                }
+                /
+                {
+                  patient.patientRecord[patient.patientRecord.length - 1]
+                    .physicalExamination.bloodPressure.diastolicPressure
+                }
+              </div>
+            )}
             <p className="text-xs opacity-70">mm Hg</p>
           </CardContent>
         </Card>
@@ -244,23 +246,23 @@ const GetPatientById = ({ patient }: any) => {
                     <div className="grid grid-cols-3 gap-2 text-sm">
                       <div>
                         <span className="font-medium">Temperature:</span>{" "}
-                        {record.physicalExamination.temperature}
+                        {record.physicalExamination?.temperature}
                       </div>
                       <div>
                         <span className="font-medium">Blood Pressure:</span>{" "}
                         {
-                          record.physicalExamination.bloodPressure
+                          record.physicalExamination?.bloodPressure
                             .systolicPressure
                         }
                         /
                         {
-                          record.physicalExamination.bloodPressure
+                          record.physicalExamination?.bloodPressure
                             .diastolicPressure
                         }
                       </div>
                       <div>
                         <span className="font-medium">Weight:</span>{" "}
-                        {record.physicalExamination.weight} kg
+                        {record.physicalExamination?.weight} kg
                       </div>
                     </div>
                   </CardContent>
