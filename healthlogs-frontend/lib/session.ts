@@ -15,6 +15,17 @@ export async function createSession(token: string) {
     path: "/",
   });
 }
+export async function createUserCookies(user: any) {
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+  cookies().set("user", user, {
+    httpOnly: true,
+    secure: true,
+    expires: expiresAt,
+    sameSite: "lax",
+    path: "/",
+  });
+}
 export function deleteSession() {
   cookies().delete("session");
 }
@@ -31,14 +42,18 @@ export async function updateSession(token: string) {
 }
 export const verifySession = cache(async () => {
   const session = cookies().get("session")?.value;
-
   if (!session) {
     redirect("/auth/login");
   }
 
   return { isAuth: true, session: session };
 });
-
+export const verifyLoggedIn = cache(async () => {
+  const session = cookies().get("session")?.value;
+  if (session) {
+    redirect("/dashboard");
+  }
+});
 export const sessionToken = async () => {
   return await verifySession();
 };

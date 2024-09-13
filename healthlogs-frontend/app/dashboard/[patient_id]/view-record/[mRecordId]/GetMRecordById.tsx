@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,12 @@ import {
   Legend,
 } from "chart.js";
 import { PatientRecord } from "@/schema/PatientRecord";
+import { Input } from "@/components/ui/input";
+import { useFormState } from "react-dom";
+import { State, consultAi } from "@/app/actions/aiDiagnosis";
+import { Label } from "@/components/ui/label";
+import { useFormStatus } from "react-dom";
+import CircleLoader from "@/components/ui/CircleLoader";
 
 ChartJS.register(
   CategoryScale,
@@ -45,21 +51,6 @@ ChartJS.register(
   Legend
 );
 
-interface EncounterDetailsPageProps {
-  actualEncounter?: {
-    encounterType: string;
-    noteType: string;
-    date: string;
-    seenBy: string;
-    chiefComplaint: string;
-    height: string;
-    weight: string;
-    bmi: string;
-    bloodPressure: string;
-    temperature: string;
-    pulse: string;
-  };
-}
 // export default function EncounterDetailsPage({
 //   actualPatient,
 //   actualEncounter,
@@ -98,7 +89,6 @@ export default function GetMRecordById({
       },
     ],
   };
-
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -111,7 +101,33 @@ export default function GetMRecordById({
       },
     },
   };
+  const initialState: State = {
+    errors: {},
+    message: "",
+    status: "",
+    results: {},
+  };
+  // @ts-ignore
+  const [state, formAction] = useFormState(consultAi, initialState);
+  const { pending } = useFormStatus();
+  const [showAiResults, setShowAiResults] = useState("stall");
+  const [isPending, setIsPending] = useState(false);
+  useEffect(() => {
+    if (state?.results?.RecommendedTests?.length > 0) {
+      setIsPending(true);
+      console.log(state.results);
 
+      const timer = setTimeout(() => {
+        setIsPending(false);
+        setShowAiResults("success");
+      }, 2000); // 2 seconds delay
+
+      return () => clearTimeout(timer); // Clean up the timer
+    } else {
+      setShowAiResults("stall");
+      setIsPending(false);
+    }
+  }, [state?.results]);
   return (
     <main className="flex-1 p-8 overflow-auto">
       <div className="container mx-auto">
@@ -121,15 +137,34 @@ export default function GetMRecordById({
 
           <Tabs defaultValue="new-encounter" className="space-y-6">
             <TabsList>
-              <TabsTrigger value="new-encounter">New Encounter</TabsTrigger>
+              <TabsTrigger value="new-encounter">Current Encounter</TabsTrigger>
               <TabsTrigger value="ai-diagnostic">AI Diagnostic</TabsTrigger>
             </TabsList>
 
             <TabsContent value="new-encounter">
               <Card>
                 <CardHeader>
-                  <CardTitle>Latest Encounter Details</CardTitle>
-                  <CardDescription>{encounter.createdAt}</CardDescription>
+                  <CardTitle>Current Encounter Details</CardTitle>
+                  <CardDescription>
+                    {new Date(encounter.createdAt)
+                      .toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })
+                      .replace(
+                        /(\d+)(?=\D)/,
+                        (d) =>
+                          `${d}${
+                            ["th", "st", "nd", "rd"][
+                              (d as any) % 10 > 3 ||
+                              ((d as any) % 100) - 10 == 0
+                                ? 0
+                                : (d as any) % 10
+                            ]
+                          }`
+                      )}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -206,7 +241,7 @@ export default function GetMRecordById({
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  {/* <div className="space-y-4">
                     <div>
                       <h3 className="text-lg font-semibold mb-2">
                         Potential Diagnoses
@@ -247,7 +282,180 @@ export default function GetMRecordById({
                         referral to a gastroenterologist.
                       </p>
                     </div>
-                  </div>
+                  </div> */}
+                  <form action={formAction}>
+                    <div className="hidden">
+                      <Input
+                        name="visitType"
+                        value={encounter.vistType}
+                        type="text"
+                      />
+                      <Input
+                        name="patientId"
+                        value={encounter.patient}
+                        type="text"
+                      />
+                      <Input
+                        name="department"
+                        value={encounter.department}
+                        type="text"
+                      />
+                      <Input
+                        name="chiefComplaint"
+                        value={encounter.chiefComplaint}
+                        type="text"
+                      />
+                      <Input
+                        name="healthConcerns"
+                        value={encounter.healthConcerns}
+                        type="text"
+                      />
+                      <Input
+                        name="subjectiveNote"
+                        value={encounter.subjectiveNote}
+                        type="text"
+                      />
+                      <Input
+                        name="objectiveNote"
+                        value={encounter.objectiveNote}
+                        type="text"
+                      />
+                      <Input
+                        name="assessmentNote"
+                        value={encounter.assessmentNote}
+                        type="text"
+                      />
+                      <Input
+                        name="description"
+                        value={encounter.diagnosis.description}
+                        type="text"
+                      />
+                      <Input
+                        name="startDate"
+                        value={encounter.diagnosis.startDate}
+                        type="text"
+                      />
+                      <Input
+                        name="systolicPressure"
+                        value={
+                          encounter.physicalExamination.bloodPressure
+                            .systolicPressure
+                        }
+                        type="text"
+                      />
+                      <Input
+                        name="diastolicPressure"
+                        value={
+                          encounter.physicalExamination.bloodPressure
+                            .diastolicPressure
+                        }
+                        type="text"
+                      />
+                      <Input
+                        name="weight"
+                        value={encounter.physicalExamination.weight}
+                        type="text"
+                      />
+                      <Input
+                        name="height"
+                        value={encounter.physicalExamination.height}
+                        type="text"
+                      />
+                      <Input
+                        name="pulse"
+                        value={encounter.physicalExamination.pulse}
+                        type="text"
+                      />
+                      <Input
+                        name="temperature"
+                        value={encounter.physicalExamination.temperature}
+                        type="text"
+                      />
+                    </div>
+                    <div className="w-full flex justify-center">
+                      {showAiResults === "stall" && (
+                        <Button
+                          className="disabled:cursor-not-allowed"
+                          disabled={isPending}
+                        >
+                          {isPending ? (
+                            <>
+                              <CircleLoader
+                                size="small"
+                                color="text-green-500"
+                                thickness={3}
+                              />
+                              <span className="ml-2">consulting</span>
+                            </>
+                          ) : (
+                            "Consult AI"
+                          )}
+                        </Button>
+                      )}
+                    </div>
+                  </form>
+                  {showAiResults === "success" && (
+                    <div className="space-y-3">
+                      <div>
+                        <Label className="font-bold">Potential Diagnoses</Label>
+                        <ul className="grid grid-cols-2 items-center list-disc ml-5 text-sm">
+                          {state.results.PotentialDiagnoses.map(
+                            (item: string) => {
+                              return <li key={item}>{item}</li>;
+                            }
+                          )}
+                        </ul>
+                      </div>
+                      <div>
+                        <Label className="font-bold">Recommended Tests</Label>
+                        <ul className="grid grid-cols-2 items-center list-disc ml-5 text-sm">
+                          {state.results.RecommendedTests.map(
+                            (item: string) => {
+                              return <li key={item}>{item}</li>;
+                            }
+                          )}
+                        </ul>
+                      </div>
+                      <div>
+                        <Label className="font-bold">Medications</Label>
+                        <ul className="flex items-center space-x-5 list-disc ml-5 text-sm">
+                          <li>
+                            {state.results.TreatmentSuggestions.Medications}
+                          </li>
+                        </ul>
+                      </div>
+                      <div>
+                        <Label className="font-bold">
+                          Lifestyle Modifications
+                        </Label>
+                        <ul className="grid grid-cols-2 items-center list-disc ml-5 text-sm">
+                          {state.results.TreatmentSuggestions.LifestyleModifications.map(
+                            (item: string) => {
+                              return <li key={item}>{item}</li>;
+                            }
+                          )}
+                        </ul>
+                      </div>
+                      <div>
+                        <Label className="font-bold">
+                          Follow Up Recommendations
+                        </Label>
+                        <ul className="flex items-center space-x-5 list-disc ml-5 text-sm">
+                          <li>
+                            <span className="font-bold">Appointment: </span>
+                            {state.results.FollowUpRecommendations.Appointment}
+                          </li>
+                          <li>
+                            <span className="font-bold">FurtherAction: </span>
+                            {
+                              state.results.FollowUpRecommendations
+                                .FurtherAction
+                            }
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
