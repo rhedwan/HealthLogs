@@ -5,6 +5,18 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
+const MedicationSchema = z.object({
+  name: z.string().min(1, { message: "Medication name is required" }),
+  sig: z.string().min(1, { message: "Sig is required" }),
+  startDate: z.string({ message: "Invalid date format" }),
+  prescriptionDetails: z.object({
+    recorded: z.string({ message: "Invalid date format" }),
+    prescriber: z.string().min(1, { message: "Prescriber is required" }),
+    refills: z.number().int().min(0),
+    quantity: z.number().int().min(1),
+  }),
+});
+
 const FormSchema = z.object({
   patient: z.string().min(1, { message: "This field is required" }),
   visitType: z.enum(["Out Patient", "In Patient", "Emergency", "Follow-Up"], {
@@ -22,21 +34,21 @@ const FormSchema = z.object({
       required_error: "This field is required",
     }
   ),
-  // diagnosis: z.object({
-  //   description: z.string().min(1, { message: "This field is required" }),
-  //   startDate: z.date().refine(
-  //     (date) => {
-  //       const today = new Date();
-  //       today.setHours(0, 0, 0, 0);
-  //       return date >= today;
-  //     },
-  //     {
-  //       message: "Date must not be earlier than today",
-  //     }
-  //   ),
-  // }),
+  diagnosis: z.object({
+    description: z.string().min(1, { message: "This field is required" }),
+    startDate: z.string().refine((dateString) => {
+      const date = new Date(dateString);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date >= today;
+    }),
+  }),
+
   chiefComplaint: z.string().min(1, { message: "This field is required" }),
   healthConcerns: z.string().min(1, { message: "This field is required" }),
+  subjectiveNote: z.string().min(1, { message: "This field is required" }),
+  objectiveNote: z.string().min(1, { message: "This field is required" }),
+  assessmentNote: z.string().min(1, { message: "This field is required" }),
   physicalExamination: z.object({
     temperature: z.string().min(1, { message: "This field is required" }),
     bloodPressure: z.object({
@@ -53,6 +65,7 @@ const FormSchema = z.object({
     height: z.number().int().min(1, { message: "This field is required" }),
     pulse: z.number().int().min(1, { message: "This field is required" }),
   }),
+  medications: z.array(MedicationSchema),
   createdBy: z.string().min(1, { message: "This field is required" }),
 });
 export type State = {
@@ -60,10 +73,10 @@ export type State = {
     patient?: string[];
     visitType?: string[];
     department?: string[];
-    // diagnosis?: {
-    //   description?: string[];
-    //   startDate?: Date[];
-    // };
+    diagnosis?: {
+      description?: string[];
+      startDate?: string[];
+    };
     physicalExamination?: {
       temperature?: string[];
       bloodPressure?: {
@@ -76,10 +89,24 @@ export type State = {
     };
     chiefComplaint?: string[];
     healthConcerns?: string[];
+    subjectiveNote?: string[];
+    objectiveNote?: string[];
+    assessmentNote?: string[];
+    medications?: {
+      name?: string[];
+      sig?: string[];
+      startDate?: string[];
+      prescriptionDetails?: {
+        recorded?: string[];
+        prescriber?: string[];
+        refills?: string[];
+        quantity?: string[];
+      };
+    }[];
     createdBy?: string[];
-    message?: string[];
   };
-  message?: string | number | null;
+  message?: string;
+  status?: string;
 };
 
 export async function createRecord(prevState: State, formData: FormData) {
@@ -93,13 +120,14 @@ export async function createRecord(prevState: State, formData: FormData) {
   }
 
   console.log("Validating form data...");
+  const medicationsData = JSON.parse(formData.get("medications") as string);
   const validatedFields = FormSchema.safeParse({
     patient: formData.get("patient"),
     visitType: formData.get("visitType"),
     department: formData.get("department"),
     diagnosis: {
       description: formData.get("description"),
-      startDate: formData.get("startDate"),
+      startDate: new Date().toISOString(),
     },
     physicalExamination: {
       temperature: formData.get("temperature"),
@@ -111,8 +139,12 @@ export async function createRecord(prevState: State, formData: FormData) {
       height: Number(formData.get("height")),
       pulse: Number(formData.get("pulse")),
     },
+    medications: medicationsData,
     chiefComplaint: formData.get("chiefComplaint"),
     healthConcerns: formData.get("healthConcerns"),
+    subjectiveNote: formData.get("subjectiveNote"),
+    objectiveNote: formData.get("objectiveNote"),
+    assessmentNote: formData.get("assessmentNote"),
     createdBy: "66cf1493a770fdded9197e8b",
   });
 
@@ -120,10 +152,13 @@ export async function createRecord(prevState: State, formData: FormData) {
     console.error("Form validation failed:", validatedFields.error);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Failed to submit form. Please check the errors above.",
+      message:
+        "Failed to submit form. Please check the errors above and complete the form.",
+      status: "Error",
     };
   }
 
+  console.log(validatedFields.data);
   console.log("Form data validated successfully");
   let data;
   try {
@@ -153,11 +188,13 @@ export async function createRecord(prevState: State, formData: FormData) {
     revalidatePath(`/dashboard/${formData.get("patient")}`); // Update cached posts
 
     return {
+      status: "Success",
       message: "Patient Record created successfully!",
     };
   } catch (error) {
     console.error("Error occurred:", error);
     return {
+      status: "Error",
       message: "An error occurred while submitting user data.",
     };
   } finally {

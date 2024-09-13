@@ -54,7 +54,7 @@ export default async function RootLayout({
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
               <AvatarImage
-                src="/placeholder.svg?height=80&width=80"
+                src={patient.photo}
                 alt={`${patient.firstName} ${patient.lastName}`}
               />
               <AvatarFallback>
