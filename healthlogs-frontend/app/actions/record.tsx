@@ -145,7 +145,7 @@ export async function createRecord(prevState: State, formData: FormData) {
     subjectiveNote: formData.get("subjectiveNote"),
     objectiveNote: formData.get("objectiveNote"),
     assessmentNote: formData.get("assessmentNote"),
-    createdBy: "66cf1493a770fdded9197e8b",
+    createdBy: formData.get("createdBy"),
   });
 
   if (!validatedFields.success) {

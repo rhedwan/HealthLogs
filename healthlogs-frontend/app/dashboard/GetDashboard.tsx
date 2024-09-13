@@ -64,6 +64,7 @@ ChartJS.register(
 );
 
 const GetDashboard = ({ data, userData }: any) => {
+  localStorage.setItem("user", JSON.stringify(userData));
   const barChartOptions = {
     responsive: true,
     plugins: {
