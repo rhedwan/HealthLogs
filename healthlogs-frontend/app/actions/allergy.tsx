@@ -97,7 +97,7 @@ export async function AddAllergy(prevState: AllergyState, formData: FormData) {
 
     const data = await response.json();
     console.log(data);
-    revalidatePath(`/dashboard/${data.allergy.patient}`); // Update cached posts
+    revalidatePath(`/dashboard/patients/${data.allergy.patient}`); // Update cached posts
     return {
       message: "Allergy added successfully!",
     };

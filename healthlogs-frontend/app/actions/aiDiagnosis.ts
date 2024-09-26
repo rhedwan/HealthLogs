@@ -143,7 +143,7 @@ export async function consultAi(prevState: State, formData: FormData) {
 
     data = await response.json();
     console.log("API response:", data);
-    revalidatePath(`/dashboard/${formData.get("patient")}`); // Update cached posts
+    revalidatePath(`/dashboard/patients/${formData.get("patient")}`); // Update cached posts
 
     return {
       status: "Success",

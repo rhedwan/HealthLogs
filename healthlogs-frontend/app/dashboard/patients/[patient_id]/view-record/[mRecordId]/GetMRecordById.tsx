@@ -269,7 +269,7 @@ export default function GetMRecordById({
                       .slice(0, 1)
                       .map((record: PatientRecord) => (
                         <Link
-                          href={`/dashboard/${patient._id}/view-record/${record._id}`}
+                          href={`/dashboard/patients/${patient._id}/view-record/${record._id}`}
                           key={record._id}
                         >
                           <Card className="mb-2">

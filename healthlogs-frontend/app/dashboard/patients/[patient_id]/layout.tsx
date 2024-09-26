@@ -9,21 +9,8 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Calendar,
-  CalendarDays,
-  FileText,
-  Home,
-  Mail,
-  MessageSquare,
-  Phone,
-  Search,
-  Settings,
-  User,
-  Users,
-} from "lucide-react";
+import { CalendarDays, Home, Mail, Phone, User } from "lucide-react";
 import { cookies } from "next/headers";
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -48,7 +35,7 @@ export default async function RootLayout({
   let currentPatient = await data.json();
   let patient = currentPatient.currentPatient;
   return (
-    <main className="flex-1 p-8 overflow-auto">
+    <main className="flex-1 px-4 overflow-auto">
       <Card className="mb-6">
         <CardHeader>
           <div className="flex items-center space-x-4">

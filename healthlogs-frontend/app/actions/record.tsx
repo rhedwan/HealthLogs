@@ -185,7 +185,7 @@ export async function createRecord(prevState: State, formData: FormData) {
 
     data = await response.json();
     console.log("API response:", data);
-    revalidatePath(`/dashboard/${formData.get("patient")}`); // Update cached posts
+    revalidatePath(`/dashboard/patients/${formData.get("patient")}`); // Update cached posts
 
     return {
       status: "Success",
@@ -199,7 +199,7 @@ export async function createRecord(prevState: State, formData: FormData) {
     };
   } finally {
     redirect(
-      `/dashboard/${formData.get("patient")}/view-record/${
+      `/dashboard/patients/${formData.get("patient")}/view-record/${
         data.medicalRecord.id
       }`
     ); // Navigate to the new post page

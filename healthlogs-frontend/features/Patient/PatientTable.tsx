@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 // import { formatDate } from "@/lib/utils";
-import { PatientSchema } from "@/app/dashboard/all-patient/page";
+import { PatientSchema } from "@/app/dashboard/patients/page";
 import moment from "moment";
 
 const PatientTable = ({ patients_data }: any) => {
@@ -76,7 +76,7 @@ const PatientTable = ({ patients_data }: any) => {
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-gray-200 rounded-full mr-2"></div>
                   <Link
-                    href={`/dashboard/${patient.id}`}
+                    href={`/dashboard/patients/${patient.id}`}
                     className="font-medium text-blue-600"
                   >
                     {patient.firstName}

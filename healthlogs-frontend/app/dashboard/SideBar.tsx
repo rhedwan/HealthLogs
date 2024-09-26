@@ -18,7 +18,7 @@ export default function SideBar() {
   const navItems = [
     { href: "/dashboard", icon: Home, label: "Overview" },
     { href: "/dashboard/appointment", icon: Calendar, label: "Appointments" },
-    { href: "/dashboard/all-patient", icon: Users, label: "Patients" },
+    { href: "/dashboard/patients", icon: Users, label: "Patients" },
     // { href: "/dashboard/rooms", icon: Home, label: "Rooms" },
     // { href: "/dashboard/messages", icon: MessageSquare, label: "Messages" },
     // { href: "/dashboard/files", icon: FileText, label: "Files" },

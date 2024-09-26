@@ -213,7 +213,9 @@ const GetPatientById = ({ patient }: any) => {
             <CardTitle className="text-lg font-semibold">
               Patient Records
             </CardTitle>
-            <Link href={`/dashboard/${patient._id}/view-record/create`}>
+            <Link
+              href={`/dashboard/patients/${patient._id}/view-record/create`}
+            >
               <Button variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
                 Add New Encounter
@@ -225,7 +227,7 @@ const GetPatientById = ({ patient }: any) => {
           <div className="space-y-4">
             {patient.patientRecord.map((record: PatientRecord) => (
               <Link
-                href={`/dashboard/${patient._id}/view-record/${record._id}`}
+                href={`/dashboard/patients/${patient._id}/view-record/${record._id}`}
                 key={record._id}
               >
                 <Card>
