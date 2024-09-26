@@ -66,7 +66,6 @@ export default async function EncounterDetailsPage({
     },
   });
   let currentPatient = await data.json();
-  console.log(currentPatient);
   let fetchMRecord = await fetch(`${url}api/v1/medicalRecord/${mRecordId}`, {
     method: "GET", // You can change this to POST, PUT, etc. depending on your needs
     headers: {
@@ -75,7 +74,6 @@ export default async function EncounterDetailsPage({
     },
   });
   let medicalRecord = await fetchMRecord.json();
-  console.log(medicalRecord);
   return (
     <main className="">
       <GetMRecordById

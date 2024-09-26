@@ -70,8 +70,6 @@ interface Patient {
 }
 
 const GetAppointment = ({ data, metaData }: any) => {
-  console.log("meta");
-  console.log(data);
   const { toast } = useToast();
 
   const initialState: State = { message: "", errors: {} };

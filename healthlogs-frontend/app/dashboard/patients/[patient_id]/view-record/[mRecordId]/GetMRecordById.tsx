@@ -110,7 +110,6 @@ export default function GetMRecordById({
   useEffect(() => {
     if (state?.results?.RecommendedTests?.length > 0) {
       setIsPending(true);
-      console.log(state.results);
 
       const timer = setTimeout(() => {
         setIsPending(false);
