@@ -132,7 +132,7 @@ export async function createAppointment(prevState: State, formData: FormData) {
     const data = await response.json();
     console.log(data);
     revalidatePath("/dashboard/appointment"); // Update cached posts
-    revalidatePath(`/dashboard/${data.appointment.patient}`); // Update cached posts
+    revalidatePath(`/dashboard/patients/${data.appointment.patient}`); // Update cached posts
 
     return {
       message: "Appointment added successfully!",

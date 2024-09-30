@@ -39,10 +39,9 @@ export default async function PatientListPage() {
     },
   });
   let patients_data = await data.json();
-  console.log(patients_data);
 
   return (
-    <main className="flex-1 p-8 overflow-auto">
+    <main className="flex-1 px-4 overflow-auto">
       <h2 className="text-2xl font-bold mb-6">
         {patients_data.results} recent patients
       </h2>

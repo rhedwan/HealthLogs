@@ -129,7 +129,7 @@ export async function createPatient(prevState: State, formData: FormData) {
 
     const data = await response.json();
     console.log("API response:", data);
-    revalidatePath("/dashboard/all-patient"); // Update cached posts
+    revalidatePath("/dashboard/patients"); // Update cached posts
     return {
       message: "Patient data submitted successfully!",
     };
@@ -139,6 +139,6 @@ export async function createPatient(prevState: State, formData: FormData) {
       message: "An error occurred while submitting user data.",
     };
   } finally {
-    redirect(`/dashboard/all-patient`); // Navigate to the new post page
+    redirect(`/dashboard/patients`); // Navigate to the new post page
   }
 }

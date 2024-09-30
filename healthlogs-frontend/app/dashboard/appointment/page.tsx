@@ -13,7 +13,6 @@ const AppointmentPage = async () => {
     },
   });
   let appointments_data = await data.json();
-  console.log(appointments_data.metaData);
   return (
     <GetAppointment
       data={appointments_data.appointments}

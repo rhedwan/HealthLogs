@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,28 +10,6 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  CalendarDays,
-  FileText,
-  Home,
-  Mail,
-  MessageSquare,
-  Phone,
-  Settings,
-  User,
-  Users,
-} from "lucide-react";
-// import { Line } from "react-chartjs-2";
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-// } from "chart.js";
 import { Medication, PatientRecord } from "@/schema/PatientRecord";
 import { Input } from "@/components/ui/input";
 import { useFormState } from "react-dom";
@@ -41,7 +18,14 @@ import { Label } from "@/components/ui/label";
 import { useFormStatus } from "react-dom";
 import CircleLoader from "@/components/ui/CircleLoader";
 import { PatientAllergy } from "@/schema/PatientAllergy";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   LineChart,
   Line,
@@ -55,20 +39,7 @@ import {
 import { formatDate, formatDateChart } from "@/lib/utils";
 import { PatientFamilyHistory } from "@/schema/PatientFamilyHistory";
 import Link from "next/link";
-// ChartJS.register(
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend
-// );
-
-// export default function EncounterDetailsPage({
-//   actualPatient,
-//   actualEncounter,
-// }: EncounterDetailsPageProps) {
+import { generateMedicationPDF } from "@/lib/GeneratePDF";
 export default function GetMRecordById({
   encounter,
   patient,
@@ -76,18 +47,6 @@ export default function GetMRecordById({
   encounter: PatientRecord;
   patient: any;
 }) {
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Patient Data Over Time",
-      },
-    },
-  };
   const initialState: State = {
     errors: {},
     message: "",
@@ -96,25 +55,9 @@ export default function GetMRecordById({
   };
   // @ts-ignore
   const [state, formAction] = useFormState(consultAi, initialState);
-  const { pending } = useFormStatus();
-  const [showAiResults, setShowAiResults] = useState("stall");
+  const { pending, data } = useFormStatus();
+  // const [showAiResults, setShowAiResults] = useState("stall");
   const [isPending, setIsPending] = useState(false);
-  useEffect(() => {
-    if (state?.results?.RecommendedTests?.length > 0) {
-      setIsPending(true);
-      console.log(state.results);
-
-      const timer = setTimeout(() => {
-        setIsPending(false);
-        setShowAiResults("success");
-      }, 2000); // 2 seconds delay
-
-      return () => clearTimeout(timer); // Clean up the timer
-    } else {
-      setShowAiResults("stall");
-      setIsPending(false);
-    }
-  }, [state?.results]);
   return (
     <main className="flex-1 py-8 overflow-auto">
       <div className="container mx-auto">
@@ -220,7 +163,7 @@ export default function GetMRecordById({
                   </div>
                 </CardContent>
               </Card>
-              <Card className="mt-4">
+              {/* <Card className="mt-4">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold">
                     Diagnoses
@@ -231,11 +174,11 @@ export default function GetMRecordById({
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        {/* <p className="font-semibold">Description</p> */}
+                        <p className="font-semibold">Description</p>
                         <p>{encounter.diagnosis.description}</p>
                       </div>
                       <div>
-                        {/* <p className="font-semibold">Start Date</p> */}
+                        <p className="font-semibold">Start Date</p>
                         <p>
                           {formatDate(
                             encounter.diagnosis.startDate,
@@ -246,30 +189,70 @@ export default function GetMRecordById({
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
               <Card className="mt-4">
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold">
-                    Medications ({encounter.medications.length})
-                  </CardTitle>
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-lg font-semibold">
+                      Patient Past Records
+                    </CardTitle>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <Table>
-                    <TableBody>
-                      {encounter.medications.map((medication: Medication) => (
-                        <TableRow key={medication._id} className="items-center">
-                          <TableCell>{medication.name}</TableCell>
-                          <TableCell>
-                            {medication.prescriptionDetails.prescriber}
-                          </TableCell>
-                          <TableCell>
-                            {formatDate(medication.startDate, "DD/MM/YYYY")}
-                          </TableCell>
-                          <TableCell>{medication.sig}</TableCell>
-                        </TableRow>
+                  <div className="space-y-4">
+                    {patient.patientRecord
+                      .slice(0, 1)
+                      .map((record: PatientRecord) => (
+                        <Link
+                          href={`/dashboard/patients/${patient._id}/view-record/${record._id}`}
+                          key={record._id}
+                        >
+                          <Card className="mb-2">
+                            <CardHeader>
+                              <CardTitle className="text-lg">
+                                {record.vistType} - {record.department}
+                              </CardTitle>
+                              <CardDescription>
+                                {new Date(record.createdAt).toLocaleString()}
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <p className="text-sm mb-2">
+                                {record.diagnosis
+                                  ? record.diagnosis?.description
+                                  : "No diagnosis yet"}
+                              </p>
+                              <div className="grid grid-cols-3 gap-2 text-sm">
+                                <div>
+                                  <span className="font-medium">
+                                    Temperature:
+                                  </span>{" "}
+                                  {record.physicalExamination?.temperature}
+                                </div>
+                                <div>
+                                  <span className="font-medium">
+                                    Blood Pressure:
+                                  </span>{" "}
+                                  {
+                                    record.physicalExamination?.bloodPressure
+                                      .systolicPressure
+                                  }
+                                  /
+                                  {
+                                    record.physicalExamination?.bloodPressure
+                                      .diastolicPressure
+                                  }
+                                </div>
+                                <div>
+                                  <span className="font-medium">Weight:</span>{" "}
+                                  {record.physicalExamination?.weight} kg
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
                       ))}
-                    </TableBody>
-                  </Table>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -414,19 +397,37 @@ export default function GetMRecordById({
                         type="text"
                       />
                     </div>
+                    <p>
+                      {data ? `Requesting ${data?.get("temperature")}...` : ""}
+                    </p>
                     <div className="w-full flex justify-center">
-                      {showAiResults === "stall" && (
+                      {!state?.results?.PotentialDiagnoses && (
                         <Button
                           className="disabled:cursor-not-allowed"
-                          disabled={isPending}
+                          disabled={pending}
                         >
-                          {isPending ? (
+                          {pending ? (
                             <>
-                              <CircleLoader
-                                size="small"
-                                color="text-green-500"
-                                thickness={3}
-                              />
+                              <svg
+                                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  className="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                ></circle>
+                                <path
+                                  className="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                              </svg>
                               <span className="ml-2">consulting</span>
                             </>
                           ) : (
@@ -436,7 +437,7 @@ export default function GetMRecordById({
                       )}
                     </div>
                   </form>
-                  {showAiResults === "success" && (
+                  {state?.results?.PotentialDiagnoses && (
                     <div className="space-y-3">
                       <div>
                         <Label className="font-bold">Potential Diagnoses</Label>
@@ -586,72 +587,6 @@ export default function GetMRecordById({
                 </CardContent>
               </Card>
 
-              <Card className="mt-4">
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-lg font-semibold">
-                      Patient Past Records
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {patient.patientRecord
-                      .slice(0, 2)
-                      .map((record: PatientRecord) => (
-                        <Link
-                          href={`/dashboard/${patient._id}/view-record/${record._id}`}
-                          key={record._id}
-                        >
-                          <Card className="mb-2">
-                            <CardHeader>
-                              <CardTitle className="text-lg">
-                                {record.vistType} - {record.department}
-                              </CardTitle>
-                              <CardDescription>
-                                {new Date(record.createdAt).toLocaleString()}
-                              </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <p className="text-sm mb-2">
-                                {record.diagnosis
-                                  ? record.diagnosis?.description
-                                  : "No diagnosis yet"}
-                              </p>
-                              <div className="grid grid-cols-3 gap-2 text-sm">
-                                <div>
-                                  <span className="font-medium">
-                                    Temperature:
-                                  </span>{" "}
-                                  {record.physicalExamination?.temperature}
-                                </div>
-                                <div>
-                                  <span className="font-medium">
-                                    Blood Pressure:
-                                  </span>{" "}
-                                  {
-                                    record.physicalExamination?.bloodPressure
-                                      .systolicPressure
-                                  }
-                                  /
-                                  {
-                                    record.physicalExamination?.bloodPressure
-                                      .diastolicPressure
-                                  }
-                                </div>
-                                <div>
-                                  <span className="font-medium">Weight:</span>{" "}
-                                  {record.physicalExamination?.weight} kg
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </Link>
-                      ))}
-                  </div>
-                </CardContent>
-              </Card>
-
               {/* <Card className="mt-6">
                 <CardHeader>
                   <CardTitle>Previous Encounters</CardTitle>
@@ -735,6 +670,65 @@ export default function GetMRecordById({
             </TabsContent>
           </Tabs>
         </div>
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              Medications ({encounter.medications.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow className="items-center">
+                  <TableHead>Medication</TableHead>
+                  <TableHead>Doctor</TableHead>
+                  <TableHead>Start Date</TableHead>
+                  <TableHead>Refils</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>SIG</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {encounter.medications.map((medication: Medication) => (
+                  <TableRow key={medication._id} className="items-center">
+                    <TableCell>{medication.name}</TableCell>
+                    <TableCell>
+                      {medication.prescriptionDetails.prescriber}
+                    </TableCell>
+                    <TableCell>
+                      {formatDate(medication.startDate, "DD/MM/YYYY")}
+                    </TableCell>
+                    <TableCell>
+                      {medication.prescriptionDetails.refills}
+                    </TableCell>
+                    <TableCell>
+                      {medication.prescriptionDetails.quantity}
+                    </TableCell>
+                    <TableCell className="">{medication.sig} </TableCell>
+                    <TableCell className="">
+                      <Button
+                        variant="outline"
+                        className=""
+                        onClick={(e) => {
+                          e.preventDefault();
+                          generateMedicationPDF(
+                            medication.name,
+                            medication.prescriptionDetails.prescriber,
+                            medication.prescriptionDetails.quantity,
+                            medication.prescriptionDetails.refills,
+                            patient.firstName
+                          );
+                        }}
+                      >
+                        Prescription
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     </main>
   );
