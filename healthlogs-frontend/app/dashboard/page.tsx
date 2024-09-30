@@ -14,7 +14,6 @@ const page = async () => {
     },
   });
   const data = await response.json();
-  console.log(data);
   const userResponse = await fetch(`${url}api/v1/users/user`, {
     method: "GET",
     headers: {

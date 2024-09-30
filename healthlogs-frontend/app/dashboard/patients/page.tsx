@@ -39,7 +39,6 @@ export default async function PatientListPage() {
     },
   });
   let patients_data = await data.json();
-  console.log(patients_data);
 
   return (
     <main className="flex-1 px-4 overflow-auto">
