@@ -6,6 +6,7 @@ const {
   updateMedicalRecord,
   createFamilyHistory,
   uploadPatientImage,
+  // getAllPatientDocument,
   uploadPatientImageToCloudinary,
 } = require("../controllers/medicalRecordController");
 const { protect } = require("../controllers/authContollers");
@@ -15,6 +16,7 @@ const router = express.Router({ mergeParams: true });
 router.route("/:patientId/familyRecord").post(protect, createFamilyHistory);
 router
   .route("/:patientId/document")
+  // .get(protect, getAllPatientDocument)
   .post(protect, uploadPatientImage, uploadPatientImageToCloudinary);
 
 router

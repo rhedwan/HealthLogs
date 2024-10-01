@@ -183,6 +183,7 @@ exports.getPatientById = catchAsync(async (req, res, next) => {
       path: "patientAllergy",
     })
     .populate("patientFamilyHistory")
+    .populate("patientDocument")
     .lean();
 
   const visits = currentPatient.patientRecord.map((record) => {
