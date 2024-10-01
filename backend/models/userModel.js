@@ -148,6 +148,13 @@ userSchema.virtual("patientFamilyHistory", {
   localField: "_id",
 });
 
+userSchema.virtual("patientDocument", {
+  ref: "PatientDocument",
+  foreignField: "patient",
+  localField: "_id",
+});
+
+
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 

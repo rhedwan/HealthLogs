@@ -1,11 +1,21 @@
+const cloudinary = require('cloudinary').v2;
+const multer = require("multer");
 const {
   MedicalRecord,
   FamilyHealthHistory,
+  PatientDocument,
 } = require("../models/medicalRecordModel");
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const { createOne } = require("./handlerFactory");
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 const isPatientExisting = async (req, next) => {
   const patient = req.params.patientId;
 
@@ -76,6 +86,70 @@ exports.getPatientMedicalHistory = catchAsync(async (req, res, next) => {
     status: "success",
     data: allMedicalRecords,
   });
+});
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("Not an image! Please upload only images.", 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+exports.uploadPatientImage = upload.array("images");
+
+exports.uploadPatientImageToCloudinary = catchAsync(async (req, res, next) => {
+  if (!req.files || req.files.length === 0) {
+    return next(new AppError("No files uploaded", 400));
+  }
+
+  const patient = await isPatientExisting(req, next);
+
+  // Find existing document or create a new one
+  let patientDocument = await PatientDocument.findOne({ patient });
+  if (!patientDocument) {
+    patientDocument = await PatientDocument.create({ patient });
+  }
+
+  const uploadPromises = req.files.map((file) => {
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "patients",
+          public_id: `patient_${patient}_${Date.now()}`,
+        },
+        (error, result) => {
+          if (error) {
+            reject(new AppError("Cloudinary upload failed", 500));
+          } else {
+            resolve(result.secure_url);
+          }
+        }
+      );
+      uploadStream.end(file.buffer);
+    });
+  });
+
+  try {
+    const newImageUrls = await Promise.all(uploadPromises);
+
+    patientDocument.images = [...patientDocument.images, ...newImageUrls];
+
+    await patientDocument.save();
+    res.status(200).json({
+      status: "success",
+      document: patientDocument,
+    });
+  } catch (error) {
+    return next(error);
+  }
 });
 
 module.exports.isPatientExisting = isPatientExisting;

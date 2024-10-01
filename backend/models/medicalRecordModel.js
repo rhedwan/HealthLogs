@@ -101,6 +101,27 @@ const FamilyHealthHistory = mongoose.model(
   familyHealthSchema
 );
 
-const MedicalRecord = mongoose.model("MedicalRecord", medicalRecordSchema);
+const patientDocumentSchema = new mongoose.Schema(
+  {
+    patient: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      required: [true, "You need to provide the patient"],
+    },
+    images: [
+      {
+        type: String,
+      },
+    ],
+  },
 
-module.exports = { MedicalRecord, FamilyHealthHistory };
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+);
+
+const MedicalRecord = mongoose.model("MedicalRecord", medicalRecordSchema);
+const PatientDocument = mongoose.model(
+  "PatientDocument",
+  patientDocumentSchema
+);
+
+module.exports = { MedicalRecord, FamilyHealthHistory, PatientDocument };
