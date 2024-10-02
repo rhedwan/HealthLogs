@@ -4,6 +4,25 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const { isPatientExisting } = require("./medicalRecordController");
 
+exports.changeAppointmentStatus = async () => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  yesterday.setHours(23, 59, 59, 999);
+
+  try {
+    await Appointment.updateMany(
+      {
+        status: { $ne: "Completed" },
+        endTime: { $lte: yesterday }
+      },
+      { $set: { status: "Inactive" } }
+    );
+    console.log("Appointment statuses updated successfully");
+  } catch (error) {
+    console.error("Error updating appointment statuses:", error);
+  }
+};
+
 exports.createAppointment = catchAsync(async (req, res, next) => {
   //   const patient = await isPatientExisting(req, next);
 

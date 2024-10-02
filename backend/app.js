@@ -19,6 +19,10 @@ const medicalRecordRouter = require("./routes/medicalRecordRouter");
 const dashboardRouter = require("./routes/dashboardRouter");
 const appointmentRouter = require("./routes/appointmentRouter");
 const allergyRouter = require("./routes/allergyRouter");
+const cron = require("node-cron");
+const {
+  changeAppointmentStatus,
+} = require("./controllers/appointmentController");
 
 app.use(helmet());
 
@@ -77,5 +81,6 @@ app.use("*", (req, res, next) => {
 });
 
 app.use(globalErrorHandler);
+cron.schedule("0 0 * * *", changeAppointmentStatus);
 
 module.exports = app;
