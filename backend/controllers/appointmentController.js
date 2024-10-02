@@ -13,7 +13,7 @@ exports.changeAppointmentStatus = async () => {
     await Appointment.updateMany(
       {
         status: { $ne: "Completed" },
-        endTime: { $lte: yesterday }
+        endTime: { $lte: yesterday },
       },
       { $set: { status: "Inactive" } }
     );
@@ -49,7 +49,7 @@ exports.createAppointmentByAdmin = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllAppointment = catchAsync(async (req, res, next) => {
-  const appointments = await Appointment.find({ patient: req.user._id });
+  const appointments = await Appointment.find({});
   res.status(201).json({
     status: "success",
     appointments,
