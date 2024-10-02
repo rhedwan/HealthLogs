@@ -10,7 +10,7 @@ const {
 router
   .route("/")
   .post(protect, createAppointment)
-  .get(protect, restrictTo("patient"), getAllAppointment);
+  .get(protect, getAllAppointment);
 
 router.post("/:fileId", protect, createAppointmentByAdmin);
 
