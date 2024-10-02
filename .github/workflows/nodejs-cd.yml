@@ -16,7 +16,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           script: |
-            cd ~/apps/healthlogs/backend
+            cd ~/apps/HealthLogs/backend
             git pull origin main
             git pull  https://${{ secrets.PROJECT_KEY }}@github.com/rhedwan/ClimdesProject.git
             git status
