@@ -13,7 +13,7 @@ exports.changeAppointmentStatus = async () => {
     await Appointment.updateMany(
       {
         status: { $ne: "Completed" },
-        endTime: { $lte: yesterday },
+        endTime: { $lte: yesterday }
       },
       { $set: { status: "Inactive" } }
     );
@@ -49,9 +49,29 @@ exports.createAppointmentByAdmin = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllAppointment = catchAsync(async (req, res, next) => {
-  const appointments = await Appointment.find({});
-  res.status(201).json({
+  const appointments = await Appointment.find({ patient: req.user._id });
+
+  const activeAppointments = appointments.filter(
+    (appointment) => appointment.status === "Active"
+  );
+  const completedAppointments = appointments.filter(
+    (appointment) => appointment.status === "Completed"
+  );
+
+  let nextAppointment = null;
+  if (activeAppointments.length > 0) {
+    nextAppointment = activeAppointments.reduce((earliest, current) =>
+      new Date(current.date) < new Date(earliest.date) ? current : earliest
+    );
+  }
+
+  res.status(200).json({
     status: "success",
     appointments,
+    metaData: {
+      activeAppointments: activeAppointments.length,
+      completedAppointments: completedAppointments.length,
+      nextAppointment: nextAppointment ? nextAppointment.date : null,
+    },
   });
 });
