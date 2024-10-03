@@ -1,17 +1,12 @@
 import React from "react";
 import { verifySession } from "@/lib/session";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDays, Home, Mail, Phone, User } from "lucide-react";
 import { cookies } from "next/headers";
+import { Separator } from "@/components/ui/separator";
+import { calculateAge } from "@/lib/utils";
+
 interface RootLayoutProps {
   children: React.ReactNode;
   params: { patient_id: string };
@@ -34,12 +29,15 @@ export default async function RootLayout({
   });
   let currentPatient = await data.json();
   let patient = currentPatient.currentPatient;
+  console.log(patient);
   return (
-    <main className="flex-1 px-4 overflow-auto">
-      <Card className="mb-6">
-        <CardHeader>
-          <div className="flex items-center space-x-4">
-            <Avatar className="h-20 w-20">
+    <main className="flex-1 overflow-auto px-3">
+      {/* <Card className="m-0 p-0"> */}
+      {/* <CardHeader> */}
+      <div className="bg-white px-5 py-5">
+        <div className="flex justify-between">
+          <div className="flex items-center space-x-1">
+            <Avatar className="h-8 w-8">
               <AvatarImage
                 src={patient.photo}
                 alt={`${patient.firstName} ${patient.lastName}`}
@@ -50,20 +48,43 @@ export default async function RootLayout({
               </AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-2xl">
-                {patient.firstName} {patient.lastName}
-              </CardTitle>
-              <CardDescription>Patient ID: {patient.fileId}</CardDescription>
-              <div className="flex space-x-2 mt-2">
-                <Badge variant="outline">{patient.gender}</Badge>
-                <Badge variant="outline">{patient.role}</Badge>
-                <Badge variant="default">Active</Badge>
+              <div className="text-lg flex space-x-3 items-center">
+                {/* <div className="flex items-center space-x-1">
+                  <p>
+                    {patient.firstName} {patient.lastName}
+                  </p>
+                  <Separator orientation="vertical" />
+                  <p className="text-sm text-muted-foreground">
+                    {patient.fileId}
+                  </p>
+                </div> */}
+                <div className="flex h-5 items-center space-x-2 text-sm">
+                  <p className="text-base font-semibold">
+                    {patient.firstName} {patient.lastName}
+                  </p>
+                  <Separator orientation="vertical" />
+                  <p className="text-sm text-muted-foreground">
+                    {patient.fileId}
+                  </p>
+                  <Separator orientation="vertical" />
+
+                  <Badge variant="outline">{patient.gender}</Badge>
+                  <Separator orientation="vertical" />
+                  <Badge variant="outline">
+                    {calculateAge(patient.dateOfBirth as Date)} {" yrs"}
+                  </Badge>
+                  <Separator orientation="vertical" />
+                  <Badge variant="outline">{patient.role}</Badge>
+                  <Separator orientation="vertical" />
+                  <Badge variant="default">Active</Badge>
+                </div>
               </div>
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="personal" className="w-full">
+        </div>
+        {/* </CardHeader> */}
+        {/* <CardContent> */}
+        {/* <Tabs defaultValue="personal" className="w-full">
             <TabsList>
               <TabsTrigger value="personal">Personal Info</TabsTrigger>
               <TabsTrigger value="medical">Medical Info</TabsTrigger>
@@ -137,9 +158,12 @@ export default async function RootLayout({
                 </div>
               </div>
             </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+          </Tabs> */}
+        {/* </CardContent> */}
+      </div>
+
+      {/* </Card> */}
+
       {children}
     </main>
   );

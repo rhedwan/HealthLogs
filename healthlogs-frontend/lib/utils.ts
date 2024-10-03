@@ -1060,3 +1060,32 @@ export const closeModalAndToast = (
     action(new FormData());
   }
 };
+
+export function calculateAge(birthDateInput: Date | string): number {
+  // Convert the input to a Date object if it's a string
+  const birthDate = new Date(birthDateInput);
+
+  // Check if the conversion to Date was successful
+  if (isNaN(birthDate.getTime())) {
+    throw new Error("Invalid date input");
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  const dayDifference = today.getDate() - birthDate.getDate();
+
+  // Adjust the age if the birthday hasn't occurred yet this year
+  if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+    age--;
+  }
+
+  return age;
+}
+export function getFileNameFromUrl(url: string): string {
+  // Split the URL by "/" and get the last segment
+  const parts = url.split("/");
+  const fileName = parts[parts.length - 1]; // This will get the last part after the last "/"
+
+  return fileName;
+}

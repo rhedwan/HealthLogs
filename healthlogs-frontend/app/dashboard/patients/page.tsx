@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import PatientTable from "@/features/Patient/PatientTable";
 
 export type PatientSchema = {
+  _id?: React.Key | null | undefined;
   id: React.Key | null | undefined;
   firstName: string;
   lastName: string;

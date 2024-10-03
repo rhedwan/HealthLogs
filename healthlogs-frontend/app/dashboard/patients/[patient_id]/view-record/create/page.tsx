@@ -48,6 +48,7 @@ import {
 import { State, createRecord } from "@/app/actions/record";
 import { useFormState } from "react-dom";
 import { toast } from "@/hooks/use-toast";
+import GoBackButton from "@/components/system/BackButton";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -151,6 +152,11 @@ export default function PatientEncounterPage({
     <>
       {/* Main Content */}
       <div className="">
+        <div className="my-3 flex justify-start">
+          <Button className="bg-white hover:bg-white text-black">
+            <GoBackButton />
+          </Button>
+        </div>
         {/* Left Column - Previous Information */}
         {/* <Tabs defaultValue="summary" className="space-y-6">
             <TabsList>

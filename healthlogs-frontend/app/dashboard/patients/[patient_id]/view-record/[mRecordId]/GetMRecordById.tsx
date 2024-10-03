@@ -40,6 +40,7 @@ import { formatDate, formatDateChart } from "@/lib/utils";
 import { PatientFamilyHistory } from "@/schema/PatientFamilyHistory";
 import Link from "next/link";
 import { generateMedicationPDF } from "@/lib/GeneratePDF";
+import GoBackButton from "@/components/system/BackButton";
 export default function GetMRecordById({
   encounter,
   patient,
@@ -59,8 +60,13 @@ export default function GetMRecordById({
   // const [showAiResults, setShowAiResults] = useState("stall");
   const [isPending, setIsPending] = useState(false);
   return (
-    <main className="flex-1 py-8 overflow-auto">
-      <div className="container mx-auto">
+    <main className="flex-1 overflow-auto">
+      <div className="my-3 flex justify-start">
+        <Button className="bg-white hover:bg-white text-black">
+          <GoBackButton />
+        </Button>
+      </div>
+      <div className="mx-auto">
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Previous Information */}
