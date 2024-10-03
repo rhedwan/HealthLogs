@@ -75,7 +75,10 @@ export default async function RootLayout({
               <CardDescription>Patient ID: {patient.fileId}</CardDescription>
               <div className="flex space-x-2 mt-2">
                 <Badge variant="outline">{patient.gender}</Badge>
-                <Badge variant="outline">{patient.role}</Badge>
+                <Badge variant="outline">
+                  {patient.role.charAt(0).toUpperCase() +
+                    patient.role.slice(1).toLowerCase()}
+                </Badge>
                 <Badge variant="default">Active</Badge>
               </div>
             </div>
