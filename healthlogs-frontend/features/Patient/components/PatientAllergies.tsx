@@ -100,6 +100,22 @@ const PatientAllergies = ({ patient }: { patient: any }) => {
                   )}
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="reaction">Allergen Info</Label>
+                  <Input
+                    id="allergenInfo"
+                    type="text"
+                    name="allergenInfo"
+                    className={
+                      allergyState?.errors?.allergenInfo ? "border-red-500" : ""
+                    }
+                  />
+                  {allergyState?.errors?.allergenInfo && (
+                    <p className="text-red-500 text-sm">
+                      {allergyState.errors.allergenInfo[0]}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="severity">Severity</Label>
                   <Select name="severity">
                     <SelectTrigger
