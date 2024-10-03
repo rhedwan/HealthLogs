@@ -54,7 +54,8 @@ export async function uploadFiles(formData: FormData, patientId: string) {
     const data = await response.json();
     console.log("API response:", data);
 
-    revalidatePath("/uploads");
+    revalidatePath("/");
+    revalidatePath(`/dashboard/patients/${patientId}`);
 
     return {
       success: true,

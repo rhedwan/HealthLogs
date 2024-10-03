@@ -10,9 +10,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PatientSchema } from "@/app/dashboard/patients/page";
 import { PatientRecord } from "@/schema/PatientRecord";
-import { Plus } from "lucide-react";
+import { Contact, MapPinHouse, Plus, SquareKanban, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/utils";
+import { CopyToClipboard } from "@/components/system/CopyToClipboard";
 const Profile = ({ patient }: { patient: any }) => {
   return (
     <div>
@@ -20,7 +21,12 @@ const Profile = ({ patient }: { patient: any }) => {
         <Card className="mb-7">
           <CardHeader className="pb-3 pt-6 px-6">
             <div className="flex justify-between items-center">
-              <CardTitle className="text-lg font-semibold">Patient</CardTitle>
+              <CardTitle className="text-lg font-semibold">
+                <div className="flex items-center space-x-1">
+                  <User size={20} strokeWidth={1.5} />
+                  <p>Patient</p>
+                </div>
+              </CardTitle>
             </div>
             <Separator orientation="horizontal" />
           </CardHeader>
@@ -53,7 +59,13 @@ const Profile = ({ patient }: { patient: any }) => {
               <div className="grid grid-cols-[auto_1fr]">
                 <div className="grid grid-cols-2 text-sm">
                   <span className="font-semibold">RECORD NUMBER:</span>
-                  <span>{patient.fileId}</span>
+                  <div className="flex items-center space-x-2">
+                    <span>{patient.fileId}</span>
+                    <CopyToClipboard
+                      text={patient.fileId}
+                      className="p-0 cursor-pointer"
+                    />
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 text-sm">
                   <span className="font-semibold">PATIENT STATUS:</span>
@@ -75,7 +87,10 @@ const Profile = ({ patient }: { patient: any }) => {
           <CardHeader className="pb-3 pt-6 px-6">
             <div className="flex justify-between items-center">
               <CardTitle className="text-lg font-semibold">
-                Medical Background
+                <div className="flex items-center space-x-1">
+                  <SquareKanban size={20} strokeWidth={1.5} />
+                  <p>Medical Background</p>
+                </div>
               </CardTitle>
             </div>
             <Separator orientation="horizontal" />
@@ -113,7 +128,12 @@ const Profile = ({ patient }: { patient: any }) => {
         <Card className="mb-7">
           <CardHeader className="pb-3 pt-6 px-6">
             <div className="flex justify-between items-center">
-              <CardTitle className="text-lg font-semibold">Contact</CardTitle>
+              <CardTitle className="text-lg font-semibold">
+                <div className="flex items-center space-x-1">
+                  <Contact size={20} strokeWidth={1.5} />
+                  <p>Contact</p>
+                </div>
+              </CardTitle>
             </div>
             <Separator orientation="horizontal" />
           </CardHeader>
@@ -146,7 +166,12 @@ const Profile = ({ patient }: { patient: any }) => {
         <Card className="mb-7 col-span-2">
           <CardHeader className="pb-3 pt-6 px-6">
             <div className="flex justify-between items-center">
-              <CardTitle className="text-lg font-semibold">Address</CardTitle>
+              <CardTitle className="text-lg font-semibold">
+                <div className="flex items-center space-x-1">
+                  <MapPinHouse size={20} strokeWidth={1.5} />
+                  <p>Address</p>
+                </div>
+              </CardTitle>
             </div>
             <Separator orientation="horizontal" />
           </CardHeader>
