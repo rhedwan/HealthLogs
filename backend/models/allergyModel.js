@@ -11,6 +11,7 @@ const allergyScehema = new mongoose.Schema({
     enum: ["Drug", "Food", "Environment"],
     required: [true, "You need to provide the allergy type"],
   },
+  allergenInfo: String,
   severity: {
     type: String,
     enum: ["Very Mild", "Mild", "Moderate", "Severe"],
