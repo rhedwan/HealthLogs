@@ -22,13 +22,19 @@ import {
 import Image from "next/image";
 import { Loader2, AlertCircle, Download } from "lucide-react";
 
-const DocumentList = ({ patient }: { patient: any }) => {
-  const [loadingImages, setLoadingImages] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const [imageErrors, setImageErrors] = useState<{
-    [key: string]: boolean;
-  }>({});
+interface DocumentListProps {
+  patient: {
+    patientDocument: Array<{
+      images: string[];
+    }>;
+  };
+}
+
+const DocumentList: React.FC<DocumentListProps> = ({ patient }) => {
+  const [loadingImages, setLoadingImages] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
   const handleImageLoad = (imageUrl: string) => {
     setLoadingImages((prev) => ({ ...prev, [imageUrl]: false }));
@@ -89,7 +95,7 @@ const DocumentList = ({ patient }: { patient: any }) => {
                   <DialogContent className="max-w-3xl w-full p-0">
                     <DialogHeader className="p-6">
                       <DialogDescription>
-                        <div className="relative w-full h-[calc(100vh-12rem)] bg-gray-100 rounded-md overflow-hidden">
+                        <div className="relative w-full h-[calc(100vh-12rem) rounded-md overflow-hidden">
                           {loadingImages[doc] && (
                             <div className="absolute inset-0 flex items-center justify-center">
                               <Loader2 className="h-8 w-8 animate-spin" />
@@ -101,14 +107,19 @@ const DocumentList = ({ patient }: { patient: any }) => {
                               <p>Failed to load image</p>
                             </div>
                           ) : (
-                            <Image
-                              src={doc}
-                              alt={getFileNameFromUrl(doc)}
-                              layout="fill"
-                              objectFit="contain"
-                              onLoadingComplete={() => handleImageLoad(doc)}
-                              onError={() => handleImageError(doc)}
-                            />
+                            <div className="flex justify-center">
+                              <Image
+                                src={doc}
+                                alt={getFileNameFromUrl(doc)}
+                                className="mt-4"
+                                // fill
+                                width={400}
+                                height={400}
+                                style={{ objectFit: "contain" }}
+                                onLoadingComplete={() => handleImageLoad(doc)}
+                                onError={() => handleImageError(doc)}
+                              />
+                            </div>
                           )}
                         </div>
                         <div className="mt-4 flex justify-between items-center">
