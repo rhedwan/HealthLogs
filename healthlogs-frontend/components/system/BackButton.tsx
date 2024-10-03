@@ -1,36 +1,18 @@
 "use client";
-
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button"; // Adjust this path based on where your button component is
+import { ArrowLeft, ChevronLeft, MoveLeft } from "lucide-react";
 
-export default function BackButton({
-  initialReferer,
-}: {
-  initialReferer: string | null;
-}) {
+export default function GoBackButton() {
   const router = useRouter();
-  const [canGoBack, setCanGoBack] = useState(false);
-
-  useEffect(() => {
-    setCanGoBack(window.history.length > 1);
-  }, []);
-
-  const handleBack = () => {
-    if (canGoBack) {
-      router.back();
-    } else {
-      router.push(initialReferer || "/");
-    }
-  };
 
   return (
-    <button
-      onClick={handleBack}
-      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-700 bg-gray-100"
+    <div
+      className="flex items-center space-x-1 bg-none hover:underline cursor-pointer w-24"
+      onClick={() => router.back()}
     >
-      <ArrowLeft className="mr-2 h-4 w-4" />
-      Back
-    </button>
+      {" "}
+      <ChevronLeft size={24} strokeWidth={2.1} /> Go Back
+    </div>
   );
 }

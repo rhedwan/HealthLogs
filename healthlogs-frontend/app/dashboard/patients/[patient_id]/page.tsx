@@ -17,8 +17,9 @@ export default async function PatientDetailsPage({
     },
   });
   let currentPatient = await data.json();
+  console.log(currentPatient.currentPatient.patientDocument);
   return (
-    <main className="flex-1 p-8 overflow-auto">
+    <main className="overflow-auto">
       <GetPatientById patient={currentPatient.currentPatient} />
     </main>
   );

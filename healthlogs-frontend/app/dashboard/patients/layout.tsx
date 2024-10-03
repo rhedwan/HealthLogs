@@ -31,8 +31,8 @@ export default async function RootLayout({
   let patient = currentPatient.currentPatient;
 
   return (
-    <main className="flex-1 p-8 overflow-auto">
-      <BackButton initialReferer={referer} />
+    <main className="flex-1 overflow-auto">
+      {/* <BackButton initialReferer={referer} /> */}
       {children}
     </main>
   );

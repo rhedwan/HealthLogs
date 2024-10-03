@@ -44,9 +44,9 @@ const appointmentTypes = [
 ];
 
 const statusColors = {
-  Active: "bg-green-500",
-  Inactive: "bg-yellow-500",
-  Completed: "bg-blue-500",
+  Active: "bg-green-700",
+  Inactive: "bg-gray-600",
+  Completed: "bg-blue-700",
 };
 
 export interface Appointment {
@@ -79,7 +79,7 @@ const GetAppointment = ({ data, metaData }: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
   const { pending } = useFormStatus();
-  const filteredAppointments = data.filter((appointment: Appointment) => {
+  const filteredAppointments = data?.filter((appointment: Appointment) => {
     const matchesType =
       selectedType === "all" || appointment.appointmentType === selectedType;
     const matchesSearch = searchTerm
@@ -366,45 +366,52 @@ const GetAppointment = ({ data, metaData }: any) => {
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {filteredAppointments.reverse().map((appointment: any) => (
-                  <TableRow key={appointment._id}>
-                    <TableCell>
-                      {appointment.patient.firstName +
-                        " " +
-                        appointment.patient.lastName}
-                    </TableCell>
-                    <TableCell>{appointment.patient.fileId}</TableCell>
-                    <TableCell>
-                      {formatDate(appointment.date, "DD-MM-YYYY")}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(appointment.startTime).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                      -
-                      {new Date(appointment.endTime).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </TableCell>
-                    <TableCell>{appointment.duration} min</TableCell>
-                    <TableCell>{appointment.appointmentType}</TableCell>
-                    <TableCell>
-                      <span
-                        className={`inline-block rounded-full px-3 py-1 text-white ${
-                          statusColors[
-                            appointment.status as keyof typeof statusColors
-                          ] || "bg-gray-500"
-                        }`}
-                      >
-                        {appointment.status}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+              {data ? (
+                <TableBody>
+                  {filteredAppointments.reverse().map((appointment: any) => (
+                    <TableRow key={appointment._id}>
+                      <TableCell>
+                        {appointment.patient.firstName +
+                          " " +
+                          appointment.patient.lastName}
+                      </TableCell>
+                      <TableCell>{appointment.patient.fileId}</TableCell>
+                      <TableCell>
+                        {formatDate(appointment.date, "DD-MM-YYYY")}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(appointment.startTime).toLocaleTimeString(
+                          [],
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                        -
+                        {new Date(appointment.endTime).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </TableCell>
+                      <TableCell>{appointment.duration} min</TableCell>
+                      <TableCell>{appointment.appointmentType}</TableCell>
+                      <TableCell>
+                        <span
+                          className={`inline-block rounded-full px-3 py-1 text-white ${
+                            statusColors[
+                              appointment.status as keyof typeof statusColors
+                            ] || "bg-gray-500"
+                          }`}
+                        >
+                          {appointment.status}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              ) : (
+                <p>No appointments</p>
+              )}
             </Table>
           </CardContent>
         </Card>
