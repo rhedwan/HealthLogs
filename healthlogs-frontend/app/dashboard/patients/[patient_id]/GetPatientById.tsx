@@ -106,7 +106,7 @@ const GetPatientById = ({ patient }: any) => {
           <TabsTrigger value="profile">Profile</TabsTrigger>
         </TabsList>
         <TabsContent value="summary">
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-4 gap-4 mb-8">
             <Card className="bg-purple-500 text-white">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -144,17 +144,17 @@ const GetPatientById = ({ patient }: any) => {
                 </div>
               </CardContent>
             </Card>
-            {/* <Card className="bg-emerald-400 text-white">
+            <Card className="bg-emerald-400 text-white">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Diagnoses</CardTitle>
+                <CardTitle className="text-sm font-medium">Genotype</CardTitle>
                 <FileText className="h-4 w-4 opacity-70" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {patient.visits.length}
+                  {patient.medicalBackground.genotype}
                 </div>
               </CardContent>
-            </Card> */}
+            </Card>
             <Card className="bg-emerald-400 text-white">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">

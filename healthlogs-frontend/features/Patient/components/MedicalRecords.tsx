@@ -35,11 +35,11 @@ const MedicalRecords = ({ patient }: { patient: any }) => {
               href={`/dashboard/patients/${patient._id}/view-record/${record._id}`}
               key={record._id}
             >
-              <Card className="">
+              <Card className="hover:bg-blue-50">
                 <CardHeader className="py-3 px-6">
                   <CardTitle className="text-sm flex justify-between items-center">
                     {record.vistType} - {record.department}
-                    <div className="text-blue-400 font-normal">
+                    <div className="font-normal">
                       {new Date(record.createdAt).toLocaleString()}
                     </div>
                   </CardTitle>
