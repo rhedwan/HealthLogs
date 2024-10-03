@@ -141,7 +141,7 @@ export const FileUploader = ({ patientId }: { patientId: string }) => {
         className="hidden"
         onChange={handleFileChange}
         multiple
-        accept="image/*,.pdf,text/*"
+        accept="image/*"
       />
       {previewFiles.length > 0 && (
         <div className="w-full">
