@@ -34,7 +34,7 @@ export default async function RootLayout({
     <main className="flex-1 overflow-auto px-3">
       {/* <Card className="m-0 p-0"> */}
       {/* <CardHeader> */}
-      <div className="bg-white px-5 py-5">
+      <div className="bg-white px-5 py-7">
         <div className="flex justify-between">
           <div className="flex items-center space-x-1">
             <Avatar className="h-8 w-8">
