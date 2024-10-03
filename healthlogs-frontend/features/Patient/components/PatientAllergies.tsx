@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AddAllergy } from "@/app/actions/allergy";
 import { useToast } from "@/hooks/use-toast";
 import { TriangleAlert } from "lucide-react";
+import SaveButton from "@/components/system/SaveButton";
 const PatientAllergies = ({ patient }: { patient: any }) => {
   const { pending } = useFormStatus();
 
@@ -209,9 +210,7 @@ const PatientAllergies = ({ patient }: { patient: any }) => {
                 </div>
 
                 <DialogFooter className="mt-5">
-                  <Button type="submit">
-                    {pending ? "Adding..." : "Add Allergy"}
-                  </Button>
+                  <SaveButton text="Save Allergy" loadingText="Saving" />
                 </DialogFooter>
               </form>
             </DialogContent>
