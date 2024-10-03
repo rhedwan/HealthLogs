@@ -1,12 +1,33 @@
 import React from "react";
 import { verifySession } from "@/lib/session";
-import { CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cookies } from "next/headers";
 import { Separator } from "@/components/ui/separator";
 import { calculateAge } from "@/lib/utils";
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  BriefcaseBusiness,
+  Calendar,
+  CalendarDays,
+  FileText,
+  Home,
+  Mail,
+  MessageSquare,
+  Phone,
+  Search,
+  Settings,
+  User,
+  Users,
+  UsersRound,
+} from "lucide-react";
 interface RootLayoutProps {
   children: React.ReactNode;
   params: { patient_id: string };
@@ -34,10 +55,10 @@ export default async function RootLayout({
     <main className="flex-1 overflow-auto px-3">
       {/* <Card className="m-0 p-0"> */}
       {/* <CardHeader> */}
-      <div className="bg-white px-5 py-7 mt-4 rounded-lg">
-        <div className="flex justify-between">
-          <div className="flex items-center space-x-1">
-            <Avatar className="h-10 w-10">
+      <Card className="mt-6 mb-3">
+        <CardHeader>
+          <div className="flex items-center space-x-4">
+            <Avatar className="h-20 w-20">
               <AvatarImage
                 src={patient.photo}
                 alt={`${patient.firstName} ${patient.lastName}`}
@@ -48,46 +69,20 @@ export default async function RootLayout({
               </AvatarFallback>
             </Avatar>
             <div>
-              <div className="text-lg flex space-x-3 items-center">
-                {/* <div className="flex items-center space-x-1">
-                  <p>
-                    {patient.firstName} {patient.lastName}
-                  </p>
-                  <Separator orientation="vertical" />
-                  <p className="text-sm text-muted-foreground">
-                    {patient.fileId}
-                  </p>
-                </div> */}
-                <div className="flex h-5 items-center space-x-2 text-sm">
-                  <p className="text-lg font-semibold">
-                    {patient.firstName} {patient.lastName}
-                  </p>
-                  <Separator orientation="vertical" />
-                  <p className="text-sm text-muted-foreground">
-                    {patient.fileId}
-                  </p>
-                  <Separator orientation="vertical" />
-
-                  <Badge variant="outline">{patient.gender}</Badge>
-                  <Separator orientation="vertical" />
-                  <Badge variant="outline">
-                    {calculateAge(patient.dateOfBirth as Date)} {" yrs"}
-                  </Badge>
-                  <Separator orientation="vertical" />
-                  <Badge variant="outline">
-                    {patient.role.charAt(0).toUpperCase() +
-                      patient.role.slice(1).toLowerCase()}
-                  </Badge>
-                  <Separator orientation="vertical" />
-                  <Badge variant="default">Active</Badge>
-                </div>
+              <CardTitle className="text-2xl">
+                {patient.firstName} {patient.lastName}
+              </CardTitle>
+              <CardDescription>Patient ID: {patient.fileId}</CardDescription>
+              <div className="flex space-x-2 mt-2">
+                <Badge variant="outline">{patient.gender}</Badge>
+                <Badge variant="outline">{patient.role}</Badge>
+                <Badge variant="default">Active</Badge>
               </div>
             </div>
           </div>
-        </div>
-        {/* </CardHeader> */}
-        {/* <CardContent> */}
-        {/* <Tabs defaultValue="personal" className="w-full">
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="personal" className="w-full">
             <TabsList>
               <TabsTrigger value="personal">Personal Info</TabsTrigger>
               <TabsTrigger value="medical">Medical Info</TabsTrigger>
@@ -96,7 +91,7 @@ export default async function RootLayout({
             <TabsContent value="personal">
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center space-x-2">
-                  <User className="h-4 w-4 opacity-70" />
+                  <UsersRound className="h-4 w-4 opacity-70" />
                   <span className="text-sm font-medium">Ethnicity:</span>
                   <span className="text-sm">{patient.ethnic}</span>
                 </div>
@@ -118,7 +113,7 @@ export default async function RootLayout({
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <User className="h-4 w-4 opacity-70" />
+                  <BriefcaseBusiness className="h-4 w-4 opacity-70" />
                   <span className="text-sm font-medium">Occupation:</span>
                   <span className="text-sm">{patient.occupation}</span>
                 </div>
@@ -161,9 +156,9 @@ export default async function RootLayout({
                 </div>
               </div>
             </TabsContent>
-          </Tabs> */}
-        {/* </CardContent> */}
-      </div>
+          </Tabs>
+        </CardContent>
+      </Card>
 
       {/* </Card> */}
 
