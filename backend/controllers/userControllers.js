@@ -164,6 +164,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
     user,
   });
 });
+
 exports.getPatientById = catchAsync(async (req, res, next) => {
   const currentPatient = await User.findById({
     _id: req.params.id,
@@ -174,6 +175,7 @@ exports.getPatientById = catchAsync(async (req, res, next) => {
     .populate({
       path: "patientRecord",
       select: "-__v",
+      options: { sort: { createdAt: -1 } }, // Sort records by createdAt in descending order
     })
     .populate({
       path: "patientAppointment",
@@ -197,6 +199,19 @@ exports.getPatientById = catchAsync(async (req, res, next) => {
     };
   });
   currentPatient.visits = visits;
+
+  // Get the last blood pressure reading
+  const lastRecord = currentPatient.patientRecord[0];
+  const lastBloodPressure = lastRecord && lastRecord.physicalExamination && lastRecord.physicalExamination.bloodPressure
+    ? {
+        systolic: lastRecord.physicalExamination.bloodPressure.systolicPressure,
+        diastolic: lastRecord.physicalExamination.bloodPressure.diastolicPressure,
+        date: lastRecord.createdAt.toISOString().split("T")[0],
+      }
+    : null;
+
+  currentPatient.lastBloodPressure = lastBloodPressure;
+
   res.status(200).json({
     status: "success",
     currentPatient,
