@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,11 +10,53 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getFileNameFromUrl } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import Image from "next/image";
+import { Loader2, AlertCircle, Download } from "lucide-react";
 
 const DocumentList = ({ patient }: { patient: any }) => {
+  const [loadingImages, setLoadingImages] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [imageErrors, setImageErrors] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const handleImageLoad = (imageUrl: string) => {
+    setLoadingImages((prev) => ({ ...prev, [imageUrl]: false }));
+    setImageErrors((prev) => ({ ...prev, [imageUrl]: false }));
+  };
+
+  const handleImageError = (imageUrl: string) => {
+    setLoadingImages((prev) => ({ ...prev, [imageUrl]: false }));
+    setImageErrors((prev) => ({ ...prev, [imageUrl]: true }));
+  };
+
+  const handleDownload = async (imageUrl: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = getFileNameFromUrl(imageUrl);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading image:", error);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow">
       <Table>
@@ -20,26 +64,70 @@ const DocumentList = ({ patient }: { patient: any }) => {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">File name</TableHead>
-            {/* <TableHead>Type</TableHead> */}
-            {/* <TableHead>Date</TableHead> */}
-            {/* <TableHead className="text-right">Size</TableHead> */}
-            <TableHead className="w-[100px]"></TableHead>
+            <TableHead className="w-[200px]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {/* <TableRow>
-            <TableCell className="font-medium">
-              Screenshot from 2024-09-24 16-24-11.png
-            </TableCell>
-            <TableCell>Other</TableCell>
-            <TableCell>10/01/2024</TableCell>
-            <TableCell className="text-right">17 KB</TableCell>
-          </TableRow> */}
-          {patient.patientDocument[0].images.map((docs: any) => (
-            <TableRow key={docs} className="items-center">
-              <TableCell>{getFileNameFromUrl(docs)}</TableCell>
+          {patient.patientDocument[0].images.map((doc: string) => (
+            <TableRow key={doc} className="items-center">
+              <TableCell>{getFileNameFromUrl(doc)}</TableCell>
               <TableCell className="text-right">
-                <Button>View</Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="mr-2"
+                      onClick={() =>
+                        setLoadingImages((prev) => ({
+                          ...prev,
+                          [doc]: true,
+                        }))
+                      }
+                    >
+                      View
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-3xl w-full p-0">
+                    <DialogHeader className="p-6">
+                      <DialogDescription>
+                        <div className="relative w-full h-[calc(100vh-12rem)] bg-gray-100 rounded-md overflow-hidden">
+                          {loadingImages[doc] && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <Loader2 className="h-8 w-8 animate-spin" />
+                            </div>
+                          )}
+                          {imageErrors[doc] ? (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-red-500">
+                              <AlertCircle className="h-12 w-12 mb-2" />
+                              <p>Failed to load image</p>
+                            </div>
+                          ) : (
+                            <Image
+                              src={doc}
+                              alt={getFileNameFromUrl(doc)}
+                              layout="fill"
+                              objectFit="contain"
+                              onLoadingComplete={() => handleImageLoad(doc)}
+                              onError={() => handleImageError(doc)}
+                            />
+                          )}
+                        </div>
+                        <div className="mt-4 flex justify-between items-center">
+                          <p className="text-sm text-gray-600 truncate">
+                            {getFileNameFromUrl(doc)}
+                          </p>
+                          <Button onClick={() => handleDownload(doc)}>
+                            <Download className="mr-2 h-4 w-4" />
+                            Download
+                          </Button>
+                        </div>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+                <Button onClick={() => handleDownload(doc)}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Download
+                </Button>
               </TableCell>
             </TableRow>
           ))}

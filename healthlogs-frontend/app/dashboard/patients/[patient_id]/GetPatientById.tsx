@@ -98,7 +98,7 @@ const GetPatientById = ({ patient }: any) => {
   }, [appointmentState.message, openAppointment]);
   return (
     <main>
-      <Tabs defaultValue="summary" className="w-full">
+      <Tabs defaultValue="summary" className="w-full py-3">
         <TabsList>
           <TabsTrigger value="summary">Summary</TabsTrigger>
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
@@ -106,11 +106,11 @@ const GetPatientById = ({ patient }: any) => {
           <TabsTrigger value="profile">Profile</TabsTrigger>
         </TabsList>
         <TabsContent value="summary">
-          <div className="grid grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-3 gap-4 mb-8">
             <Card className="bg-purple-500 text-white">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Blood pressure
+                  Latest Blood pressure
                 </CardTitle>
                 <Heart className="h-4 w-4 opacity-70" />
               </CardHeader>
@@ -144,7 +144,7 @@ const GetPatientById = ({ patient }: any) => {
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-emerald-400 text-white">
+            {/* <Card className="bg-emerald-400 text-white">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Diagnoses</CardTitle>
                 <FileText className="h-4 w-4 opacity-70" />
@@ -154,11 +154,11 @@ const GetPatientById = ({ patient }: any) => {
                   {patient.visits.length}
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
             <Card className="bg-emerald-400 text-white">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Visits in 2023
+                  Visits in {new Date().getFullYear()}
                 </CardTitle>
                 <Calendar className="h-4 w-4 opacity-70" />
               </CardHeader>
@@ -551,14 +551,26 @@ const GetPatientById = ({ patient }: any) => {
           </Card>
         </TabsContent>
         <TabsContent value="documents">
-          <div className="flex justify-end items-center mb-1 -mt-2">
-            <Link href={`${patient._id}/documents/upload`}>
-              <Button variant={"outline"} className="text-sm">
-                Upload
-              </Button>
-            </Link>
-          </div>
-          <DocumentList patient={patient} />
+          <Card>
+            <CardHeader>
+              {" "}
+              <CardTitle className="flex items-center justify-between">
+                <p className="text-lg font-semibold">
+                  Patient Documents ({patient.patientDocument[0].images.length})
+                </p>
+                <div className="flex justify-end items-center">
+                  <Link href={`${patient._id}/documents/upload`}>
+                    <Button variant={"outline"} className="text-sm">
+                      Upload
+                    </Button>
+                  </Link>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DocumentList patient={patient} />
+            </CardContent>
+          </Card>
         </TabsContent>
         <TabsContent value="profile">
           <Profile patient={patient} />

@@ -34,10 +34,10 @@ export default async function RootLayout({
     <main className="flex-1 overflow-auto px-3">
       {/* <Card className="m-0 p-0"> */}
       {/* <CardHeader> */}
-      <div className="bg-white px-5 py-7">
+      <div className="bg-white px-5 py-7 mt-4 rounded-lg">
         <div className="flex justify-between">
           <div className="flex items-center space-x-1">
-            <Avatar className="h-8 w-8">
+            <Avatar className="h-10 w-10">
               <AvatarImage
                 src={patient.photo}
                 alt={`${patient.firstName} ${patient.lastName}`}
@@ -59,7 +59,7 @@ export default async function RootLayout({
                   </p>
                 </div> */}
                 <div className="flex h-5 items-center space-x-2 text-sm">
-                  <p className="text-base font-semibold">
+                  <p className="text-lg font-semibold">
                     {patient.firstName} {patient.lastName}
                   </p>
                   <Separator orientation="vertical" />
@@ -74,7 +74,10 @@ export default async function RootLayout({
                     {calculateAge(patient.dateOfBirth as Date)} {" yrs"}
                   </Badge>
                   <Separator orientation="vertical" />
-                  <Badge variant="outline">{patient.role}</Badge>
+                  <Badge variant="outline">
+                    {patient.role.charAt(0).toUpperCase() +
+                      patient.role.slice(1).toLowerCase()}
+                  </Badge>
                   <Separator orientation="vertical" />
                   <Badge variant="default">Active</Badge>
                 </div>

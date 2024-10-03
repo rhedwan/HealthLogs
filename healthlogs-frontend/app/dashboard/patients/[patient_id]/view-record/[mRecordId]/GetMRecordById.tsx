@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,11 +13,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Medication, PatientRecord } from "@/schema/PatientRecord";
 import { Input } from "@/components/ui/input";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { State, consultAi } from "@/app/actions/aiDiagnosis";
 import { Label } from "@/components/ui/label";
-import { useFormStatus } from "react-dom";
-import CircleLoader from "@/components/ui/CircleLoader";
 import { PatientAllergy } from "@/schema/PatientAllergy";
 import {
   Table,
@@ -41,6 +40,43 @@ import { PatientFamilyHistory } from "@/schema/PatientFamilyHistory";
 import Link from "next/link";
 import { generateMedicationPDF } from "@/lib/GeneratePDF";
 import GoBackButton from "@/components/system/BackButton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
+function AIConsultButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button className="disabled:cursor-not-allowed" disabled={pending}>
+      {pending ? (
+        <>
+          <svg
+            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span className="ml-2">Consulting...</span>
+        </>
+      ) : (
+        "Consult AI"
+      )}
+    </Button>
+  );
+}
 export default function GetMRecordById({
   encounter,
   patient,
@@ -113,6 +149,7 @@ export default function GetMRecordById({
                         <p className="font-semibold">Department</p>
                         <p>{encounter.department}</p>
                       </div>
+
                       <div>
                         <p className="font-semibold">Seen By</p>
                         <p>
@@ -125,6 +162,30 @@ export default function GetMRecordById({
                     <div>
                       <p className="font-semibold">Chief Complaint</p>
                       <p>{encounter.chiefComplaint}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Diagnosis</p>
+                      <p className="">
+                        {encounter.diagnosis.description}{" "}
+                        <span className="text-sm text-gray-400 text-left">
+                          {formatDate(
+                            encounter.diagnosis.startDate,
+                            "DD/MM/YYYY"
+                          )}
+                        </span>{" "}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Subjective Note</p>
+                      <p>{encounter.subjectiveNote}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Objective Note</p>
+                      <p>{encounter.objectiveNote}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Assessmen tNote</p>
+                      <p>{encounter.assessmentNote}</p>
                     </div>
 
                     <div>
@@ -207,53 +268,51 @@ export default function GetMRecordById({
                 <CardContent>
                   <div className="space-y-4">
                     {patient.patientRecord
-                      .slice(0, 1)
+                      .slice(0, 3)
                       .map((record: PatientRecord) => (
                         <Link
                           href={`/dashboard/patients/${patient._id}/view-record/${record._id}`}
                           key={record._id}
+                          className="mb-3"
                         >
-                          <Card className="mb-2">
-                            <CardHeader>
-                              <CardTitle className="text-lg">
+                          <Card className="mb-3 hover:bg-blue-50">
+                            <CardHeader className="py-3 px-6">
+                              <CardTitle className="text-sm flex justify-between items-center">
                                 {record.vistType} - {record.department}
+                                <div className="text-blue-400 font-normal">
+                                  {new Date(record.createdAt).toLocaleString()}
+                                </div>
                               </CardTitle>
-                              <CardDescription>
-                                {new Date(record.createdAt).toLocaleString()}
-                              </CardDescription>
                             </CardHeader>
-                            <CardContent>
-                              <p className="text-sm mb-2">
-                                {record.diagnosis
-                                  ? record.diagnosis?.description
-                                  : "No diagnosis yet"}
+                            <CardContent className="pb-3 px-6">
+                              <p className="text-sm">
+                                CC:{" "}
+                                {record.chiefComplaint
+                                  ? record.chiefComplaint
+                                  : "No chief complaint recorded"}
                               </p>
-                              <div className="grid grid-cols-3 gap-2 text-sm">
-                                <div>
-                                  <span className="font-medium">
-                                    Temperature:
-                                  </span>{" "}
-                                  {record.physicalExamination?.temperature}
-                                </div>
-                                <div>
-                                  <span className="font-medium">
-                                    Blood Pressure:
-                                  </span>{" "}
-                                  {
-                                    record.physicalExamination?.bloodPressure
-                                      .systolicPressure
-                                  }
-                                  /
-                                  {
-                                    record.physicalExamination?.bloodPressure
-                                      .diastolicPressure
-                                  }
-                                </div>
-                                <div>
-                                  <span className="font-medium">Weight:</span>{" "}
-                                  {record.physicalExamination?.weight} kg
-                                </div>
-                              </div>
+                              {/* <div className="grid grid-cols-3 gap-2 text-sm">
+                          <div>
+                            <span className="font-medium">Temperature:</span>{" "}
+                            {record.physicalExamination?.temperature}
+                          </div>
+                          <div>
+                            <span className="font-medium">Blood Pressure:</span>{" "}
+                            {
+                              record.physicalExamination?.bloodPressure
+                                .systolicPressure
+                            }
+                            /
+                            {
+                              record.physicalExamination?.bloodPressure
+                                .diastolicPressure
+                            }
+                          </div>
+                          <div>
+                            <span className="font-medium">Weight:</span>{" "}
+                            {record.physicalExamination?.weight} kg
+                          </div>
+                        </div> */}
                             </CardContent>
                           </Card>
                         </Link>
@@ -272,48 +331,6 @@ export default function GetMRecordById({
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {/* <div className="space-y-4">
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">
-                        Potential Diagnoses
-                      </h3>
-                      <ul className="list-disc list-inside">
-                        <li>Gastroesophageal reflux disease (GERD)</li>
-                        <li>Peptic ulcer disease</li>
-                        <li>Gastritis</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">
-                        Recommended Tests
-                      </h3>
-                      <ul className="list-disc list-inside">
-                        <li>Upper endoscopy</li>
-                        <li>H. pylori test</li>
-                        <li>Complete blood count (CBC)</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">
-                        Treatment Suggestions
-                      </h3>
-                      <p>
-                        Consider prescribing proton pump inhibitors (PPIs) and
-                        lifestyle modifications. Avoid NSAIDs and recommend a
-                        bland diet.
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">
-                        Follow-up Recommendations
-                      </h3>
-                      <p>
-                        Schedule a follow-up appointment in 2 weeks to assess
-                        symptom improvement. If symptoms persist, consider
-                        referral to a gastroenterologist.
-                      </p>
-                    </div>
-                  </div> */}
                   <form action={formAction}>
                     <div className="hidden">
                       <Input
@@ -403,43 +420,9 @@ export default function GetMRecordById({
                         type="text"
                       />
                     </div>
-                    <p>
-                      {data ? `Requesting ${data?.get("temperature")}...` : ""}
-                    </p>
                     <div className="w-full flex justify-center">
                       {!state?.results?.PotentialDiagnoses && (
-                        <Button
-                          className="disabled:cursor-not-allowed"
-                          disabled={pending}
-                        >
-                          {pending ? (
-                            <>
-                              <svg
-                                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                              >
-                                <circle
-                                  className="opacity-25"
-                                  cx="12"
-                                  cy="12"
-                                  r="10"
-                                  stroke="currentColor"
-                                  strokeWidth="4"
-                                ></circle>
-                                <path
-                                  className="opacity-75"
-                                  fill="currentColor"
-                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                ></path>
-                              </svg>
-                              <span className="ml-2">consulting</span>
-                            </>
-                          ) : (
-                            "Consult AI"
-                          )}
-                        </Button>
+                        <AIConsultButton />
                       )}
                     </div>
                   </form>
@@ -449,9 +432,9 @@ export default function GetMRecordById({
                         <Label className="font-bold">Potential Diagnoses</Label>
                         <ul className="grid grid-cols-2 items-center list-disc ml-5 text-sm">
                           {state.results.PotentialDiagnoses.map(
-                            (item: string) => {
-                              return <li key={item}>{item}</li>;
-                            }
+                            (item: string) => (
+                              <li key={item}>{item}</li>
+                            )
                           )}
                         </ul>
                       </div>
@@ -459,9 +442,9 @@ export default function GetMRecordById({
                         <Label className="font-bold">Recommended Tests</Label>
                         <ul className="grid grid-cols-2 items-center list-disc ml-5 text-sm">
                           {state.results.RecommendedTests.map(
-                            (item: string) => {
-                              return <li key={item}>{item}</li>;
-                            }
+                            (item: string) => (
+                              <li key={item}>{item}</li>
+                            )
                           )}
                         </ul>
                       </div>
@@ -479,9 +462,9 @@ export default function GetMRecordById({
                         </Label>
                         <ul className="grid grid-cols-2 items-center list-disc ml-5 text-sm">
                           {state.results.TreatmentSuggestions.LifestyleModifications.map(
-                            (item: string) => {
-                              return <li key={item}>{item}</li>;
-                            }
+                            (item: string) => (
+                              <li key={item}>{item}</li>
+                            )
                           )}
                         </ul>
                       </div>
@@ -495,7 +478,7 @@ export default function GetMRecordById({
                             {state.results.FollowUpRecommendations.Appointment}
                           </li>
                           <li>
-                            <span className="font-bold">FurtherAction: </span>
+                            <span className="font-bold">Further Action: </span>
                             {
                               state.results.FollowUpRecommendations
                                 .FurtherAction
@@ -505,6 +488,21 @@ export default function GetMRecordById({
                       </div>
                     </div>
                   )}
+                  <Alert
+                    // variant="warning"
+                    className="bg-yellow-50 border-yellow-200 mt-5"
+                  >
+                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                    <AlertTitle className="text-yellow-800">
+                      AI Diagnosis Disclaimer
+                    </AlertTitle>
+                    <AlertDescription className="text-yellow-700">
+                      Warning: This AI-generated diagnosis may be inaccurate.
+                      Always consult a healthcare professional for proper advice
+                      and treatment. This tool is for informational purposes
+                      only and not a substitute for medical consultation.
+                    </AlertDescription>
+                  </Alert>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -676,7 +674,7 @@ export default function GetMRecordById({
             </TabsContent>
           </Tabs>
         </div>
-        <Card className="mt-4">
+        <Card className="mt-4 mb-6">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
               Medications ({encounter.medications.length})
