@@ -279,7 +279,7 @@ export default function GetMRecordById({
                             <CardHeader className="py-3 px-6">
                               <CardTitle className="text-sm flex justify-between items-center">
                                 {record.vistType} - {record.department}
-                                <div className="text-blue-400 font-normal">
+                                <div className="font-normal">
                                   {new Date(record.createdAt).toLocaleString()}
                                 </div>
                               </CardTitle>

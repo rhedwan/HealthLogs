@@ -14,8 +14,41 @@ const FormSchema = z.object({
   allergen: z.enum(["Drug", "Food", "Environment"], {
     required_error: "Please select a severity level",
   }),
+  allergenInfo: z.string().min(1, { message: "This field is required" }),
   comment: z.string().min(1, { message: "This field is required" }),
-  reaction: z.string().min(1, { message: "This field is required" }),
+  reaction: z.enum(
+    [
+      "Unknown",
+      "Anaphylaxis",
+      "Bloating/gas",
+      "Bradycardia",
+      "Chest Pain",
+      "Conjunctivitis",
+      "Cough",
+      "Diarrhea",
+      "Difficulty speaking or swallowing",
+      "Dizziness/Lightheadedness",
+      "Facial swelling",
+      "Hives",
+      "Irregular Heartbeat",
+      "Itchiness",
+      "Loss of consciousness",
+      "Nausea",
+      "Pain/cramping",
+      "Patchy swelling-skin",
+      "Rash - generalized",
+      "Rash - localized",
+      "Respiratory Distress",
+      "Runny nose",
+      "Shortness of breath",
+      "Tachycardia",
+      "Tongue swelling",
+      "Vomiting",
+      "Wheezing",
+      "Other",
+    ],
+    { required_error: "Please select a reaction" }
+  ),
   severity: z.enum(["Very Mild", "Mild", "Moderate", "Severe"], {
     required_error: "Please select a severity level",
   }),
@@ -37,6 +70,7 @@ export type AllergyState = {
     severity?: string[];
     onset?: string[];
     comment?: string[];
+    allergenInfo?: string[];
     status?: string[];
     patientId?: string[];
   };
@@ -57,6 +91,7 @@ export async function AddAllergy(prevState: AllergyState, formData: FormData) {
     allergen: formData.get("allergen"),
     date: new Date().toISOString().split("T")[0] + "T00:00:00Z",
     severity: formData.get("severity"),
+    allergenInfo: formData.get("allergenInfo"),
     onset: formData.get("onset"),
     comment: formData.get("comment"),
     status: "Active",

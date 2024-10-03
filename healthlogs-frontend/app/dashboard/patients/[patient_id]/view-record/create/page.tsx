@@ -49,6 +49,7 @@ import { State, createRecord } from "@/app/actions/record";
 import { useFormState } from "react-dom";
 import { toast } from "@/hooks/use-toast";
 import GoBackButton from "@/components/system/BackButton";
+import SaveButton from "@/components/system/SaveButton";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -778,10 +779,9 @@ export default function PatientEncounterPage({
                   </div>
                 </div>
               </div>
-
-              <Button type="submit" className="w-full">
-                Save Encounter
-              </Button>
+              <div className="flex justify-end">
+                <SaveButton text="Save Encounter" loadingText="Savinig" />
+              </div>
             </form>
           </CardContent>
         </Card>

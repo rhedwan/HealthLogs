@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AddAllergy } from "@/app/actions/allergy";
 import { useToast } from "@/hooks/use-toast";
 import { TriangleAlert } from "lucide-react";
+import SaveButton from "@/components/system/SaveButton";
 const PatientAllergies = ({ patient }: { patient: any }) => {
   const { pending } = useFormStatus();
 
@@ -96,6 +97,22 @@ const PatientAllergies = ({ patient }: { patient: any }) => {
                   {allergyState?.errors?.allergen && (
                     <p className="text-red-500 text-sm">
                       {allergyState.errors.allergen[0]}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="reaction">Allergen Info</Label>
+                  <Input
+                    id="allergenInfo"
+                    type="text"
+                    name="allergenInfo"
+                    className={
+                      allergyState?.errors?.allergenInfo ? "border-red-500" : ""
+                    }
+                  />
+                  {allergyState?.errors?.allergenInfo && (
+                    <p className="text-red-500 text-sm">
+                      {allergyState.errors.allergenInfo[0]}
                     </p>
                   )}
                 </div>
@@ -193,9 +210,7 @@ const PatientAllergies = ({ patient }: { patient: any }) => {
                 </div>
 
                 <DialogFooter className="mt-5">
-                  <Button type="submit">
-                    {pending ? "Adding..." : "Add Allergy"}
-                  </Button>
+                  <SaveButton text="Save Allergy" loadingText="Saving" />
                 </DialogFooter>
               </form>
             </DialogContent>
