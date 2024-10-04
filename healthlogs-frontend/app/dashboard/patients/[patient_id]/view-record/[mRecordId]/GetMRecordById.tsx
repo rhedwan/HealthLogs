@@ -166,7 +166,7 @@ export default function GetMRecordById({
                     <div>
                       <p className="font-semibold">Diagnosis</p>
                       <p className="">
-                        {encounter.diagnosis.description}{" "}
+                        {encounter.diagnosis?.description || "None"}{" "}
                         <span className="text-sm text-gray-400 text-left">
                           {formatDate(
                             encounter.diagnosis.startDate,
@@ -177,11 +177,11 @@ export default function GetMRecordById({
                     </div>
                     <div>
                       <p className="font-semibold">Subjective Note</p>
-                      <p>{encounter.subjectiveNote}</p>
+                      <p>{encounter?.subjectiveNote || "None"}</p>
                     </div>
                     <div>
                       <p className="font-semibold">Objective Note</p>
-                      <p>{encounter.objectiveNote}</p>
+                      <p>{encounter?.objectiveNote || "None"}</p>
                     </div>
                     <div>
                       <p className="font-semibold">Assessmen tNote</p>
@@ -720,7 +720,8 @@ export default function GetMRecordById({
                             medication.prescriptionDetails.prescriber,
                             medication.prescriptionDetails.quantity,
                             medication.prescriptionDetails.refills,
-                            patient.firstName
+                            patient.firstName,
+                            medication.sig
                           );
                         }}
                       >
