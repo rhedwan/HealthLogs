@@ -22,7 +22,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useFormState, useFormStatus } from "react-dom";
 import { State } from "@/app/actions/appointment";
-import { PatientAllergy } from "@/schema/PatientAllergy";
+import { PatientAllergy, reactionList } from "@/schema/PatientAllergy";
 import { Textarea } from "@/components/ui/textarea";
 import { AddAllergy } from "@/app/actions/allergy";
 import { useToast } from "@/hooks/use-toast";
@@ -101,7 +101,7 @@ const PatientAllergies = ({ patient }: { patient: any }) => {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="reaction">Allergen Info</Label>
+                  <Label htmlFor="allergenInfo">Allergen Info</Label>
                   <Input
                     id="allergenInfo"
                     type="text"
@@ -141,14 +141,22 @@ const PatientAllergies = ({ patient }: { patient: any }) => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="reaction">Reaction</Label>
-                  <Input
-                    id="reaction"
-                    type="text"
-                    name="reaction"
-                    className={
-                      allergyState?.errors?.reaction ? "border-red-500" : ""
-                    }
-                  />
+                  <Select name="reaction">
+                    <SelectTrigger
+                      className={
+                        allergyState?.errors?.reaction ? "border-red-500" : ""
+                      }
+                    >
+                      <SelectValue placeholder="Select Reaction" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {reactionList.map((reaction: string) => (
+                        <SelectItem key={reaction} value={reaction}>
+                          {reaction}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {allergyState?.errors?.reaction && (
                     <p className="text-red-500 text-sm">
                       {allergyState.errors.reaction[0]}

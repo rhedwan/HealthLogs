@@ -4,7 +4,14 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -45,6 +52,8 @@ import PatientAllergies from "@/features/Patient/components/PatientAllergies";
 import FamilyHistory from "@/features/Patient/components/FamilyHistory";
 import Link from "next/link";
 import Profile from "@/features/Patient/components/Profile";
+import SaveButton from "@/components/system/SaveButton";
+import { statusColors } from "../../appointment/GetAppointment";
 
 const GetPatientById = ({ patient }: any) => {
   const { toast } = useToast();
@@ -92,8 +101,8 @@ const GetPatientById = ({ patient }: any) => {
       openAppointment,
       setOpenAppointment,
       "Success",
-      "Appointment added successfully!",
-      "Appointment added successfully!"
+      "Appointment added successfully! A mail would be sent to the patient",
+      "Appointment added successfully! A mail would be sent to the patient"
     );
   }, [appointmentState.message, openAppointment]);
   return (
@@ -512,9 +521,10 @@ const GetPatientById = ({ patient }: any) => {
                         )}
                       </div>
                       <DialogFooter className="mt-5">
-                        <Button type="submit">
-                          {pending ? "Scheduling..." : " Schedule Appointment"}
-                        </Button>
+                        <SaveButton
+                          text="Schedule Appointment"
+                          loadingText="Scheduling"
+                        />
                       </DialogFooter>
                     </form>
                   </DialogContent>
@@ -523,29 +533,61 @@ const GetPatientById = ({ patient }: any) => {
             </CardHeader>
             <CardContent>
               <Table>
-                <TableBody>
-                  {patient.patientAppointment.map(
-                    (appointment: {
-                      _id: string;
-                      patient: string;
-                      appointmentType: string;
-                      duration: number;
-                      date: string;
-                      startTime: string;
-                      endTime: string;
-                      status: string;
-                      createdAt: string;
-                      updatedAt: string;
-                    }) => (
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Time</TableHead>
+                    <TableHead>Duration</TableHead>
+                    <TableHead className="flex justify-end pr-8">
+                      Status
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                {patient.patientAppointment ? (
+                  <TableBody>
+                    {patient.patientAppointment.map((appointment: any) => (
                       <TableRow key={appointment._id}>
                         <TableCell>{appointment.appointmentType}</TableCell>
-                        <TableCell className="text-right">
-                          {formatDate(appointment.startTime, "MMM DD, YYYY")}
+
+                        <TableCell>
+                          {formatDate(appointment.date, "DD-MM-YYYY")}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(appointment.startTime).toLocaleTimeString(
+                            [],
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                          -
+                          {new Date(appointment.endTime).toLocaleTimeString(
+                            [],
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </TableCell>
+                        <TableCell>{appointment.duration} min</TableCell>
+                        <TableCell className="flex justify-end">
+                          <span
+                            className={`inline-block rounded-full px-3 py-1 text-white ${
+                              statusColors[
+                                appointment.status as keyof typeof statusColors
+                              ] || "bg-gray-500"
+                            }`}
+                          >
+                            {appointment.status}
+                          </span>
                         </TableCell>
                       </TableRow>
-                    )
-                  )}
-                </TableBody>
+                    ))}
+                  </TableBody>
+                ) : (
+                  <p>No appointments</p>
+                )}
               </Table>
             </CardContent>
           </Card>
@@ -556,7 +598,8 @@ const GetPatientById = ({ patient }: any) => {
               {" "}
               <CardTitle className="flex items-center justify-between">
                 <p className="text-lg font-semibold">
-                  Patient Documents ({patient.patientDocument[0].images.length})
+                  Patient Documents (
+                  {patient.patientDocument[0]?.images.length || 0})
                 </p>
                 <div className="flex justify-end items-center">
                   <Link href={`${patient._id}/documents/upload`}>

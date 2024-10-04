@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { useFormStatus } from "react-dom";
 import { closeModalAndToast, formatDate } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import SaveButton from "@/components/system/SaveButton";
 
 const appointmentTypes = [
   "Follow-Up Visit",
@@ -43,7 +44,7 @@ const appointmentTypes = [
   "Wellness Exam",
 ];
 
-const statusColors = {
+export const statusColors = {
   Active: "bg-green-700",
   Inactive: "bg-gray-600",
   Completed: "bg-blue-700",
@@ -103,8 +104,8 @@ const GetAppointment = ({ data, metaData }: any) => {
       open,
       setOpen,
       "Success",
-      "Appointment added successfully!",
-      "Appointment added successfully!"
+      "Appointment added successfully! A mail would be sent to the patient",
+      "Appointment added successfully! A mail would be sent to the patient"
     );
   }, [state.message, open]);
   return (
@@ -344,9 +345,13 @@ const GetAppointment = ({ data, metaData }: any) => {
                       )}
                     </div>
                     <DialogFooter className="mt-5">
-                      <Button type="submit">
+                      {/* <Button type="submit">
                         {pending ? "Scheduling" : "Schedule Appointment"}
-                      </Button>
+                      </Button> */}
+                      <SaveButton
+                        text="Schedule Appointment"
+                        loadingText="Scheduling"
+                      />
                     </DialogFooter>
                   </form>
                 </DialogContent>
