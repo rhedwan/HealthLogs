@@ -543,16 +543,37 @@ export default function GetMRecordById({
                 </CardContent>
               </Card> */}
 
-              <Card className="mt-6">
+              <Card className="mt-8">
                 <CardHeader>
-                  <CardTitle>Allergies</CardTitle>
+                  <CardTitle className="flex items-center justify-between">
+                    <p className="text-lg font-semibold">
+                      Allegies ({patient.patientAllergy.length})
+                    </p>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Allergen</TableHead>
+                        <TableHead>Severity</TableHead>
+                        <TableHead>Comment</TableHead>
+                        <TableHead>Onset</TableHead>
+                      </TableRow>
+                    </TableHeader>
                     <TableBody>
                       {patient.patientAllergy.map((allergy: PatientAllergy) => (
                         <TableRow key={allergy._id}>
-                          <TableCell>{allergy.allergen}</TableCell>
+                          <TableCell>
+                            <div className="flex flex-col items-start">
+                              <span>{allergy.allergenInfo}</span>
+                              <div className="flex justify-center">
+                                <Badge className="w-fit">
+                                  {allergy.allergen}
+                                </Badge>
+                              </div>
+                            </div>
+                          </TableCell>
                           <TableCell>{allergy.severity}</TableCell>
                           <TableCell>{allergy.comment}</TableCell>
                           <TableCell className="text-right">
