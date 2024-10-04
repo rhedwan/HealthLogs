@@ -135,7 +135,8 @@ export async function createAppointment(prevState: State, formData: FormData) {
     revalidatePath(`/dashboard/patients/${data.appointment.patient}`); // Update cached posts
 
     return {
-      message: "Appointment added successfully!",
+      message:
+        "Appointment added successfully! A mail would be sent to the patient",
     };
   } catch (error) {
     console.error("Error occurred:", error);

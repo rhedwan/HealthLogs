@@ -104,8 +104,8 @@ const GetAppointment = ({ data, metaData }: any) => {
       open,
       setOpen,
       "Success",
-      "Appointment added successfully!",
-      "Appointment added successfully!"
+      "Appointment added successfully! A mail would be sent to the patient",
+      "Appointment added successfully! A mail would be sent to the patient"
     );
   }, [state.message, open]);
   return (

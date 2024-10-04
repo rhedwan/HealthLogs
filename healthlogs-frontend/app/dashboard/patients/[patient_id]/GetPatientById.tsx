@@ -101,8 +101,8 @@ const GetPatientById = ({ patient }: any) => {
       openAppointment,
       setOpenAppointment,
       "Success",
-      "Appointment added successfully!",
-      "Appointment added successfully!"
+      "Appointment added successfully! A mail would be sent to the patient",
+      "Appointment added successfully! A mail would be sent to the patient"
     );
   }, [appointmentState.message, openAppointment]);
   return (
@@ -546,46 +546,44 @@ const GetPatientById = ({ patient }: any) => {
                 </TableHeader>
                 {patient.patientAppointment ? (
                   <TableBody>
-                    {patient.patientAppointment
-                      .reverse()
-                      .map((appointment: any) => (
-                        <TableRow key={appointment._id}>
-                          <TableCell>{appointment.appointmentType}</TableCell>
+                    {patient.patientAppointment.map((appointment: any) => (
+                      <TableRow key={appointment._id}>
+                        <TableCell>{appointment.appointmentType}</TableCell>
 
-                          <TableCell>
-                            {formatDate(appointment.date, "DD-MM-YYYY")}
-                          </TableCell>
-                          <TableCell>
-                            {new Date(appointment.startTime).toLocaleTimeString(
-                              [],
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )}
-                            -
-                            {new Date(appointment.endTime).toLocaleTimeString(
-                              [],
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )}
-                          </TableCell>
-                          <TableCell>{appointment.duration} min</TableCell>
-                          <TableCell className="flex justify-end">
-                            <span
-                              className={`inline-block rounded-full px-3 py-1 text-white ${
-                                statusColors[
-                                  appointment.status as keyof typeof statusColors
-                                ] || "bg-gray-500"
-                              }`}
-                            >
-                              {appointment.status}
-                            </span>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                        <TableCell>
+                          {formatDate(appointment.date, "DD-MM-YYYY")}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(appointment.startTime).toLocaleTimeString(
+                            [],
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                          -
+                          {new Date(appointment.endTime).toLocaleTimeString(
+                            [],
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </TableCell>
+                        <TableCell>{appointment.duration} min</TableCell>
+                        <TableCell className="flex justify-end">
+                          <span
+                            className={`inline-block rounded-full px-3 py-1 text-white ${
+                              statusColors[
+                                appointment.status as keyof typeof statusColors
+                              ] || "bg-gray-500"
+                            }`}
+                          >
+                            {appointment.status}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 ) : (
                   <p>No appointments</p>
