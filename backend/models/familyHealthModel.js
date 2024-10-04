@@ -5,12 +5,7 @@ const familyHealthSchema = new mongoose.Schema({
     type: String,
     required: [true, "A description is needed"],
   },
-  relatives: [
-    {
-      type: String,
-      enum: ["Brother", "Father", "Sister", "Mother"],
-    },
-  ],
+  relatives: [String],
 });
 
 const FamilyHealthHistory = mongoose.model(
