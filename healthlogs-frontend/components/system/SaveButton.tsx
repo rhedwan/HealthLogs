@@ -5,14 +5,19 @@ import { Button } from "../ui/button";
 export default function SaveButton({
   text,
   loadingText,
+  className,
 }: {
   text: string;
   loadingText: string;
+  className?: string;
 }) {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="disabled:cursor-not-allowed" disabled={pending}>
+    <Button
+      className={`disabled:cursor-not-allowed ${className}`}
+      disabled={pending}
+    >
       {pending ? (
         <>
           <svg

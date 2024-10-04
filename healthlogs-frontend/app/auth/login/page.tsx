@@ -16,6 +16,7 @@ import Link from "next/link";
 import { State, login } from "@/app/actions/auth";
 import { useFormState, useFormStatus } from "react-dom";
 import Image from "next/image";
+import SaveButton from "@/components/system/SaveButton";
 
 export default function LoginPage() {
   const initialState: State = { message: "", errors: {} };
@@ -101,13 +102,11 @@ export default function LoginPage() {
                 </div>
               </div>
               <CardFooter className="flex flex-col">
-                <Button
-                  type="submit"
-                  disabled={pending}
+                <SaveButton
+                  text="Login"
+                  loadingText="Logging in"
                   className="w-full bg-[#7457D3] hover:bg-[#5E45A8] text-white mt-6 disabled:bg-purple-400 disabled:cursor-not-allowed"
-                >
-                  {pending ? "Logging in" : "Log In"}
-                </Button>
+                />
               </CardFooter>
             </form>
           </CardContent>
