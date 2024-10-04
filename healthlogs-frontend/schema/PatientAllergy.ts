@@ -5,6 +5,7 @@ export interface PatientAllergy {
   severity: string;
   reaction: string;
   onset: string;
+  allergenInfo: string;
   date: string;
   comment: string;
   status: string;

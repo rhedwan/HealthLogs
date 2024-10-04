@@ -74,74 +74,75 @@ const DocumentList: React.FC<DocumentListProps> = ({ patient }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {patient.patientDocument[0].images.map((doc: string) => (
-            <TableRow key={doc} className="items-center">
-              <TableCell>{getFileNameFromUrl(doc)}</TableCell>
-              <TableCell className="text-right">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      className="mr-2"
-                      onClick={() =>
-                        setLoadingImages((prev) => ({
-                          ...prev,
-                          [doc]: true,
-                        }))
-                      }
-                    >
-                      View
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-3xl w-full p-0">
-                    <DialogHeader className="p-6">
-                      <DialogDescription>
-                        <div className="relative w-full h-[calc(100vh-12rem) rounded-md overflow-hidden">
-                          {loadingImages[doc] && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <Loader2 className="h-8 w-8 animate-spin" />
-                            </div>
-                          )}
-                          {imageErrors[doc] ? (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center text-red-500">
-                              <AlertCircle className="h-12 w-12 mb-2" />
-                              <p>Failed to load image</p>
-                            </div>
-                          ) : (
-                            <div className="flex justify-center">
-                              <Image
-                                src={doc}
-                                alt={getFileNameFromUrl(doc)}
-                                className="mt-4"
-                                // fill
-                                width={400}
-                                height={400}
-                                style={{ objectFit: "contain" }}
-                                onLoadingComplete={() => handleImageLoad(doc)}
-                                onError={() => handleImageError(doc)}
-                              />
-                            </div>
-                          )}
-                        </div>
-                        <div className="mt-4 flex justify-between items-center">
-                          <p className="text-sm text-gray-600 truncate">
-                            {getFileNameFromUrl(doc)}
-                          </p>
-                          <Button onClick={() => handleDownload(doc)}>
-                            <Download className="mr-2 h-4 w-4" />
-                            Download
-                          </Button>
-                        </div>
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-                <Button onClick={() => handleDownload(doc)}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Download
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {patient.patientDocument[0] &&
+            patient.patientDocument[0].images.map((doc: string) => (
+              <TableRow key={doc} className="items-center">
+                <TableCell>{getFileNameFromUrl(doc)}</TableCell>
+                <TableCell className="text-right flex items-center space-x-3">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        className="mr-2"
+                        onClick={() =>
+                          setLoadingImages((prev) => ({
+                            ...prev,
+                            [doc]: true,
+                          }))
+                        }
+                      >
+                        View
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-3xl w-full p-0">
+                      <DialogHeader className="p-6">
+                        <DialogDescription>
+                          <div className="relative w-full h-[calc(100vh-12rem) rounded-md overflow-hidden">
+                            {loadingImages[doc] && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <Loader2 className="h-8 w-8 animate-spin" />
+                              </div>
+                            )}
+                            {imageErrors[doc] ? (
+                              <div className="absolute inset-0 flex flex-col items-center justify-center text-red-500">
+                                <AlertCircle className="h-12 w-12 mb-2" />
+                                <p>Failed to load image</p>
+                              </div>
+                            ) : (
+                              <div className="flex justify-center">
+                                <Image
+                                  src={doc}
+                                  alt={getFileNameFromUrl(doc)}
+                                  className="mt-4"
+                                  // fill
+                                  width={400}
+                                  height={400}
+                                  style={{ objectFit: "contain" }}
+                                  onLoadingComplete={() => handleImageLoad(doc)}
+                                  onError={() => handleImageError(doc)}
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div className="mt-4 flex justify-between items-center">
+                            <p className="text-sm text-gray-600 truncate">
+                              {getFileNameFromUrl(doc)}
+                            </p>
+                            <Button onClick={() => handleDownload(doc)}>
+                              <Download className="mr-2 h-4 w-4" />
+                              Download
+                            </Button>
+                          </div>
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                  <Button onClick={() => handleDownload(doc)}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>
