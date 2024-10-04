@@ -1,4 +1,4 @@
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 const {
   MedicalRecord,
@@ -148,7 +148,7 @@ exports.uploadPatientImageToCloudinary = catchAsync(async (req, res, next) => {
       document: patientDocument,
     });
   } catch (error) {
-    return next(error);
+    return next(new AppError("Something went wrong.", 400));
   }
 });
 
