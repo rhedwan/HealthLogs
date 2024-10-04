@@ -28,6 +28,7 @@ import {
   Users,
   UsersRound,
 } from "lucide-react";
+import PatientPDFGenerator from "@/components/system/GeneratePatientPdf";
 interface RootLayoutProps {
   children: React.ReactNode;
   params: { patient_id: string };
@@ -57,31 +58,34 @@ export default async function RootLayout({
       {/* <CardHeader> */}
       <Card className="mt-6 mb-3">
         <CardHeader>
-          <div className="flex items-center space-x-4">
-            <Avatar className="h-20 w-20">
-              <AvatarImage
-                src={patient.photo}
-                alt={`${patient.firstName} ${patient.lastName}`}
-              />
-              <AvatarFallback>
-                {patient.firstName[0]}
-                {patient.lastName[0]}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <CardTitle className="text-2xl">
-                {patient.firstName} {patient.lastName}
-              </CardTitle>
-              <CardDescription>Patient ID: {patient.fileId}</CardDescription>
-              <div className="flex space-x-2 mt-2">
-                <Badge variant="outline">{patient.gender}</Badge>
-                <Badge variant="outline">
-                  {patient.role.charAt(0).toUpperCase() +
-                    patient.role.slice(1).toLowerCase()}
-                </Badge>
-                <Badge variant="default">Active</Badge>
+          <div className=" flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <Avatar className="h-20 w-20">
+                <AvatarImage
+                  src={patient.photo}
+                  alt={`${patient.firstName} ${patient.lastName}`}
+                />
+                <AvatarFallback>
+                  {patient.firstName[0]}
+                  {patient.lastName[0]}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <CardTitle className="text-2xl">
+                  {patient.firstName} {patient.lastName}
+                </CardTitle>
+                <CardDescription>Patient ID: {patient.fileId}</CardDescription>
+                <div className="flex space-x-2 mt-2">
+                  <Badge variant="outline">{patient.gender}</Badge>
+                  <Badge variant="outline">
+                    {patient.role.charAt(0).toUpperCase() +
+                      patient.role.slice(1).toLowerCase()}
+                  </Badge>
+                  <Badge variant="default">Active</Badge>
+                </div>
               </div>
             </div>
+            <PatientPDFGenerator patientData={patient} />
           </div>
         </CardHeader>
         <CardContent>

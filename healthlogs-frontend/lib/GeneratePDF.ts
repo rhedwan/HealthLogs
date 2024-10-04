@@ -5,12 +5,12 @@ export const generateMedicationPDF = (
   doctor: string,
   quantity: number,
   refills: number,
-  patientName: string
+  patientName: string,
+  sig: string // New parameter for SIG
 ) => {
   const doc = new jsPDF();
 
   // Letterhead
-  // doc.addImage("/public/next.svg", "SVG", 20, 15, 20, 20);
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(0, 128, 0); // Green color
@@ -47,37 +47,47 @@ export const generateMedicationPDF = (
   doc.text(`Quantity: ${quantity}`, 30, 120);
   doc.text(`Refills: ${refills}`, 30, 130);
 
-  // Instructions
+  // SIG (Signatura) Information
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
-  doc.text("Instructions", 20, 150);
+  doc.text("SIG (Instructions)", 20, 150);
 
   doc.setFontSize(12);
   doc.setFont("helvetica", "normal");
-  doc.text("1. Take medication as directed by your doctor.", 30, 160);
-  doc.text("2. Do not exceed the prescribed dosage.", 30, 170);
-  doc.text("3. Keep this medication out of reach of children.", 30, 180);
+  const sigLines = doc.splitTextToSize(sig, 150); // Split long SIG text into multiple lines
+  doc.text(sigLines, 30, 160);
+
+  // General Instructions
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text("General Instructions", 20, 190);
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.text("1. Take medication as directed by your doctor.", 30, 200);
+  doc.text("2. Do not exceed the prescribed dosage.", 30, 210);
+  doc.text("3. Keep this medication out of reach of children.", 30, 220);
   doc.text(
     "4. Store at room temperature away from moisture and heat.",
     30,
-    190
+    230
   );
 
   // Signature
-  doc.line(20, 220, 80, 220);
-  doc.text("Doctor's Signature", 20, 230);
+  doc.line(20, 250, 80, 250);
+  doc.text("Doctor's Signature", 20, 260);
 
   // Footer
   doc.setFontSize(10);
   doc.text(
     "This prescription is valid for 30 days from the date of issue.",
     20,
-    250
+    280
   );
   doc.text(
     "For any queries, please contact Tessa Queen Hospital at 1234455566",
     20,
-    260
+    285
   );
 
   // Save the PDF
