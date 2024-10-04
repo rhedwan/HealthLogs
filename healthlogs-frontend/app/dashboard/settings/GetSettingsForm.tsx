@@ -38,6 +38,7 @@ import { State, updateUser } from "@/app/actions/user";
 import { logout } from "@/app/actions/auth";
 import { useToast } from "@/hooks/use-toast";
 import { PasswordState, updatePassword } from "@/app/actions/changePassword";
+import SaveButton from "@/components/system/SaveButton";
 const initialState: State = { errors: {}, message: "", status: "" };
 const initialPasswordState: PasswordState = { errors: {}, message: "" };
 
@@ -218,7 +219,11 @@ const GetSettingsForm = ({ user }: { user: User }) => {
                   </p>
                 )}
               </div>
-              <Button className="w-full">Save Changes</Button>
+              <SaveButton
+                className="w-full"
+                text="Save Changes"
+                loadingText="Saving"
+              />
             </form>
           </CardContent>
         </Card>
@@ -300,12 +305,17 @@ const GetSettingsForm = ({ user }: { user: User }) => {
                     >
                       Cancel
                     </Button>{" "}
-                    <Button
+                    {/* <Button
                       type="submit"
                       className="bg-red-500 hover:bg-red-500"
                     >
                       Confirm
-                    </Button>
+                    </Button> */}
+                    <SaveButton
+                      className="bg-red-500 hover:bg-red-500"
+                      text="Confirm"
+                      loadingText="Saving"
+                    />
                   </div>
                 )}
               </form>

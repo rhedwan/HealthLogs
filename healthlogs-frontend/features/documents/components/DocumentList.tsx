@@ -66,7 +66,7 @@ const DocumentList: React.FC<DocumentListProps> = ({ patient }) => {
   return (
     <div className="bg-white rounded-lg shadow">
       <Table>
-        <TableCaption>PRN 163545 Uploaded Documents</TableCaption>
+        {/* <TableCaption>PRN 163545 Uploaded Documents</TableCaption> */}
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">File name</TableHead>
