@@ -29,6 +29,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import PatientPDFGenerator from "@/components/system/GeneratePatientPdf";
+import PatientCardPdf from "@/components/system/GeneratePatientCard";
 interface RootLayoutProps {
   children: React.ReactNode;
   params: { patient_id: string };
@@ -85,7 +86,10 @@ export default async function RootLayout({
                 </div>
               </div>
             </div>
-            <PatientPDFGenerator patientData={patient} />
+            <div className="flex flex-col -space-y-4 items-end">
+              <PatientPDFGenerator patientData={patient} />
+              <PatientCardPdf patientData={patient} />
+            </div>
           </div>
         </CardHeader>
         <CardContent>

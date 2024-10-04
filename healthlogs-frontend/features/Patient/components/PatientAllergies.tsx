@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -28,6 +35,7 @@ import { AddAllergy } from "@/app/actions/allergy";
 import { useToast } from "@/hooks/use-toast";
 import { TriangleAlert } from "lucide-react";
 import SaveButton from "@/components/system/SaveButton";
+import { Badge } from "@/components/ui/badge";
 const PatientAllergies = ({ patient }: { patient: any }) => {
   const { pending } = useFormStatus();
 
@@ -227,10 +235,25 @@ const PatientAllergies = ({ patient }: { patient: any }) => {
       </CardHeader>
       <CardContent>
         <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Allergen</TableHead>
+              <TableHead>Severity</TableHead>
+              <TableHead>Comment</TableHead>
+              <TableHead>Onset</TableHead>
+            </TableRow>
+          </TableHeader>
           <TableBody>
             {patient.patientAllergy.map((allergy: PatientAllergy) => (
               <TableRow key={allergy._id}>
-                <TableCell>{allergy.allergen}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col items-start">
+                    <span>{allergy.allergenInfo}</span>
+                    <div className="flex justify-center">
+                      <Badge className="w-fit">{allergy.allergen}</Badge>
+                    </div>
+                  </div>
+                </TableCell>
                 <TableCell>{allergy.severity}</TableCell>
                 <TableCell>{allergy.comment}</TableCell>
                 <TableCell className="text-right">{allergy.onset}</TableCell>
