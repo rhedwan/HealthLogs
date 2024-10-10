@@ -149,8 +149,8 @@ const PatientPDFGenerator: React.FC<{ patientData: PatientData }> = ({
 
     // Last Blood Pressure
     doc.text(
-      `Last BP: ${patientData.lastBloodPressure.systolic}/${
-        patientData.lastBloodPressure.diastolic
+      `Last BP: ${patientData.lastBloodPressure.systolic || NaN}/${
+        patientData.lastBloodPressure.diastolic || NaN
       } on ${new Date(
         patientData.lastBloodPressure.date
       ).toLocaleDateString()}`,
@@ -373,10 +373,10 @@ const PatientPDFGenerator: React.FC<{ patientData: PatientData }> = ({
             </p>
             <p>
               <span className="font-medium">Last BP:</span>{" "}
-              {patientData.lastBloodPressure.systolic}/
-              {patientData.lastBloodPressure.diastolic} on{" "}
+              {patientData.lastBloodPressure?.systolic || 0}/
+              {patientData.lastBloodPressure?.diastolic || 0} on{" "}
               {new Date(
-                patientData.lastBloodPressure.date
+                patientData.lastBloodPressure?.date
               ).toLocaleDateString()}
             </p>
           </div>
